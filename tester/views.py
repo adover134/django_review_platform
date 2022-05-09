@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 from tester.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer
 from tester.models import User, Manager, Review, Room
-
 
 class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
@@ -35,6 +35,16 @@ class ManagerViewSets(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
+
+
+class UserRetrieveViewSets(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        data = User.objects.get(u_nickname=request.data['u_nickname'])
+        serializer = self.get_serializer(data)
+        return Response(serializer.data)
 
 
 class ReviewViewSets(ModelViewSet):
