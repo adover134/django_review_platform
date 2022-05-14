@@ -15,7 +15,8 @@ router.register('room', views.RoomViewSets)
 """
 manager_list = views.ManagerViewSets.as_view({
     'get': 'list',
-    'post': 'create'
+    'post': 'create',
+    'put': 'search',
 })
 
 """
@@ -26,7 +27,7 @@ manager_detail = views.ManagerViewSets.as_view({
     'get': 'retrieve',
     'put': 'update',
     'patch': 'partial_update',
-    'delete': 'destroy'
+    'delete': 'tere'
 })
 
 
@@ -34,7 +35,7 @@ class UserRetrieveRouter(routers.SimpleRouter):
     routes = [
         routers.Route(
             url=r'^{prefix}/$',
-            mapping={'post': 'retrieve'},
+            mapping={'post': 'search'},
             name='{basename}',
             detail=False,
             initkwargs={'suffix': 'Detail'}
