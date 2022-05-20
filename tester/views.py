@@ -25,11 +25,10 @@ class ManagerViewSets(ModelViewSet):
     serializer_class = ManagerSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
-
-    def search(self, request, *args, **kwargs):
-        data = Manager.objects.get(m_tel=request.data['m_tel'])
-        serializer = self.get_serializer(data)
+        data = request.GET['m_tel']
+        print(data)
+        instance = Manager.objects.get(m_tel=data)
+        serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):

@@ -16,7 +16,6 @@ router.register('room', views.RoomViewSets)
 manager_list = views.ManagerViewSets.as_view({
     'get': 'list',
     'post': 'create',
-    'put': 'search',
 })
 
 """
