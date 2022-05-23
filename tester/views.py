@@ -1,5 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+import requests
+import json
 from tester.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer
 from tester.models import User, Manager, Review, Room
 
@@ -9,6 +11,20 @@ class UserViewSets(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)
+
+    def addWarnCount(u_id):
+        """
+        REST api니까 값을 request를 통해 받아야 한다고 생각하였습니다.
+        retrieve 메소드를 이용하여 해당하는 User 정보를 얻습니다.
+        값을 텍스트로 읽은 후 json으로 바꿔줬습니다.
+        그 후, 필요한 값인 u_warn_count를 data로 지정하였습니다.
+        마지막으로, update 메소드에 u_warn_count를 기존 값 + 1로 하여 보냅니다.
+        """
+        instance = json.loads(requests.get('http://127.0.0.1:8000/test/user/' + u_id + '/').text)
+        print(instance)
+        data = instance['u_warn_count']
+        print(data)
+        requests.put('http://127.0.0.1:8000/test/user/' + u_id + '/', data={'u_warn_count': data+1})
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
@@ -62,6 +78,12 @@ class ManagerViewSets(ModelViewSet):
         print(data)
         instance = Manager.objects.get(m_tel=data)
         serializer = self.get_serializer(instance)
+        u_id = serializer.data['u_id']
+        """
+        새로 추가한 메소드인 addWarnCount를 실행시킵니다.
+        인자로 위에서 구한 u_id를 줍니다.
+        """
+        UserViewSets.addWarnCount(u_id)
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -71,6 +93,7 @@ class ManagerViewSets(ModelViewSet):
         return super().update(request, args, kwargs)
 
     def tere(self, request, *args, **kwargs):
+        print("good-bye")
         return super().destroy(self, request, args, kwargs)
 
 

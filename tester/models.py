@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -5,10 +7,10 @@ class User(models.Model):
     u_id = models.CharField(primary_key=True, max_length=20)
     u_nickname = models.TextField()
     u_email = models.EmailField(unique=True)
-    u_access_token = models.TextField()
+    u_access_token = models.TextField(null=True)
     u_warn_count = models.IntegerField(default=0)
     u_active = models.IntegerField(default=0)
-    penalty_date = models.DateField()
+    penalty_date = models.DateField(default=datetime.date.today)
 
     class Meta:
         db_table = 'user_info'
