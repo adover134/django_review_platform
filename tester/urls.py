@@ -53,7 +53,8 @@ kwargs의 pk:~ 형태의 값으로 들어가며 string 타입임을 명시한 �
 """
 urlpatterns = [
     path('manager/', manager_list, name='manager-list'),
-    path('manager/<str:pk>/', manager_detail, name='manager-detail')
+    path('manager/<str:pk>/', manager_detail, name='manager-detail'),
+    path('', views.main)
 ]
 
 urlpatterns += router.urls
