@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from django.shortcuts import render
 import requests
 import json
 from tester.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer
@@ -83,7 +84,10 @@ class ManagerViewSets(ModelViewSet):
         새로 추가한 메소드인 addWarnCount를 실행시킵니다.
         인자로 위에서 구한 u_id를 줍니다.
         """
-        UserViewSets.addWarnCount(u_id)
+        u_warn_count = json.loads(requests.get('http://127.0.0.1:8000/test/user/' + u_id + '/').text)['u_warn_count']
+        print(type(u_warn_count))
+        requests.put('http://127.0.0.1:8000/test/user/' + u_id + '/', data={'u_warn_count': u_warn_count + 1})
+        # UserViewSets.addWarnCount(u_id)
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -139,3 +143,7 @@ class RoomViewSets(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
+
+
+def main(request):
+    return render(request, 'test.html', {'manager':json.loads(requests.get('http://127.0.0.1:8000/test/manager/').text)})
