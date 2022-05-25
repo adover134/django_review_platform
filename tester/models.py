@@ -29,6 +29,7 @@ class Room(models.Model):
 
 
 class Review(models.Model):
+    rev_id = models.IntegerField(primary_key=True)
     u_id = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='writer', null=True)
     r_id = models.ForeignKey(Room, on_delete=models.SET_NULL, related_name='room', null=True)
     review = models.TextField()

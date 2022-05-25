@@ -5,11 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-{% for m in manager %}
-    <p>{{m}}</p>
+{% for man in manager %}
+    <p>{{man}}</p>
     <script>
-        var m='{{m}}';
+        var m='{{man}}';
     </script>
 {% endfor %}
+    <button type="button", onclick="location.href='manager/ /?m_tel='+'{{manager.0.m_tel}}'">
+        See Manager Info
+    </button>
 </body>
 </html>
