@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.shortcuts import render
+from django.db.models import Prefetch
 import requests
 import json
 from tester.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer
@@ -10,7 +11,17 @@ class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    # 회원 별로, 작성한 리뷰들에 대해 역참조를 하여 리뷰 내용을 받아오도록 해봤습니다.
     def retrieve(self, request, *args, **kwargs):
+        # 15~18번 줄은 조인을 하지 않은 코드입니다. 18번 줄에서, 각 writer에 대해 하위 값을 찾을 때마다 쿼리를 한 번씩
+        instance = self.get_object()
+        for r in instance.writer.all():
+            print(r.review)
+        print("=======")
+        #20~23번 줄은 조인을 한 코드입니다. 22번 줄에서 미리 모든 writer 항목에 대해 review 값을 받아옵니다.
+        instance2 = User.objects.filter(u_id=instance.u_id).prefetch_related('writer')[0]
+        for r in instance2.writer.all():
+            print(r.review)
         return super().retrieve(self, request, args, kwargs)
 
     def addWarnCount(u_id):
@@ -114,6 +125,9 @@ class UserRetrieveViewSets(ModelViewSet):
 class ReviewViewSets(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+    def list(self, request, *args, **kwargs):
+        return super().list(self, request, args, kwargs)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)

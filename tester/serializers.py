@@ -25,7 +25,8 @@ class ManagerSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    u_id = UserSerializer
+    u_nickname = serializers.CharField(source='u_id.u_nickname', read_only=True)
+    r_name = serializers.CharField(source='r_id.r_name', read_only=True)
 
     class Meta:
         model = Review
