@@ -14,13 +14,14 @@
 
     <p id="hey"></p>
     <script type="text/javascript">
-        var a = "{{manager|index:0|safe}}";
+        var a = "{{manager|safe}}";
         console.log(typeof(a));
         console.log(a);
         c = a.replaceAll('\'', '\"');
         console.log(c);
         c = JSON.parse(c);
-        console.log(c['u_id']);
+        console.log(c);
+        console.log(c[0]['u_id']);
         var m='';
         var url='http://127.0.0.1:8000/test/manager/';
 

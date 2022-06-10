@@ -5,7 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-<button type="button", onclick="location.href = 'http://127.0.0.1:8000/test/login/'">login</button>
-<button type="button", onclick="location.href = 'http://127.0.0.1:8000/test/logout/'">logout</button>
+    <p>
+        {% if alive == 'true' %}
+        <button type="button", onclick="location.href = 'http://127.0.0.1:8000/test/logout/'">logout</button>
+        {% else %}
+        <button type="button", onclick="location.href = 'http://127.0.0.1:8000/test/login/'">login</button>
+        {% endif %}
+    </p>
 </body>
 </html>
