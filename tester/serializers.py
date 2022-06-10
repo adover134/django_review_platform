@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tester.models import User, Manager, Review, Room
+from tester.models import User, Manager, Review, Room, Icon, Option
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -26,7 +26,12 @@ class ManagerSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
 
     u_nickname = serializers.CharField(source='u_id.u_nickname', read_only=True)
-    r_name = serializers.CharField(source='r_id.r_name', read_only=True)
+    r_name = serializers.CharField(source='r_id.address', read_only=True)
+    icons = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='icon-detail'
+    )
 
     class Meta:
         model = Review
@@ -37,4 +42,18 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
+        fields = '__all__'
+
+
+class IconSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Icon
+        fields = '__all__'
+
+
+class OptionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Option
         fields = '__all__'

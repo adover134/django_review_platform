@@ -1,16 +1,16 @@
+from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.shortcuts import render
-from django.db.models import Prefetch
+from django.db.models import Q, Count
 import requests
 import json
-from tester.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer
-from tester.models import User, Manager, Review, Room
+from tester.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer, IconSerializer, OptionSerializer
+from tester.models import User, Manager, Review, Room, Icon, Option
 
 class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
     # 회원 별로, 작성한 리뷰들에 대해 역참조를 하여 리뷰 내용을 받아오도록 해봤습니다.
     def retrieve(self, request, *args, **kwargs):
         # 15~18번 줄은 조인을 하지 않은 코드입니다. 18번 줄에서, 각 writer에 대해 하위 값을 찾을 때마다 쿼리를 한 번씩
@@ -42,7 +42,7 @@ class UserViewSets(ModelViewSet):
         return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
-        # url의 lookup 필드를 통해 모델에서 가져온 인스턴습입니다.
+        # url의 lookup 필드를 통해 모델에서 가져온 인스턴스입니다.
         instance = self.get_object()
 
         #인스턴스의 데이터를 dictionary 자료형으로 직렬화하였습니다.
@@ -55,9 +55,21 @@ class UserViewSets(ModelViewSet):
         #form을 통해 입력받으면 각 필드가 배열 형태로 들어옵니다.
         for key in data1:
             #확인용 출력 라인입니다.
-            print(data1[key])
-            if data1[key][0] != '':
-                data[key] = data1[key][0]
+            print(key, data1[key])
+            print(type(data1[key]))
+            if data1[key] is None:
+                continue
+            elif type(data1[key]) is int:
+                data[key] = data1[key]
+                continue
+            elif type(data1[key]) is dict:
+                print(data1[key])
+                #icon에 대한 정보입니다. 해당 정보로 icon에 대한 create를 수행하는 POST 메소드를 실행 하면 됩니다.
+                requests.post('http://127.0.0.1:8000/test/icon/', data=data1[key])
+                break
+            elif data1[key][0] != '':
+                data[key] = data1[key]
+        print(data)
 
         """
         이 아래는 request.data가 QueryDict라는 자료형이라 바꿀 수 없어서
@@ -70,12 +82,7 @@ class UserViewSets(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
+        return Response("Update Success!")
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
@@ -126,10 +133,45 @@ class ReviewViewSets(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def list(self, request, *args, **kwargs):
+        data1 = dict(request.GET)
+        if not data1:
+            return super().list(self, request, args, kwargs)
+        print(data1)
+        if data1.get('icon'):
+            print("icon")
+        for i in data1:
+            print(i, end=" : ")
+            for j in data1[i]:
+                print(j,end=" ")
+        data2 = Room.objects.all()
+        a = [1, 2]
+        #for i in a:
+        #    print(i)
+        room_query = Q()
+        room_query.add(Q(r_id=1), Q.OR)
+        room_query.add(Q(r_id=2), Q.OR)
+        data3 = Review.objects.filter(room_query)
+        print()
+        print(data3)
+        #for r in data3:
+        #    print(r.r_id.r_name)
+        print(Icon.objects.all().values('rev_id').annotate(total=Count('rev_id')))
         return super().list(self, request, args, kwargs)
 
     def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        icons = serializer.data
+        for i in icons['icons']:
+            requests.delete(i)
         return super().retrieve(self, request, args, kwargs)
 
     def partial_update(self, request, *args, **kwargs):
@@ -147,7 +189,57 @@ class RoomViewSets(ModelViewSet):
     serializer_class = RoomSerializer
 
     def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        for r in instance.room.all():
+            icons = r.origin_review.all()
+            for i in icons:
+                print(r.rev_id, i.icon_x)
         return super().retrieve(self, request, args, kwargs)
+
+    def list(self, request, *args, **kwargs):
+        # URL의 파라미터들을 사전형 배열로 받는다.
+        data1 = dict(request.GET)
+        # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
+        if not data1:
+            return super().list(self, request, args, kwargs)
+        # 검색 조건으로 쿼리를 만든다.
+        query = Q()  # 메인 쿼리로, 최종 결과를 낼 때 사용한다.
+        query_address = Q()  # 주소에 대한 쿼리이다.
+        if data1.get('address'):
+            for ad in data1['address']:
+                query_address.add(Q(address__contains=ad), Q.OR)
+        query_rea = Q()  # 공인중개사에 대한 쿼리이다.
+        if data1.get('real_estate_agency'):
+            for rea in data1['real_estate_agency']:
+                query_rea.add(Q(real_estate_agency__contains=rea), Q.OR)
+        # 만약 옵션에 대한 검색 조건이 있다면, 해당하는 옵션들에 대해 참조한 원룸 데이터를 검색한다.
+        # 옵션 모델에 대한 기본 URL을 먼저 적는다.
+        optionURL = 'http://127.0.0.1:8000/test/option/' + '?'
+        # 옵션에 대한 검색 조건이 존재한다면 각 옵션에 대해 원룸 번호만을 가져다 쿼리를 만든다.
+        query_option = Q()
+            # 원룸 번호를 저장할 리스트이다.
+        data2 = list()
+        if data1.get('option_num'):
+            print(data1['option_num'])
+        if data1.get('option'):
+            print(data1['option'])
+            for o in data1['option']:
+                optionData = json.loads(requests.get(optionURL+'option='+o).text)
+                option_to_room = list()
+                for d in optionData:
+                    option_to_room.append(d['room_id'])
+                if not data2 :
+                    data2=option_to_room
+                else :
+                    data2=list(set(data2).intersection(set(option_to_room)))
+        for i in data2:
+            query_option.add(Q(room_id=i), Q.OR)
+        query.add(query_address, Q.AND)
+        query.add(query_rea, Q.AND)
+        query.add(query_option, Q.AND)
+        searched = Room.objects.filter(query)
+        return Response(self.get_serializer(searched, many=True).data)
+
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
@@ -159,5 +251,69 @@ class RoomViewSets(ModelViewSet):
         return super().destroy(self, request, args, kwargs)
 
 
+class IconViewSets(ModelViewSet):
+    queryset = Icon.objects.all()
+    serializer_class = IconSerializer
+
+
+class OptionViewSets(ModelViewSet):
+    queryset = Option.objects.all()
+    serializer_class = OptionSerializer
+
+    def list(self, request, *args, **kwargs):
+        # URL의 파라미터들을 사전형 배열로 받는다.
+        data1 = dict(request.GET)
+        # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
+        if not data1:
+            return super().list(self, request, args, kwargs)
+        # 검색 조건으로 쿼리를 만든다. 옵션은 옵션 이름만 조건으로 받으며, 받은 옵션 이름들 중 하나에 해당하는 옵션들을 검색한다.
+        query = Q()
+        for o in data1['option']:
+            query.add(Q(option_name=o), Q.OR)
+        # 완성된 쿼리로 검색을 수행한다.
+        searched = Option.objects.filter(query)
+        # 검색 결과를 반환한다.
+        return Response(self.get_serializer(searched, many=True).data)
+
+
 def main(request):
-    return render(request, 'test.html', {'manager':json.loads(requests.get('http://127.0.0.1:8000/test/manager/').text)})
+    return render(request, 'main.html')
+
+
+def login(request):
+    print(request.path_info)
+    token = request.COOKIES.get('token')
+    # 쿠키에 토큰이 없다면 로그인 창으로 이동시킴.
+    if token == None:
+        print("Nope")
+    # 쿠키에 토큰이 있다면
+    #else :
+        # 토큰을 복호화하여 액세스토큰을 획득
+        # 해당하는 액세스토큰으로 정보 요청
+        #정보가 안 나오면 로그인 창으로 이동
+        #if [access_token] shows -401:
+        # 정보가 있는데, 토큰 값에 해당하는 회원이 DB에서와 다르면 로그인 시도
+        #elif :
+        # 현재 토큰을 저장
+    # 메인 페이지로 이동하는 render를 생성
+    res = render(request, 'main.html')
+    # 토큰을 쿠키로 추가
+    res.set_cookie('token', 'hey')
+    return res
+
+
+def logout(request):
+    # 회원 정보를 받음
+    #user = request.GET()
+    # 회원의 액세스 코드를 NULL 값으로 바꿈.
+    requests.post('http://127.0.0.1:8000/test/user/'+user.u_id+'/', data={'u_access_token':None})
+    # 메인 페이지로 이동하는 render 생성
+    res = render(request, 'main.html')
+    # 쿠키에서 토큰을 제거
+    res.delete_cookie('token')
+    return res
+
+def ajaxTest(request):
+    manager = json.loads(requests.get('http://127.0.0.1:8000/test/manager/').text)
+    print(manager)
+    return render(request, 'test.html', {'manager': manager})
