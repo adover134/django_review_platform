@@ -25,7 +25,9 @@ class Manager(models.Model):
 
 
 class Room(models.Model):
-    r_name = models.TextField()
+    room_id = models.IntegerField(primary_key=True)
+    address = models.TextField()
+    real_estate_agency = models.TextField()
 
 
 class Review(models.Model):
@@ -33,3 +35,14 @@ class Review(models.Model):
     u_id = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='writer', null=True)
     r_id = models.ForeignKey(Room, on_delete=models.SET_NULL, related_name='room', null=True)
     review = models.TextField()
+
+
+class Icon(models.Model):
+    rev_id = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='icons')
+    icon_x = models.IntegerField()
+    icon_y = models.IntegerField()
+
+
+class Option(models.Model):
+    room_id = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='options')
+    option_name = models.TextField()

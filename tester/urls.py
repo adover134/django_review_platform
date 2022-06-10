@@ -7,6 +7,8 @@ router.register('user', views.UserViewSets)
 # router.register('manager', views.ManagerViewSets)
 router.register('review', views.ReviewViewSets)
 router.register('room', views.RoomViewSets)
+router.register('icon', views.IconViewSets)
+router.register('option', views.OptionViewSets)
 
 """
 뷰셋을 직접 URL path로 경우는 아래처럼
@@ -54,7 +56,10 @@ kwargs의 pk:~ 형태의 값으로 들어가며 string 타입임을 명시한 �
 urlpatterns = [
     path('manager/', manager_list, name='manager-list'),
     path('manager/<str:pk>/', manager_detail, name='manager-detail'),
-    path('', views.main)
+    path('', views.main),
+    path('login/', views.login),
+    path('logout/', views.logout),
+    path('ajaxTest/', views.ajaxTest),
 ]
 
 urlpatterns += router.urls

@@ -5,14 +5,70 @@
     <title>Title</title>
 </head>
 <body>
-{% for man in manager %}
-    <p>{{man}}</p>
-    <script>
-        var m='{{man}}';
+
+//{% for man in manager %}
+//xhr.open("GET", 'http://127.0.0.1:8000/test/manager', true);
+//{% endfor %}
+{% load index %}
+<p>{{manager|index:0}}</p>
+
+    <p id="hey"></p>
+    <script type="text/javascript">
+        var a = "{{manager|index:0|safe}}";
+        console.log(typeof(a));
+        console.log(a);
+        c = a.replaceAll('\'', '\"');
+        console.log(c);
+        c = JSON.parse(c);
+        console.log(c['u_id']);
+        var m='';
+        var url='http://127.0.0.1:8000/test/manager/';
+
+    	function requestGet(){
+    		console.log("");
+    		console.log("[requestGet] : [start]");
+    		console.log("");
+
+    		// XMLHttpRequest 객체 생성 및 요청 수행
+    		var xhr = new XMLHttpRequest();
+    		xhr.open("GET", url, true);
+
+    		console.log("[request url] : " + url);
+    		console.log("[request method] : " + "GET");
+    		console.log("");
+
+    		//xhr.onreadystatechange = CallbackFunction; //콜백 함수 지정해서 처리 가능
+    		xhr.onreadystatechange = function() {
+    			if (xhr.readyState == 4) {
+    				if (xhr.status == 200 || xhr.status == 201){
+    					console.log("[status] : " + xhr.status);
+    					console.log("[response] : " + "[success]");
+    					console.log("[response] : " + xhr.response);
+
+                        m=xhr.response;
+                        console.log(m);
+                        m = JSON.parse(m)[0];
+                        document.getElementById("hey").innerHTML = m['u_id'];
+    				}
+    				else {
+    					console.log("[status] : " + xhr.status);
+    					console.log("[response] : " + "[fail]");
+    					console.log("[response] : " + xhr.response);
+    				}
+    			}
+    		}
+    		xhr.send(null); //get 쿼리 파람 방식일때 null
+    	};
+
+        function secTest(){
+            console.log(m);
+        };
     </script>
-{% endfor %}
-    <button type="button", onclick="location.href='manager/ /?m_tel='+'{{manager.0.m_tel}}'">
+    <button type="button", onclick="requestGet()">
         See Manager Info
+    </button>
+    <button type="button", onclick="secTest()">
+        Hey
     </button>
 </body>
 </html>
