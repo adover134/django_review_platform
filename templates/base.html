@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 작성 및 요약 분석</title>
+    <link rel="stylesheet" href="{% static 'css/baseTemplate.css' %}">
+</head>
+<body>
+    <div id="headMenu">
+        <div id="logo" style="width:49px; height:48px; border:1px solid yellow;">
+
+        </div>
+        {% block head_menu %}
+        {% endblock %}
+    </div>
+    <div id="midContent" style="position:relative; width:506px; height:50px;">
+        <div class="middle" id="leftSideMenu" style="border:1px solid black; width:50px;">
+            {% block left_side_bar %}
+            {% endblock %}
+        </div>
+        <div class="middle" id="mainDiv" style="border:1px solid green; width:400px;">
+            {% block main_contents %}
+            {% endblock %}
+        </div>
+        <div class="middle" id="rightSideMenu" style="border:1px solid black; width:50px;">
+            {% block right_side_bar %}
+            {% endblock %}
+        </div>
+    </div>
+    <div id="bottomInfoBox">
+        {% block team_info %}
+        {% endblock %}
+    </div>
+</body>
+</html>

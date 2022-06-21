@@ -1,0 +1,18 @@
+div#headMenu{
+    border:1px solid black;
+    width:504px;
+    height:50px;
+}
+div.middle{
+    display:inline-block;
+    float:left;
+    height:50px;
+}
+div#bottomInfoBox{
+    position:relative;
+    background-color:red;
+    top:2px;
+    border:1px solid blue;
+    width:504px;
+    height:50px;
+}

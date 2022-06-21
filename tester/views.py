@@ -296,7 +296,7 @@ def main(request):
     # 토큰이 쿠키에 없는 경우 == 로그인이 안 되는 경우
     else:
         # 그냥 메인 페이지로 이동한다.
-        return render(request, 'tt.html', {'alive': 'false'})
+        return render(request, 'base.html', {'alive': 'false'})
 
 
 # 로그인 시도 시에 처리되는 메소드
