@@ -4,6 +4,8 @@ div#headMenu{
     height:150px;
 }
 div#logo{
+    display:inline-block;
+    float:left;
     width:239px;
     height:148px;
     border:1px solid yellow;
