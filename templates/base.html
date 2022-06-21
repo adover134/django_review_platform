@@ -8,22 +8,22 @@
 </head>
 <body>
     <div id="headMenu">
-        <div id="logo" style="width:49px; height:48px; border:1px solid yellow;">
+        <div id="logo">
 
         </div>
         {% block head_menu %}
         {% endblock %}
     </div>
-    <div id="midContent" style="position:relative; width:506px; height:50px;">
-        <div class="middle" id="leftSideMenu" style="border:1px solid black; width:50px;">
+    <div id="midContent">
+        <div class="middle" id="leftSideMenu" style="border:1px solid black; width:250px;">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle" id="mainDiv" style="border:1px solid green; width:400px;">
+        <div class="middle" id="mainDiv" style="border:1px solid green; width:1000px;">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle" id="rightSideMenu" style="border:1px solid black; width:50px;">
+        <div class="middle" id="rightSideMenu" style="border:1px solid black; width:250px;">
             {% block right_side_bar %}
             {% endblock %}
         </div>
