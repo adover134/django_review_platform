@@ -8,11 +8,18 @@
 </head>
 <body>
     <div id="headMenu">
-        <div id="logo">
+        <div id="logo" style="display:inline-block; float:left;">
 
         </div>
         {% block head_menu %}
         {% endblock %}
+        <div style="display:inline-block; float:left;">
+            {% if alive == 'true' %}
+            <button type="button" onclick="location.href = 'http://127.0.0.1:8000/test/logout/'">logout</button>
+            {% else %}
+            <button type="button" onclick="location.href = 'http://127.0.0.1:8000/test/login/'">login</button>
+            {% endif %}
+        </div>
     </div>
     <div id="midContent">
         <div class="middle" id="leftSideMenu" style="border:1px solid black; width:250px;">
