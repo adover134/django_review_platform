@@ -287,12 +287,12 @@ def main(request):
         a = requests.get('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': 'Bearer '+token}).json()
         # 경고 메시지를 받은 경우 == 토큰이 유효하지 않은 경우이다.
         if a.get('msg'):
-            return render(request, 'main.html', {'alive': 'false'})
+            return render(request, 'base.html', {'alive': 'false'})
         # 토큰이 유효하다면 해당 토큰의 회원번호를 사용해, 회원의 retrieve 뷰를 이용하여 회원 정보를 구한다.
         else:
             user = requests.get('http://127.0.0.1:8000/test/user/'+str(a.get('id'))+'/').json()
             # 로그인 상태임을 나타내는 변수와 함께, 접속한 회원의 닉네임을 context로 함께 전달한다.
-            return render(request, 'main.html', {'alive': 'true', 'user': 'hi'})
+            return render(request, 'base.html', {'alive': 'true', 'user': 'hi'})
     # 토큰이 쿠키에 없는 경우 == 로그인이 안 되는 경우
     else:
         # 그냥 메인 페이지로 이동한다.
@@ -349,7 +349,7 @@ def login(request):
         res.set_cookie('token', token, max_age=18000)
         return res
     # 메인 페이지로 이동하는 render를 생성한다.
-    res = render(request, 'main.html', {'alive': 'true'})
+    res = render(request, 'base.html', {'alive': 'true'})
     # 토큰을 쿠키로 추가한다. 쿠키는 5시간만 지속되도록 한다.
     res.set_cookie('token', token, max_age=18000)
     return res
@@ -364,7 +364,7 @@ def logout(request):
     if not a.get('msg'):
         requests.post('https://kapi.kakao.com/v1/user/logout', headers={"Authorization": 'Bearer '+token})
     # 토큰의 생존 여부를 false로 넣는다.
-    res = render(request, 'main.html', {'alive': 'false'})
+    res = render(request, 'base.html', {'alive': 'false'})
     # 쿠키에서 토큰을 제거한다.
     res.delete_cookie('token')
     return res
@@ -384,7 +384,7 @@ def signup(request):
     # 새로운 회원을 DB에 추가하는 뷰를 수행한다.
     requests.post('http://127.0.0.1:8000/test/user/', data=body)
     # 메인 페이지에 기본 상태로 이동하는 render를 작성한다.
-    res = render(request, 'main.html', {'alive': 'false'})
+    res = render(request, 'base.html', {'alive': 'false'})
     # 만약 토큰이 쿠키에 존재한다면 쿠키에서 제거한다.
     res.delete_cookie('token')
     return res
