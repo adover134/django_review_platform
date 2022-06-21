@@ -283,6 +283,7 @@ def main(request):
     # 이미 로그인 한 사이트에 대해, 창을 닫지 않는 한(탭만 닫았던 경우) 자동으로 로그인 되도록 하는 기능이다.
     if request.COOKIES.get('token'):
         token = request.COOKIES['token']
+        # 토큰의 정보를 받는다.
         a = requests.get('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': 'Bearer '+token}).json()
         # 경고 메시지를 받은 경우 == 토큰이 유효하지 않은 경우이다.
         if a.get('msg'):
@@ -295,7 +296,7 @@ def main(request):
     # 토큰이 쿠키에 없는 경우 == 로그인이 안 되는 경우
     else:
         # 그냥 메인 페이지로 이동한다.
-        return render(request, 'main.html')
+        return render(request, 'tt.html', {'alive': 'false'})
 
 
 # 로그인 시도 시에 처리되는 메소드
@@ -371,15 +372,20 @@ def logout(request):
 
 def signup(request):
     token = request.COOKIES.get('token')
+    # 토큰으로 사용자 정보를 얻는다.
     a = requests.get('https://kapi.kakao.com/v2/user/me', headers={'Authorization': 'Bearer ' + token}).json()
+    # 획득한 사용자 정보를 바탕으로 DB에 넣을 값들을 정한다.
     body = {
         'u_id': a.get('id'),
         'u_nickname': a.get('properties').get('nickname'),
         'u_email': a.get('kakao_account').get('email'),
         'u_access_token': token
     }
+    # 새로운 회원을 DB에 추가하는 뷰를 수행한다.
     requests.post('http://127.0.0.1:8000/test/user/', data=body)
+    # 메인 페이지에 기본 상태로 이동하는 render를 작성한다.
     res = render(request, 'main.html', {'alive': 'false'})
+    # 만약 토큰이 쿠키에 존재한다면 쿠키에서 제거한다.
     res.delete_cookie('token')
     return res
 
