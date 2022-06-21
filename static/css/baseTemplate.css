@@ -1,18 +1,29 @@
 div#headMenu{
     border:1px solid black;
-    width:504px;
-    height:50px;
+    width:1504px;
+    height:150px;
+}
+div#logo{
+    width:239px;
+    height:148px;
+    border:1px solid yellow;
+    background-color:yellow;
+}
+div#midContent{
+    position:relative;
+    width:1508px;
+    height:750px;
 }
 div.middle{
     display:inline-block;
     float:left;
-    height:50px;
+    height:750px;
 }
 div#bottomInfoBox{
     position:relative;
     background-color:red;
     top:2px;
     border:1px solid blue;
-    width:504px;
-    height:50px;
+    width:1504px;
+    height:150px;
 }
