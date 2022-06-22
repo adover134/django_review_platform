@@ -2,10 +2,16 @@
 {% load static %}
 {% block head_menu %}
 <link rel="stylesheet" href="{% static 'css/normalUserBaseTemplate.css' %}">
+<script>
+    function hi(){
+        //상위 템플릿에서 작성한 div에 접근하는 함수
+        document.getElementById("mainDiv").innerText='HoHoHo';
+    }
+</script>
 <div id="mainMenu">
     <ul>
         <li>
-            <button>
+            <button onclick="hi()">
                 원룸 검색
             </button>
         </li>
@@ -22,10 +28,10 @@
     </ul>
     <div id="userInfo">
         {% if alive == 'true' %}
-            <button type="button" class="loginout" onclick="location.href = 'http://127.0.0.1:8000/test/logout/'">logout</button>
+            <button type="button" class="loginout" onclick="location.href = 'http://127.0.0.1:8000/logout/'">logout</button>
             <button id="myInfo">내 정보</button>
         {% else %}
-            <button type="button" class="loginout" onclick="location.href = 'http://127.0.0.1:8000/test/login/'">login</button>
+            <button type="button" class="loginout" onclick="location.href = 'http://127.0.0.1:8000/login/'">login</button>
         {% endif %}
     </div>
 </div>

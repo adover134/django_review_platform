@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tester.models import User, Manager, Review, Room, Icon, Option
+from DBs.models import User, Manager, Review, Room, Icon, Option
 
 
 class UserSerializer(serializers.ModelSerializer):
