@@ -29,7 +29,6 @@ def login(request):
     # 쿠키의 토큰이 암호화되어 있지 않다고 가정
     token = request.COOKIES.get('token')
     code = dict(request.GET).get('code')
-    print(token)
 
     # 토큰이 쿠키에 있지만 만료되었다면 토큰을 None으로 바꾼다.
     # 페이지마다 별도로 쿠키를 관리하기 때문에 우연히 토큰이 만료되었음에도 쿠키가 남는 경우가 생길 수 있다.
@@ -63,7 +62,6 @@ def login(request):
             r = requests.post(url, data=param)
             json_result = r.json()
             # 반환값 중에서 액세스 토큰을 얻는다.
-            print(json_result)
             token = json_result['access_token']
 
     # 쿠키에 토큰이 있었거나, 새로 발급 받은 경우 여기로 와서 토큰으로 정보를 받는다.
@@ -83,17 +81,18 @@ def login(request):
 
 
 def logout(request):
-    # 현재 토큰을 쿠키에서 구한다.
-    token = request.COOKIES.get('token')
-    # 토큰의 상태를 확인한다.
-    a = requests.get('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': 'Bearer ' + token}).json()
-    # 오류 메시지를 받지 않는다면 로그아웃(토큰에 해당하는 아이디 만료시키기)을 한다.
-    if not a.get('msg'):
-        requests.post('https://kapi.kakao.com/v1/user/logout', headers={"Authorization": 'Bearer '+token})
-    # 토큰의 생존 여부를 false로 넣는다.
+    # 토큰의 생존 여부를 false로 하여 메인페이지로 이동시킨다.
     res = render(request, 'normal_user_base.html', {'alive': 'false'})
-    # 쿠키에서 토큰을 제거한다.
-    res.delete_cookie('token')
+    # 현재 토큰을 쿠키에서 구한다.
+    if request.COOKIES.get('token'):
+        token = request.COOKIES.get('token')
+        # 토큰의 상태를 확인한다.
+        a = requests.get('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': 'Bearer ' + token}).json()
+        # 오류 메시지를 받지 않는다면 로그아웃(토큰에 해당하는 아이디 만료시키기)을 한다.
+        if not a.get('msg'):
+            requests.post('https://kapi.kakao.com/v1/user/logout', headers={"Authorization": 'Bearer '+token})
+        # 쿠키에서 토큰을 제거한다.
+        res.delete_cookie('token')
     return res
 
 
