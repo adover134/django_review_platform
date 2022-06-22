@@ -67,7 +67,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'index':'DBs.templatetags.index',
+                'index':'templatetags.index',
             }
         },
     },

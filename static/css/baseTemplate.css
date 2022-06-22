@@ -1,13 +1,13 @@
 div#headMenu{
     border:1px solid black;
     width:1504px;
-    height:150px;
+    height:50px;
 }
 div#logo{
     display:inline-block;
     float:left;
     width:239px;
-    height:148px;
+    height:48px;
     border:1px solid yellow;
     background-color:yellow;
 }
