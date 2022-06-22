@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head_menu %}
+<!-템플릿 태그 중 url은 url.py에서 path마다 지정한 이름, 혹은 경로 규칙에 따라 url 값을 반환합니다.-->
+<!-전체 url 값을 페이지에 직접 노출시키지 않는다는 장점이 있습니다.-->
+{% url 'logout' as logout %}
+{% url 'login' as login %}
+{% url 'main' as main %}
+{% if request.path != main %}
+<meta http-equiv="refresh" content="0; url='{{main}}'">
+{% endif %}
 <link rel="stylesheet" href="{% static 'css/normalUserBaseTemplate.css' %}">
 <script>
     function hi(){
@@ -28,11 +36,12 @@
     </ul>
     <div id="userInfo">
         {% if alive == 'true' %}
-            <button type="button" class="loginout" onclick="location.href = 'http://127.0.0.1:8000/logout/'">logout</button>
+            <button type="button" class="loginout" onclick="location.href = '{{logout}}'">logout</button>
             <button id="myInfo">내 정보</button>
         {% else %}
-            <button type="button" class="loginout" onclick="location.href = 'http://127.0.0.1:8000/login/'">login</button>
+            <button type="button" class="loginout" onclick="location.href = '{{login}}'">login</button>
         {% endif %}
     </div>
 </div>
 {% endblock %}
+

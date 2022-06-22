@@ -1,6 +1,6 @@
 div#mainMenu{
     display:inline-block;
-    float:left;
+    left:250px;
 }
 div#mainMenu>ul{
     margin:0px;
@@ -13,8 +13,8 @@ div#mainMenu>ul>li{
     float:left;
 }
 div#mainMenu>ul>li>button{
-    width:350px;
-    height:150px;
+    width:150px;
+    height:50px;
     padding:0;
     border-width:1px;
     background-color:green;
@@ -23,12 +23,13 @@ div#userInfo{
     display:inline-block;
 }
 button.loginout{
-    width:213px;
-    height:75px;
-    display:block;
+    width:106px;
+    height:50px;
+    display:inline-block;
 }
 button#myInfo{
-    width:213px;
-    height:75px;
-    display:block;
+    width:106px;
+    height:50px;
+    display:inline-block;
+    float:left;
 }
