@@ -1,4 +1,4 @@
-"""mysqlTest URL Configuration
+"""webPages URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from webPages import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/', include('tester.urls'))
+    path('', views.main),
+    path('login/', views.login),
+    path('logout/', views.logout),
+    path('signup/', views.signup),
+    path('db/', include('DBs.urls'))
 ]
