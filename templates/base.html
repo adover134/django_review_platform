@@ -1,4 +1,9 @@
 {% load static %}
+
+{% url 'logout' as logout %}
+{% url 'login' as login %}
+{% url 'main' as main %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,15 +20,15 @@
         {% endblock %}
     </div>
     <div id="midContent">
-        <div class="middle" id="leftSideMenu" style="border:1px solid black; width:250px;">
+        <div class="middle" id="leftSideMenu" style="border:1px solid black; width:300px;">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle" id="mainDiv" style="border:1px solid green; width:1000px;">
+        <div class="middle" id="mainDiv" style="border:1px solid green; width:900px;">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle" id="rightSideMenu" style="border:1px solid black; width:250px;">
+        <div class="middle" id="rightSideMenu" style="border:1px solid black; width:300px;">
             {% block right_side_bar %}
             {% endblock %}
         </div>
