@@ -15,15 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from webPages import views
+from webTests import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.main, name='main'),
-    path('login/', views.login, name='login'),
-    path('logout/', views.logout, name='logout'),
-    path('signupPage/', views.signupPage, name='signupPage'),
-    path('signup/', views.signup, name='signup'),
-    path('db/', include('DBs.urls')),
-    path('test/', include('webTests.urls'))
+    path('base/', views.base),
+    path('normal_user_base/', views.normal_user_base),
 ]

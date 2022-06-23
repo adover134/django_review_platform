@@ -1,0 +1,38 @@
+{% extends 'normal_user_base.html' %}
+{% load static %}
+
+{% block main_contents %}
+<link rel="stylesheet" href="{% static 'css/normalUserSignUpTemplate.css' %}">
+{% if request.path != signupPage %}
+<meta http-equiv="refresh" content="0; url='{{signupPage}}'">
+{% endif %}
+<script type="text/javascript">
+    document.getElementById('mainDiv').style.width='1202px';
+</script>
+<div id="disclaimer">
+    <p id="disclaimer_head">
+        주의사항
+    </p>
+    <ul id="disclaimer_body">
+        <li>
+            본 사이트는 회원 식별을 위해 이메일을 보조적으로 사용합니다.
+        </li>
+        <li>
+            따라서 이메일을 제공하지 않을 시 회원가입이 제한됩니다.
+        </li>
+        <li>
+            또한, 회원만이 가능한 기능인 리뷰 작성/수정/삭제/추천/신고 등을 이용할 수 없습니다.
+        </li>
+        <li>
+            본 사이트는 회원 정보를 회원 식별 및 관리 이외의 용도로 사용하지 않습니다.
+        </li>
+    </ul>
+    <p id="disclaimer_end">
+        위의 주의사항들을 모두 읽으셨고 동의하신다면 회원가입 버튼을, 아니면 돌아가기 버튼을 눌러주세요.
+    </p>
+</div>
+<div id="sign_up">
+    <button type="button", onclick="location.href = 'http://127.0.0.1:8000/signup/'">회원가입</button>
+    <button type="button", onclick="location.href = 'http://127.0.0.1:8000/'">돌아가기</button>
+</div>
+{% endblock %}
