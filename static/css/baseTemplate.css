@@ -14,12 +14,12 @@ div#logo{
 div#midContent{
     position:relative;
     width:1508px;
-    height:750px;
+    height:590px;
 }
 div.middle{
     display:inline-block;
     float:left;
-    height:750px;
+    height:590px;
 }
 div#bottomInfoBox{
     position:relative;
@@ -27,5 +27,5 @@ div#bottomInfoBox{
     top:2px;
     border:1px solid blue;
     width:1504px;
-    height:150px;
+    height:50px;
 }

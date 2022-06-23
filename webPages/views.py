@@ -12,16 +12,19 @@ def main(request):
         a = requests.get('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': 'Bearer '+token}).json()
         # 경고 메시지를 받은 경우 == 토큰이 유효하지 않은 경우이다.
         if a.get('msg'):
-            return render(request, 'normal_user_base.html', {'alive': 'false'})
+            return render(request, 'normal_user_main.html', {'alive': 'false'})
         # 토큰이 유효하다면 해당 토큰의 회원번호를 사용해, 회원의 retrieve 뷰를 이용하여 회원 정보를 구한다.
         else:
             user = requests.get('http://127.0.0.1:8000/db/user/'+str(a.get('id'))+'/').json()
-            # 로그인 상태임을 나타내는 변수와 함께, 접속한 회원의 닉네임을 context로 함께 전달한다.
-            return render(request, 'normal_user_base.html', {'alive': 'true', 'user': 'hi'})
+            if user.get('detail') == 'Not found.':
+                return render(request, 'normal_user_main.html', {'alive': 'false'})
+            else:
+                # 로그인 상태임을 나타내는 변수와 함께, 접속한 회원의 닉네임을 context로 함께 전달한다.
+                return render(request, 'normal_user_main.html', {'alive': 'true', 'user': 'hi'})
     # 토큰이 쿠키에 없는 경우 == 로그인이 안 되는 경우
     else:
         # 그냥 메인 페이지로 이동한다.
-        return render(request, 'normal_user_base.html', {'alive': 'false'})
+        return render(request, 'normal_user_main.html', {'alive': 'false'})
 
 
 # 로그인 시도 시에 처리되는 메소드
@@ -70,11 +73,11 @@ def login(request):
     user = requests.get('http://127.0.0.1:8000/db/user/' + str(a.get('id')) + '/').json()
     # 토큰에 해당하는 회원이 DB에 없다면 회원 가입 페이지로 이동한다.
     if user.get('detail') == 'Not found.':
-        res = render(request, 'sign_up.html')
+        res = render(request, 'normal_user_sign_up.html')
         res.set_cookie('token', token, max_age=18000)
         return res
     # 메인 페이지로 이동하는 render를 생성한다.
-    res = render(request, 'normal_user_base.html', {'alive': 'true'})
+    res = render(request, 'normal_user_main.html', {'alive': 'true'})
     # 토큰을 쿠키로 추가한다. 쿠키는 5시간만 지속되도록 한다.
     res.set_cookie('token', token, max_age=18000)
     return res
@@ -82,7 +85,7 @@ def login(request):
 
 def logout(request):
     # 토큰의 생존 여부를 false로 하여 메인페이지로 이동시킨다.
-    res = render(request, 'normal_user_base.html', {'alive': 'false'})
+    res = render(request, 'normal_user_main.html', {'alive': 'false'})
     # 현재 토큰을 쿠키에서 구한다.
     if request.COOKIES.get('token'):
         token = request.COOKIES.get('token')
@@ -94,6 +97,10 @@ def logout(request):
         # 쿠키에서 토큰을 제거한다.
         res.delete_cookie('token')
     return res
+
+
+def signupPage(request):
+    return render(request, 'normal_user_sign_up.html')
 
 
 def signup(request):
@@ -110,7 +117,7 @@ def signup(request):
     # 새로운 회원을 DB에 추가하는 뷰를 수행한다.
     requests.post('http://127.0.0.1:8000/db/user/', data=body)
     # 메인 페이지에 기본 상태로 이동하는 render를 작성한다.
-    res = render(request, 'normal_user_base.html', {'alive': 'false'})
+    res = render(request, 'normal_user_main.html', {'alive': 'false'})
     # 만약 토큰이 쿠키에 존재한다면 쿠키에서 제거한다.
     res.delete_cookie('token')
     return res
