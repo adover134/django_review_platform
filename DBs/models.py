@@ -4,45 +4,84 @@ from django.db import models
 
 
 class User(models.Model):
-    u_id = models.CharField(primary_key=True, max_length=20)
-    u_nickname = models.TextField()
-    u_email = models.EmailField(unique=True)
-    u_access_token = models.TextField(null=True)
-    u_warn_count = models.IntegerField(default=0)
-    u_active = models.IntegerField(default=0)
-    penalty_date = models.DateField(default=datetime.date.today)
+    uId = models.CharField(primary_key=True, max_length=20)
+    uNickname = models.TextField()
+    uEmail = models.EmailField(unique=True)
+    uAccessToken = models.TextField(null=True)
+    uWarnCount = models.IntegerField(default=0)
+    uActive = models.IntegerField(default=0)
+    penaltyDate = models.DateField(default=datetime.date.today)
 
     class Meta:
         db_table = 'user_info'
 
     def __str__(self):
-        return '%s/%s' % (self.u_nickname, self.u_email)
+        return '%s/%s' % (self.uNickname, self.uEmail)
 
 
 class Manager(models.Model):
-    u_id = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    m_tel = models.TextField()
+    uId = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    mTel = models.TextField()
+
+    class Meta:
+        db_table = 'manager'
 
 
 class Room(models.Model):
-    room_id = models.IntegerField(primary_key=True)
     address = models.TextField()
-    real_estate_agency = models.TextField()
+    builtYear = models.CharField(max_length=5)
+    commonInfo = models.JSONField()
+
+    class Meta:
+        db_table = 'Room'
 
 
 class Review(models.Model):
-    rev_id = models.IntegerField(primary_key=True)
-    u_id = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='writer', null=True)
-    r_id = models.ForeignKey(Room, on_delete=models.SET_NULL, related_name='room', null=True)
-    review = models.TextField()
+    uId = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='writer')
+    roomId = models.ForeignKey(Room, on_delete=models.PROTECT, related_name='whichRoom')
+    reviewDate = models.DateField(default=datetime.date.today)
+    reviewKind = models.IntegerField()
+    reviewSentence = models.TextField()
+
+    class Meta:
+        db_table = 'Review'
 
 
 class Icon(models.Model):
-    rev_id = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='icons')
-    icon_x = models.IntegerField()
-    icon_y = models.IntegerField()
+    reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='includedIcon')
+    iconKind = models.TextField()
+    iconInformation = models.TextField()
+
+    class Meta:
+        db_table = 'Icon'
 
 
-class Option(models.Model):
-    room_id = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='options')
-    option_name = models.TextField()
+class Recommend(models.Model):
+    uId = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='recommender')
+    reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='recommendedOn')
+
+    class Meta:
+        db_table = 'Recommend'
+
+
+class Report(models.Model):
+    uId = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='reporter')
+    reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='reportedOn')
+
+    class Meta:
+        db_table = 'Report'
+
+
+class CommonInfo(models.Model):
+    commonInfoName = models.TextField()
+
+    class Meta:
+        db_table = 'CommonInfo'
+
+
+class Image(models.Model):
+    reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additionalImage')
+    imageUrl = models.TextField()
+
+    class Meta:
+        db_table = 'Image'

@@ -5,26 +5,25 @@
 <!-템플릿 태그 중 url은 url.py에서 path마다 지정한 이름, 혹은 경로 규칙에 따라 url 값을 반환합니다.-->
 <!-전체 url 값을 페이지에 직접 노출시키지 않는다는 장점이 있습니다.-->
 <link rel="stylesheet" href="{% static 'css/normalUserBaseTemplate.css' %}">
-<script>
-    function hi(){
-        //상위 템플릿에서 작성한 div에 접근하는 함수
-        document.getElementById("mainDiv").innerText='HoHoHo';
-    }
-</script>
 <div id="mainMenu">
     <ul>
         <li>
-            <button onclick="hi()">
+            <button type="button">
                 원룸 검색
             </button>
         </li>
         <li>
-            <button>
+            <button type="button" onclick="location.href = '{{normalUserReviewSearch}}'">
                 리뷰 검색
             </button>
         </li>
         <li>
-            <button>
+            <button type="button">
+                리뷰 작성
+            </button>
+        </li>
+        <li>
+            <button type="button">
                 내 리뷰
             </button>
         </li>
@@ -32,7 +31,7 @@
     <div id="userInfo">
         {% if alive == 'true' %}
             <button type="button" class="loginout" onclick="location.href = '{{logout}}'">logout</button>
-            <button id="myInfo">내 정보</button>
+            <button id="myInfo" onclick="location.href = '{{infoCheck}}'">내 정보</button>
         {% else %}
             <button type="button" class="loginout" onclick="location.href = '{{login}}'">login</button>
         {% endif %}
