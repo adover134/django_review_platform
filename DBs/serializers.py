@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from DBs.models import User, Manager, Review, Room, Icon, Option
-
+from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -25,9 +24,10 @@ class ManagerSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    u_nickname = serializers.CharField(source='u_id.u_nickname', read_only=True)
-    r_name = serializers.CharField(source='r_id.address', read_only=True)
-    icons = serializers.HyperlinkedRelatedField(
+    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
+    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    rAddress = serializers.CharField(source='rId.address', read_only=True)
+    includedIcon = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
         view_name='icon-detail'
@@ -39,6 +39,10 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
+
+    commonInfo = serializers.ListField(
+        child=serializers.IntegerField()
+    )
 
     class Meta:
         model = Room
@@ -52,8 +56,29 @@ class IconSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OptionSerializer(serializers.ModelSerializer):
+class RecommendSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Option
+        model = Recommend
+        fields = '__all__'
+
+
+class ReportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Report
+        fields = '__all__'
+
+
+class CommonInfoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CommonInfo
+        fields = '__all__'
+
+
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
         fields = '__all__'

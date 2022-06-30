@@ -1,0 +1,89 @@
+{% extends 'normal_user_base.html' %}
+{% load static %}
+
+{% block main_contents %}
+<link rel="stylesheet" href="{% static 'css/normalUserReviewSearchTemplate.css' %}">
+<script>
+    function toggleSearch(){
+        var a = document.getElementById('searchConditionForm').style.display;
+        if (a === "none")
+        {
+            document.getElementById('searchConditionForm').style.display='block';
+            document.getElementById('searchFormOpen').style.display='none';
+            document.getElementById('searchFormClose').style.display='inline-block';
+        }
+        if (a === "block")
+        {
+            document.getElementById('searchConditionForm').style.display='none';
+            document.getElementById('searchFormOpen').style.display='block';
+            document.getElementById('searchFormClose').style.display='none';
+        }
+    }
+</script>
+<div id="searchConditionForm" style="display:none;">
+    <form action="http://127.0.0.1:8000/test/normal_user_review_search/" method="post">
+        {% csrf_token %}
+        <fieldset id="common_info">
+            <legend>건물 공유 시설</legend>
+            <input type="checkbox" id="parking_lot" name="commonInfo_1">
+            <label class="checkbox-inline" for="parking_lot">주차장</label>
+            <input type="checkbox" id="elevator" name="commonInfo_2">
+            <label class="checkbox-inline" for="elevator">엘리베이터</label>
+            <input type="checkbox" id="CCTV" name="commonInfo_3">
+            <label class="checkbox-inline" for="CCTV">CCTV</label>
+        </fieldset>
+        <fieldset id="built_year">
+            <legend>건축 연도</legend>
+            <select id="builtFrom" name="builtFrom"></select>
+            <span> ~ </span>
+            <select id="builtTo" name="builtTo"></select>
+            <script>
+                var i;
+                for (i=1960;i<=2022;i++)
+                {
+                    var a = document.createElement("option");
+                    var b = document.createElement("option");
+                    a.value=i;
+                    b.value=i;
+                    a.innerText=i;
+                    b.innerText=i;
+                    if (i===1960)
+                        a.selected='selected';
+                    if (i===2022)
+                        b.selected='selected';
+                    document.getElementById('builtFrom').appendChild(a);
+                    document.getElementById('builtTo').appendChild(b);
+                }
+            </script>
+        </fieldset>
+        <fieldset id="address">
+            <legend>건물 주소</legend>
+            <input type="text" name="address">동
+        </fieldset>
+        <br><br>
+        <label for="otherOptions">검색 텍스트 : </label>
+        <input name="otherOptions" id="otherOptions" type="text" value="이외에 검색하고 싶은 옵션, 환경 등을 적어주세요.">
+        <br><br>
+        <input type="submit" value="Submit">
+        <button type="button" id="searchFormClose" onclick="toggleSearch()">
+            검색 조건 닫기
+        </button>
+    </form>
+</div>
+<button type="button" id="searchFormOpen" onclick="toggleSearch()">
+    검색 조건 열기
+</button>
+<div id="reviewSearchResult">
+    <br>
+    {% for r in paged_review %}
+        <p>{{r.uNickname}} {{r.uEmail}}</p>
+        <p class="hoho">{{ r.reviewSentence|linebreaks }}</p>
+    {% endfor %}
+    {% if paged_review.has_previous %}
+        <a href="?page={{paged_review.previous_page_number}}">이전으로</a>
+    {% endif %}
+    {% if paged_review.has_next %}
+        <a href="?page={{paged_review.next_page_number}}">다음으로</a>
+    {% endif %}
+</div>
+{% endblock %}

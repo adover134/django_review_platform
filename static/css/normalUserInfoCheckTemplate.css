@@ -1,0 +1,8 @@
+div#infoCheckAndUpdate{
+    border:2px dashed greenyellow;
+    height:350px
+}
+div#others{
+    border:2px solid brown;
+    height:100px;
+}

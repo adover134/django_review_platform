@@ -24,6 +24,8 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('signupPage/', views.signupPage, name='signupPage'),
     path('signup/', views.signup, name='signup'),
+    path('infoCheck/', views.infoCheck, name='infoCheck'),
+    path('normalUserReviewSearch/', views.normal_user_review_search, name='normalUserReviewSearch'),
     path('db/', include('DBs.urls')),
     path('test/', include('webTests.urls'))
 ]

@@ -6,6 +6,11 @@
 {% if request.path != main %}
 <meta http-equiv="refresh" content="0; url='{{main}}'">
 {% endif %}
+{% if msg %}
+<script>
+    alert('{{msg}}');
+</script>
+{% endif %}
 <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6d1ad052df81bb894aba3f443d1fd674&libraries=services&autoload=true"></script>
 <script type="text/javascript">

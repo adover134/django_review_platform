@@ -1,88 +1,46 @@
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.shortcuts import render
 from django.db.models import Q, Count
 
+import datetime
+
 import requests
 import json
-from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer, IconSerializer, OptionSerializer
-from DBs.models import User, Manager, Review, Room, Icon, Option
+import copy
+from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ImageSerializer
+from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
 
 class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # 회원 별로, 작성한 리뷰들에 대해 역참조를 하여 리뷰 내용을 받아오도록 해봤습니다.
-    def retrieve(self, request, *args, **kwargs):
-        # 15~18번 줄은 조인을 하지 않은 코드입니다. 18번 줄에서, 각 writer에 대해 하위 값을 찾을 때마다 쿼리를 한 번씩
-        instance = self.get_object()
-        for r in instance.writer.all():
-            print(r.review)
-        print("=======")
-        #20~23번 줄은 조인을 한 코드입니다. 22번 줄에서 미리 모든 writer 항목에 대해 review 값을 받아옵니다.
-        instance2 = User.objects.filter(u_id=instance.u_id).prefetch_related('writer')[0]
-        for r in instance2.writer.all():
-            print(r.review)
-        return super().retrieve(self, request, args, kwargs)
 
-    def addWarnCount(u_id):
-        """
-        REST api니까 값을 request를 통해 받아야 한다고 생각하였습니다.
-        retrieve 메소드를 이용하여 해당하는 User 정보를 얻습니다.
-        값을 텍스트로 읽은 후 json으로 바꿔줬습니다.
-        그 후, 필요한 값인 u_warn_count를 data로 지정하였습니다.
-        마지막으로, update 메소드에 u_warn_count를 기존 값 + 1로 하여 보냅니다.
-        """
-        instance = json.loads(requests.get('http://127.0.0.1:8000/test/user/' + u_id + '/').text)
-        print(instance)
-        data = instance['u_warn_count']
-        print(data)
-        requests.put('http://127.0.0.1:8000/test/user/' + u_id + '/', data={'u_warn_count': data+1})
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(self, request, args, kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
-        # url의 lookup 필드를 통해 모델에서 가져온 인스턴스입니다.
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
         instance = self.get_object()
-
-        #인스턴스의 데이터를 dictionary 자료형으로 직렬화하였습니다.
-        data = self.get_serializer(instance).data
-
-        #request.data의 자료형이 QueryDict이라 dict로 바꿔줍니다.
-        data1 = dict(request.data)
-
-        #입력 받은 값들에 대해서만 수정을 진행합니다.
-        #form을 통해 입력받으면 각 필드가 배열 형태로 들어옵니다.
-        for key in data1:
-            #확인용 출력 라인입니다.
-            print(key, data1[key])
-            print(type(data1[key]))
-            if data1[key] is None:
-                continue
-            elif type(data1[key]) is int:
-                data[key] = data1[key]
-                continue
-            elif type(data1[key]) is dict:
-                print(data1[key])
-                #icon에 대한 정보입니다. 해당 정보로 icon에 대한 create를 수행하는 POST 메소드를 실행 하면 됩니다.
-                requests.post('http://127.0.0.1:8000/test/icon/', data=data1[key])
-                break
-            elif data1[key][0] != '':
-                data[key] = data1[key]
-        print(data)
-
-        """
-        이 아래는 request.data가 QueryDict라는 자료형이라 바꿀 수 없어서
-        여기서 update를 처리하려고 상위 함수의 코드를 가져왔습니다.
-        """
-        partial = kwargs.pop('partial', False)
-
-        # 조작을 통해 생성한 값을 data로 넣어줍니다.
-        serializer = self.get_serializer(instance, data=data, partial=partial)
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
         serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
         self.perform_update(serializer)
-
+        # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
 
     def destroy(self, request, *args, **kwargs):
@@ -94,40 +52,33 @@ class ManagerViewSets(ModelViewSet):
     serializer_class = ManagerSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        data = request.GET['m_tel']
-        print(data)
-        instance = Manager.objects.get(m_tel=data)
-        serializer = self.get_serializer(instance)
-        u_id = serializer.data['u_id']
-        """
-        새로 추가한 메소드인 addWarnCount를 실행시킵니다.
-        인자로 위에서 구한 u_id를 줍니다.
-        """
-        u_warn_count = json.loads(requests.get('http://127.0.0.1:8000/test/user/' + u_id + '/').text)['u_warn_count']
-        print(type(u_warn_count))
-        requests.put('http://127.0.0.1:8000/test/user/' + u_id + '/', data={'u_warn_count': u_warn_count + 1})
-        # UserViewSets.addWarnCount(u_id)
-        return Response(serializer.data)
+        return super().retrieve(request, args, kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
-        return super().update(request, args, kwargs)
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
 
-    def tere(self, request, *args, **kwargs):
-        print("good-bye")
+    def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
-
-
-class UserRetrieveViewSets(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def search(self, request, *args, **kwargs):
-        data = User.objects.get(u_nickname=request.data['u_nickname'])
-        serializer = self.get_serializer(data)
-        return Response(serializer.data)
 
 
 class ReviewViewSets(ModelViewSet):
@@ -135,51 +86,190 @@ class ReviewViewSets(ModelViewSet):
     serializer_class = ReviewSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        # 입력값을 data로 저장한다.
+        data = copy.deepcopy(request.data)
+        # 입력값에 리뷰 종류가 없다면 에러를 반환한다. 아니라면 리뷰 종류를 저장한다.
+        reviewKind = None
+        if not data.get('reviewKind'):
+            return Response('create_failed')
+        else:
+            reviewKind = int(data.get('reviewKind'))
+            print(reviewKind)
+            if (reviewKind != 0) and (reviewKind != 1):
+                return Response('create_failed')
+        # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
+        data1 = {}
+        for d in data:
+            if type(data[d]) is not dict:
+                data1[d] = data[d]
+        print(data1)
+        # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
+        # 텍스트 리뷰인 경우
+        if reviewKind == 0:
+            a = 3
+            # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
+            # 시각화모듈(data['review_sentence'])
+        # 이미지 리뷰인 경우
+        else:
+            # 리뷰 본문을 입력받을 변수를 선언한다.
+            review_sentence = ''
+        # 입력 값 중, dictionary타입인 값은 전부 icon이다.
+            for key in data:
+                if type(data[key]) is dict:
+                    icon = data[key]
+                    # 아이콘의 주석들을 합쳐서 본문을 작성한다.
+                    #review_sentence = review_sentence + icon['icon_information']
+                    # 아이콘 정보에 리뷰 번호를 추가한다.
+                    icon['revId'] = data['revId']
+                    # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
+                    # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
+            # data1에 리뷰 본문을 추가한다.
+            #data1['review_sentence'] = review_sentence
+        # data1을 직렬화한다.
+        print(data1)
+        serializer = self.get_serializer(data=data1)
+        # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def list(self, request, *args, **kwargs):
+        # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
+        # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
         if not data1:
             return super().list(self, request, args, kwargs)
-        print(data1)
-        if data1.get('icon'):
-            print("icon")
-        for i in data1:
-            print(i, end=" : ")
-            for j in data1[i]:
-                print(j,end=" ")
-        data2 = Room.objects.all()
-        a = [1, 2]
-        #for i in a:
-        #    print(i)
-        room_query = Q()
-        room_query.add(Q(r_id=1), Q.OR)
-        room_query.add(Q(r_id=2), Q.OR)
-        data3 = Review.objects.filter(room_query)
-        print()
-        print(data3)
-        #for r in data3:
-        #    print(r.r_id.r_name)
-        print(Icon.objects.all().values('rev_id').annotate(total=Count('rev_id')))
-        return super().list(self, request, args, kwargs)
+        # 검색 조건으로 쿼리를 만든다.
+        query_user_nickname = Q()  # 회원 닉네임으로 검색한다. 닉네임은 1개만 받는다.
+        query_date = Q()  # 작성일을 기준으로 검색한다. 작성일은 from, to 2개를 받는다.
+        query_kind = Q()  # 리뷰 종류로 검색한다.
+        query_recommend = Q()  # 추천 수로 검색한다.
+        query_report = Q()  # 신고 수로 검색한다. (관리자 전용)
+        query_room = Q()  # 원룸에 대한 조건들로 검색한다. Room의 list 메소드를 사용한다.
+        query_icon = Q()  # 포함하는 아이콘 목록으로 검색한다.
+        # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만든다.
+        if data1.get('uNickname'):
+            query_user_nickname.add(Q(uNickname=data1['uNickname']), Q.OR)
+        # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만든다.
+        if data1.get('date'):
+            query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
+        # 리뷰 종류를 받았다면 해당하는 종류의 리뷰만 찾는 쿼리를 만든다.
+        if data1.get('kind'):
+            query_kind = Q(reviewKind=data1['kind'])
+        # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
+        if data1.get('recommend'):
+            # 추천들을 리뷰 단위로 묶어서 리뷰 번호와 개수를 구한다.
+            recommends = Recommend.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
+            # 각 그룹에 대해서 추천 수가 일정 이상인 경우만 구하는 쿼리를 만든다.
+            for rec in recommends:
+                if rec['total'] >= data1['recommend']:
+                    query_recommend.add(Q(revId=rec['revId']), Q.OR)
+                else:
+                    break
+        # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
+        if data1.get('report'):
+            reports = Report.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
+            for rep in reports:
+                if rep['total'] >= data1['report']:
+                    query_report.add(Q(revId=rep['revId']), Q.OR)
+                else:
+                    break
+        # 원룸에 대한 정보를 검색하기 위한 URL
+        roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
+        # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
+        if data1.get('address'):
+            roomRetrieveURL = roomRetrieveURL + 'address=' + data1['address']
+        # 건축년도에 대한 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
+        if data1.get('builtFrom') and data1.get('builtTo'):
+            if roomRetrieveURL[-1] != '?':
+                roomRetrieveURL = roomRetrieveURL + '&'
+            roomRetrieveURL = roomRetrieveURL + 'builtFrom=' + data1.get('builtFrom')[0] + '&'
+            roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
+        # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
+        #N = len(CommonInfo.objects.all())
+        N=3
+        for i in range(N):
+            o = 'commonInfo_'+str(i+1)
+            if data1.get(o):
+                if roomRetrieveURL[-1] != '?':
+                    roomRetrieveURL = roomRetrieveURL + '&'
+                    roomRetrieveURL = roomRetrieveURL + o + '=on'
+        # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
+        room_data = json.loads(requests.get(roomRetrieveURL).text)
+        # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
+        if room_data:
+            for r in room_data:
+                query_room.add(Q(roomId=r['id']), Q.OR)
+        # 만들어진 쿼리들을 합친다.
+        query = Q()
+        query.add(query_user_nickname, Q.AND)
+        query.add(query_date, Q.AND)
+        query.add(query_kind, Q.AND)
+        query.add(query_recommend, Q.AND)
+        query.add(query_report, Q.AND)
+        query.add(query_room, Q.AND)
+        query.add(query_icon, Q.AND)
+        # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
+        searched = None
+        if room_data:
+            searched = Review.objects.filter(query)
+        # 검색된 값을 반환한다.
+        return Response(self.get_serializer(searched, many=True).data)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        icons = serializer.data
-        for i in icons['icons']:
-            requests.delete(i)
         return super().retrieve(self, request, args, kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
-        return super().update(request, args, kwargs)
+        # 리뷰 번호와 일치하는 리뷰 데이터를 가져온다.
+        instance = self.get_object()
+        # 기존 데이터를 직렬화한다.
+        data = self.get_serializer(instance).data
+        # 수정할 리뷰의 종류 및 PK 를 획득한다.
+        review_kind = data['reviewKind']
+        review_id = data['reviewId']
+        # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
+        for icon in data['icons']:
+            a=3
+            #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
+        # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
+        data1 = request.data
+        # 텍스트 리뷰인 경우
+        if review_kind == 0:
+            # 리뷰 본문 데이터를 가져온다.
+            review_sentence = data1['reviewSentence']
+            # 시각화 모듈을 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장이 이뤄진다.
+            #시각화모듈(review_sentence)
+            # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
+            # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
+            data['reviewSentence']=review_sentence
+        # 이미지 리뷰인 경우
+        elif review_kind == 1:
+            # 리뷰 본문을 생성하기 위한 변수를 선언한다.
+            review_sentence = ''
+        # 입력받은 데이터들을 확인
+            for key in data1:
+                # 아이콘 데이터만 dictionary로 들어옴
+                if type(data1[key]) is dict:
+                    icon = data1[key]
+                    # 리뷰 본문의 뒤에 해당 아이콘의 주석을 이어붙인다.
+                    review_sentence = review_sentence + icon['iconInformation']
+                    # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
+                    icon['revId'] = data['revId']
+                    # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
+            # 생성한 리뷰 본문으로 기존 본문을 변경한다.
+            data['reviewSentence']=review_sentence
+        # 갱신된 데이터로 새 시리얼라이저를 생성한다.
+        serializer = self.get_serializer(instance, data=data)
+        # 생성된 시리얼라이저의 유효성을 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 검사 후, 그 시리얼라이저로 데이터를 갱신한다.
+        self.perform_update(serializer)
+        # 성공 응답코드를 반환한다.
+        return HttpResponse(status=200)
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
@@ -190,11 +280,6 @@ class RoomViewSets(ModelViewSet):
     serializer_class = RoomSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        for r in instance.room.all():
-            icons = r.origin_review.all()
-            for i in icons:
-                print(r.rev_id, i.icon_x)
         return super().retrieve(self, request, args, kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -203,50 +288,56 @@ class RoomViewSets(ModelViewSet):
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
         if not data1:
             return super().list(self, request, args, kwargs)
-        # 검색 조건으로 쿼리를 만든다.
+        # 검색 조건으로 기본 쿼리를 만든다.
         query = Q()  # 메인 쿼리로, 최종 결과를 낼 때 사용한다.
         query_address = Q()  # 주소에 대한 쿼리이다.
+        query_built_year = Q()  # 건축년도에 대한 쿼리이다.
+        query_common_info = Q()  # 공통 정보에 대한 쿼리이다.
+        # 주소에 대한 검색을 수행하는 쿼리를 만든다.
         if data1.get('address'):
-            for ad in data1['address']:
+            for ad in data1.get('address'):
                 query_address.add(Q(address__contains=ad), Q.OR)
-        query_rea = Q()  # 공인중개사에 대한 쿼리이다.
-        if data1.get('real_estate_agency'):
-            for rea in data1['real_estate_agency']:
-                query_rea.add(Q(real_estate_agency__contains=rea), Q.OR)
-        # 만약 옵션에 대한 검색 조건이 있다면, 해당하는 옵션들에 대해 참조한 원룸 데이터를 검색한다.
-        # 옵션 모델에 대한 기본 URL을 먼저 적는다.
-        optionURL = 'http://127.0.0.1:8000/test/option/' + '?'
-        # 옵션에 대한 검색 조건이 존재한다면 각 옵션에 대해 원룸 번호만을 가져다 쿼리를 만든다.
-        query_option = Q()
-            # 원룸 번호를 저장할 리스트이다.
-        data2 = list()
-        if data1.get('option_num'):
-            print(data1['option_num'])
-        if data1.get('option'):
-            print(data1['option'])
-            for o in data1['option']:
-                optionData = json.loads(requests.get(optionURL+'option='+o).text)
-                option_to_room = list()
-                for d in optionData:
-                    option_to_room.append(d['room_id'])
-                if not data2 :
-                    data2=option_to_room
-                else :
-                    data2=list(set(data2).intersection(set(option_to_room)))
-        for i in data2:
-            query_option.add(Q(room_id=i), Q.OR)
+        # 건축년도에 대한 검색을 수행하는 쿼리를 만든다.
+        if data1.get('builtFrom') and data1.get('builtTo'):
+            built_from = data1.get('builtFrom')[0]
+            built_to = data1.get('builtTo')[0]
+            query_built_year = Q(builtYear__range=(int(built_from), int(built_to)))
+        #N = len(CommonInfo.objects.all())
+        N = 10
+        for i in range(N):  # N은 공통 정보의 개수이다.
+            o = 'commonInfo_'+str(i+1)
+            if data1.get(o):
+                query_common_info.add(Q(commonInfo__contains=(i+1)), Q.OR)
+        # 쿼리들을 합쳐서 해당하는 원룸을 검색한다.
         query.add(query_address, Q.AND)
-        query.add(query_rea, Q.AND)
-        query.add(query_option, Q.AND)
+        query.add(query_built_year, Q.AND)
+        query.add(query_common_info, Q.AND)
         searched = Room.objects.filter(query)
+        # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
-
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
-        return super().update(request, args, kwargs)
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
@@ -256,28 +347,156 @@ class IconViewSets(ModelViewSet):
     queryset = Icon.objects.all()
     serializer_class = IconSerializer
 
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
 
-class OptionViewSets(ModelViewSet):
-    queryset = Option.objects.all()
-    serializer_class = OptionSerializer
 
-    def list(self, request, *args, **kwargs):
-        # URL의 파라미터들을 사전형 배열로 받는다.
-        data1 = dict(request.GET)
-        # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
-        if not data1:
-            return super().list(self, request, args, kwargs)
-        # 검색 조건으로 쿼리를 만든다. 옵션은 옵션 이름만 조건으로 받으며, 받은 옵션 이름들 중 하나에 해당하는 옵션들을 검색한다.
-        query = Q()
-        for o in data1['option']:
-            query.add(Q(option_name=o), Q.OR)
-        # 완성된 쿼리로 검색을 수행한다.
-        searched = Option.objects.filter(query)
-        # 검색 결과를 반환한다.
-        return Response(self.get_serializer(searched, many=True).data)
+class RecommendViewSets(ModelViewSet):
+    queryset = Recommend.objects.all()
+    serializer_class = RecommendSerializer
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
+
+
+class ReportViewSets(ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
+
+    def destroy(self, request, *args, **kwargs):
+        # lookup 필드를 통해 해당하는 신고 인스턴스 획득
+        instance = self.get_object()
+        # 시리얼라이저로 인스턴스를 직렬화()
+        data = self.get_serializer(instance).data
+        # 신고를 작성한 회원의 회원번호를 구함
+        u_id = data['u_id']
+        # 해당 회원의 retrieve 메소드를 HTTP GET 메소드를 이용하여 획득
+        user = json.loads(requests.get('http://127.0.0.1:8000/db/user/' + u_id + '/').text)
+        # 회원의 경고 횟수를 1 증가
+        user['u_warn_count'] = user['u_warn_count'] + 1
+        # 경고 횟수에 따라서 상태 변경
+        if user['u_warn_count'] == 20:
+            user['u_active'] = 4
+            user['penalty_date'] = datetime.date.today
+        elif user['u_warn_count'] >= 15:
+            user['u_active'] = 3
+            user['penalty_date'] = datetime.date.today
+        elif user['u_warn_count'] >= 10:
+            user['u_active'] = 2
+            user['penalty_date'] = datetime.date.today
+        elif user['u_warn_count'] >= 5:
+            user['u_active'] = 1
+        # 회원 정보 update
+        requests.put('http://127.0.0.1:8000/db/user/' + u_id + '/', data=user)
+        # 신고 데이터 삭제
+        return super().destroy(self, request, args, kwargs)
+
+
+class CommonInfoViewSets(ModelViewSet):
+    queryset = CommonInfo.objects.all()
+    serializer_class = CommonInfoSerializer
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
+
+
+class ImageViewSets(ModelViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
 
 
 def ajaxTest(request):
-    manager = json.loads(requests.get('http://127.0.0.1:8000/test/manager/').text)
+    manager = json.loads(requests.get('http://127.0.0.1:8000/db/manager/').text)
     print(manager)
     return render(request, 'test.html', {"manager": manager})

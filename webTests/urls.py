@@ -20,4 +20,6 @@ from webTests import views
 urlpatterns = [
     path('base/', views.base),
     path('normal_user_base/', views.normal_user_base),
+    path('normal_user_review_search/', views.normal_user_review_search),
+    path('normal_user_review_write/', views.normal_user_review_write),
 ]
