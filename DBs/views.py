@@ -100,7 +100,7 @@ class ReviewViewSets(ModelViewSet):
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
         for d in data:
-            if type(data[d]) is not dict:
+            if type(data[d]) is not dict and type(data[d]) is not list:
                 data1[d] = data[d]
         print(data1)
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
@@ -108,30 +108,34 @@ class ReviewViewSets(ModelViewSet):
         if reviewKind == 0:
             a = 3
             # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
-            # 시각화모듈(data['review_sentence'])
+            # 시각화모듈(data['reviewSentence'])
         # 이미지 리뷰인 경우
         else:
             # 리뷰 본문을 입력받을 변수를 선언한다.
-            review_sentence = ''
+            reviewSentence = ''
         # 입력 값 중, dictionary타입인 값은 전부 icon이다.
             for key in data:
                 if type(data[key]) is dict:
                     icon = data[key]
                     # 아이콘의 주석들을 합쳐서 본문을 작성한다.
-                    #review_sentence = review_sentence + icon['icon_information']
-                    # 아이콘 정보에 리뷰 번호를 추가한다.
-                    icon['revId'] = data['revId']
-                    # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
-                    # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
+                    reviewSentence = reviewSentence +icon['iconInformation']
             # data1에 리뷰 본문을 추가한다.
-            #data1['review_sentence'] = review_sentence
-        # data1을 직렬화한다.
-        print(data1)
+            data1['review_sentence'] = reviewSentence
+        # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        review = serializer.save()
         headers = self.get_success_headers(serializer.data)
+        review_id = review.id
+        if reviewKind == 1:
+            for key in data:
+                if type(data[key]) is dict:
+                    icon = data[key]
+                    # 아이콘 정보에 리뷰 번호를 추가한다.
+                    icon['revId'] = review_id
+                    # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
+                    # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def list(self, request, *args, **kwargs):
@@ -194,7 +198,7 @@ class ReviewViewSets(ModelViewSet):
             if data1.get(o):
                 if roomRetrieveURL[-1] != '?':
                     roomRetrieveURL = roomRetrieveURL + '&'
-                    roomRetrieveURL = roomRetrieveURL + o + '=on'
+                roomRetrieveURL = roomRetrieveURL + o + '=on'
         # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
         room_data = json.loads(requests.get(roomRetrieveURL).text)
         # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
@@ -242,7 +246,7 @@ class ReviewViewSets(ModelViewSet):
             # 리뷰 본문 데이터를 가져온다.
             review_sentence = data1['reviewSentence']
             # 시각화 모듈을 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장이 이뤄진다.
-            #시각화모듈(review_sentence)
+            #시각화모듈(reviewSentence)
             # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
             # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
             data['reviewSentence']=review_sentence
@@ -258,7 +262,7 @@ class ReviewViewSets(ModelViewSet):
                     # 리뷰 본문의 뒤에 해당 아이콘의 주석을 이어붙인다.
                     review_sentence = review_sentence + icon['iconInformation']
                     # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
-                    icon['revId'] = data['revId']
+                    icon['revId'] = review_id
                     # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
             # 생성한 리뷰 본문으로 기존 본문을 변경한다.
             data['reviewSentence']=review_sentence
@@ -307,7 +311,7 @@ class RoomViewSets(ModelViewSet):
         for i in range(N):  # N은 공통 정보의 개수이다.
             o = 'commonInfo_'+str(i+1)
             if data1.get(o):
-                query_common_info.add(Q(commonInfo__contains=(i+1)), Q.OR)
+                query_common_info.add(Q(commonInfo__contains=(i+1)), Q.AND)
         # 쿼리들을 합쳐서 해당하는 원룸을 검색한다.
         query.add(query_address, Q.AND)
         query.add(query_built_year, Q.AND)
@@ -423,23 +427,23 @@ class ReportViewSets(ModelViewSet):
         # 시리얼라이저로 인스턴스를 직렬화()
         data = self.get_serializer(instance).data
         # 신고를 작성한 회원의 회원번호를 구함
-        u_id = data['u_id']
+        u_id = data['uId']
         # 해당 회원의 retrieve 메소드를 HTTP GET 메소드를 이용하여 획득
         user = json.loads(requests.get('http://127.0.0.1:8000/db/user/' + u_id + '/').text)
         # 회원의 경고 횟수를 1 증가
-        user['u_warn_count'] = user['u_warn_count'] + 1
+        user['uWarnCount'] = user['uWarnCount'] + 1
         # 경고 횟수에 따라서 상태 변경
-        if user['u_warn_count'] == 20:
-            user['u_active'] = 4
-            user['penalty_date'] = datetime.date.today
-        elif user['u_warn_count'] >= 15:
-            user['u_active'] = 3
-            user['penalty_date'] = datetime.date.today
-        elif user['u_warn_count'] >= 10:
-            user['u_active'] = 2
-            user['penalty_date'] = datetime.date.today
-        elif user['u_warn_count'] >= 5:
-            user['u_active'] = 1
+        if user['uWarnCount'] == 20:
+            user['uActive'] = 4
+            user['penaltyDate'] = datetime.date.today
+        elif user['uWarnCount'] >= 15:
+            user['uActive'] = 3
+            user['penaltyDate'] = datetime.date.today
+        elif user['uWarnCount'] >= 10:
+            user['uActive'] = 2
+            user['penaltyDate'] = datetime.date.today
+        elif user['uWarnCount'] >= 5:
+            user['uActive'] = 1
         # 회원 정보 update
         requests.put('http://127.0.0.1:8000/db/user/' + u_id + '/', data=user)
         # 신고 데이터 삭제

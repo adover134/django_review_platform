@@ -3,5 +3,12 @@
 {% url 'user-detail' pk=u_id as singleUser %}
 
 {%block main_contents %}
-
+<form action="http://127.0.0.1:8000/test/normal_user_review_write/" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+        {{form.as_table}}
+    </table>
+    <br>
+    <input type="submit" value="submit">
+</form>
 {% endblock %}

@@ -81,7 +81,7 @@ class CommonInfo(models.Model):
 
 class Image(models.Model):
     reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additionalImage')
-    imageUrl = models.TextField()
+    image = models.ImageField()
 
     class Meta:
         db_table = 'Image'
