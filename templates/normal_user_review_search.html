@@ -21,7 +21,7 @@
     }
 </script>
 <div id="searchConditionForm" style="display:none;">
-    <form action="http://127.0.0.1:8000/test/normal_user_review_search/" method="post">
+    <form action="{{normalUserReviewSearch}}" method="post">
         {% csrf_token %}
         <fieldset id="common_info">
             <legend>건물 공유 시설</legend>

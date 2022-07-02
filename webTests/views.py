@@ -4,6 +4,7 @@ from DBs.models import Review, User
 from webPages import views
 import requests
 import json
+from forms import forms
 
 
 def base(request):
@@ -45,4 +46,32 @@ def normal_user_review_search(request):
 
 
 def normal_user_review_write(request):
-    return render(request, 'normal_user_review_write.html')
+    if request.method == 'POST':
+        form = forms.TextReviewWriteForm(request.POST, request.FILES)
+        images = request.FILES.getlist('images')
+        print(images)
+        if form.is_valid():
+            names = handle_uploaded_file(images)
+        print(form)
+    else:
+        form = forms.TextReviewWriteForm()
+    return render(request, 'normal_user_review_write.html', {'form': form})
+
+
+def handle_uploaded_file(f):
+    names = []
+    for image in f:
+        print(image)
+        with open('static/images/'+image.name, 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+        names.append(image.name)
+    return names
+
+def normal_user_review_write_page(request):
+    return render(request, 'normal_user_review_write.html', {'form':forms.ReviewForm})
+
+
+def image(request):
+    print(request.GET)
+    return render(request, 'normal_user_review_search.html')
