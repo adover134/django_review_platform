@@ -3,12 +3,41 @@
 {% url 'user-detail' pk=u_id as singleUser %}
 
 {%block main_contents %}
-<form action="http://127.0.0.1:8000/test/normal_user_review_write/" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        {{form.as_table}}
-    </table>
-    <br>
-    <input type="submit" value="submit">
-</form>
+<script>
+    function to_image(){
+        document.getElementById('text_review').style.display='none';
+        document.getElementById('image_review').style.display='inline-block';
+        document.getElementById('icons').style.display='inline-block';
+    }
+    function to_text(){
+        document.getElementById('text_review').style.display='block';
+        document.getElementById('image_review').style.display='none';
+        document.getElementById('icons').style.display='none';
+    }
+</script>
+<div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;">
+
+</div>
+<div style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
+    <form id="text_review" action="http://127.0.0.1:8000/test/normal_user_review_write/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="button" onclick="">텍스트</button>
+        <button type="button" onclick="to_image()">이미지</button>
+        <table class="form-contents">
+            {{TextForm.as_table}}
+        </table>
+        <br>
+        <input type="submit" value="submit">
+    </form>
+    <form id="image_review" action="http://127.0.0.1:8000/test/normal_user_review_write/" method="POST" enctype="multipart/form-data" style="display:none;">
+        {% csrf_token %}
+        <button type="button" onclick="to_text()">텍스트</button>
+        <button type="button" onclick="">이미지</button>
+        <table class="form-contents">
+            {{ImageForm.as_table}}
+        </table>
+        <br>
+        <input type="submit" value="submit">
+    </form>
+</div>
 {% endblock %}

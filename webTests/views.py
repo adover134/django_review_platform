@@ -47,15 +47,15 @@ def normal_user_review_search(request):
 
 def normal_user_review_write(request):
     if request.method == 'POST':
+        print(request.POST)
         form = forms.TextReviewWriteForm(request.POST, request.FILES)
         images = request.FILES.getlist('images')
         print(images)
         if form.is_valid():
             names = handle_uploaded_file(images)
-        print(form)
-    else:
-        form = forms.TextReviewWriteForm()
-    return render(request, 'normal_user_review_write.html', {'form': form})
+            print(form)
+    form = {'TextForm': forms.TextReviewWriteForm, 'ImageForm': forms.ImageReviewWriteForm}
+    return render(request, 'normal_user_review_write.html', form)
 
 
 def handle_uploaded_file(f):
@@ -68,8 +68,10 @@ def handle_uploaded_file(f):
         names.append(image.name)
     return names
 
+
 def normal_user_review_write_page(request):
-    return render(request, 'normal_user_review_write.html', {'form':forms.ReviewForm})
+    form = {'TextForm': forms.TextReviewWriteForm, 'ImageForm': forms.ImageReviewWriteForm}
+    return render(request, 'normal_user_review_write.html', form)
 
 
 def image(request):
