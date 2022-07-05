@@ -29,8 +29,8 @@ class Manager(models.Model):
 
 class Room(models.Model):
     address = models.TextField()
-    builtYear = models.CharField(max_length=5)
-    commonInfo = models.JSONField()
+    builtYear = models.CharField(max_length=5, null=True)
+    commonInfo = models.JSONField(null=True)
 
     class Meta:
         db_table = 'Room'
@@ -39,6 +39,7 @@ class Room(models.Model):
 class Review(models.Model):
     uId = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='writer')
     roomId = models.ForeignKey(Room, on_delete=models.PROTECT, related_name='whichRoom')
+    reviewTitle = models.CharField(max_length=50)
     reviewDate = models.DateField(default=datetime.date.today)
     reviewKind = models.IntegerField()
     reviewSentence = models.TextField()
@@ -81,7 +82,7 @@ class CommonInfo(models.Model):
 
 class Image(models.Model):
     reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additionalImage')
-    image = models.ImageField()
+    image = models.URLField()
 
     class Meta:
         db_table = 'Image'

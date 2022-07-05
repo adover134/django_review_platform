@@ -94,19 +94,18 @@ class ReviewViewSets(ModelViewSet):
             return Response('create_failed')
         else:
             reviewKind = int(data.get('reviewKind'))
-            print(reviewKind)
             if (reviewKind != 0) and (reviewKind != 1):
                 return Response('create_failed')
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
-        for d in data:
-            if type(data[d]) is not dict and type(data[d]) is not list:
-                data1[d] = data[d]
-        print(data1)
+        data1['reviewKind'] = int(data.get('reviewKind'))
+        data1['reviewTitle'] = data.get('reviewTitle')
+        data1['roomId'] = int(data.get('roomId'))
+        data1['uId'] = data.get('uId')
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
         # 텍스트 리뷰인 경우
         if reviewKind == 0:
-            a = 3
+            data1['reviewSentence'] = data.get('reviewSentence')
             # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
             # 시각화모듈(data['reviewSentence'])
         # 이미지 리뷰인 경우
@@ -122,6 +121,7 @@ class ReviewViewSets(ModelViewSet):
             # data1에 리뷰 본문을 추가한다.
             data1['review_sentence'] = reviewSentence
         # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
+        print(type(data1['reviewKind']))
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)

@@ -1,0 +1,17 @@
+{% extends 'normal_user_base.html' %}
+{% load static %}
+
+{% block main_contents %}
+{% if request.path != normalUserReviewRead %}
+<meta http-equiv="refresh" content="0; url='{{normalUserReviewRead}}?id={{review_num}}'">
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
+<h1>{{review.reviewTitle}}</h1>
+<p>작성자 : {{review.uNickname}}</p>
+<p>작성자 email : {{review.uEmail}}</p>
+<p>작성일 : {{review.reviewDate}}</p>
+<p>원룸 주소 : {{review.address}}</p>
+<div id="reviewContent">
+    <p>{{review.reviewSentence|linebreaks}}</p>
+</div>
+{% endblock %}
