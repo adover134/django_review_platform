@@ -1,11 +1,17 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect,HttpRequest
 from django.core.paginator import Paginator
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from DBs.models import Review, User
 from webPages import views
 import requests
 import json
 from forms import forms
+
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
 def base(request):
@@ -46,6 +52,7 @@ def normal_user_review_search(request):
     return render(request, 'normal_user_review_search.html', context)
 
 
+@api_view(['POST'])
 def normal_user_review_write(request):
     user = None
     review_id = None
@@ -54,6 +61,8 @@ def normal_user_review_write(request):
         a = views.tokencheck(token)
         user = views.usercheck(str(a.get('id')))
     if request.method == 'POST':
+        if is_ajax(request=request):
+            print('hihihi')
         data = dict(request.POST)
         data1 = {}
         if data.get('review_type')[0] == 'text':
@@ -81,7 +90,7 @@ def normal_user_review_write(request):
                 img = json.loads(requests.post('http://127.0.0.1:8000/db/image/', data={'reviewId': review_id}).text)
                 img_name = handle_uploaded_file(image, str(img.get('id')))
                 requests.put('http://127.0.0.1:8000/db/image/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
-        return HttpResponseRedirect('http://127.0.0.1:8000/test/normal_user_review_read/?id='+str(review_id))
+        return Response(str(review_id))
 
 
 def handle_uploaded_file(f, name):

@@ -4,11 +4,12 @@
 
 {%block main_contents %}
 <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
+    <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
 <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;">
 
 </div>
 <div onload="unloadevent()" style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
-    <form id="text_review" action="http://127.0.0.1:8000/test/normal_user_review_write/" method="POST" enctype="multipart/form-data">
+    <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <button type="button" onclick="">텍스트</button>
         <button type="button" onclick="to_image()">이미지</button>
