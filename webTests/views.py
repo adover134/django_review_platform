@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect,HttpRequest
 from django.core.paginator import Paginator
 from DBs.models import Review, User
 from webPages import views
@@ -46,7 +47,6 @@ def normal_user_review_search(request):
 
 
 def normal_user_review_write(request):
-    form = None
     user = None
     review_id = None
     token = request.COOKIES.get('token')
@@ -77,20 +77,18 @@ def normal_user_review_write(request):
             data1['uId'] = user.get('uId')
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
-            names = handle_uploaded_file(images)
-            for name in names:
-                requests.post('http://127.0.0.1:8000/db/image/', data={})
-    return render(request, 'normal_user_review_read.html', {'review_num': review_id})
+            for image in images:
+                img = json.loads(requests.post('http://127.0.0.1:8000/db/image/', data={'reviewId': review_id}).text)
+                img_name = handle_uploaded_file(image, str(img.get('id')))
+                requests.put('http://127.0.0.1:8000/db/image/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
+        return HttpResponseRedirect('http://127.0.0.1:8000/test/normal_user_review_read/?id='+str(review_id))
 
 
-def handle_uploaded_file(f):
-    names = []
-    for image in f:
-        with open('static/images/'+image.name, 'wb+') as destination:
-            for chunk in image.chunks():
-                destination.write(chunk)
-        names.append('static/images/'+image.name)
-    return names
+def handle_uploaded_file(f, name):
+    with open('static/images/'+name+'.png', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return 'images/'+name+'.png'
 
 
 def normal_user_review_write_page(request):
@@ -118,10 +116,18 @@ def normal_user_review_read(request):
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
+    icon_urls = review.get('includedIcon')
+    icons = []
+    if icon_urls:
+        for icon in icon_urls:
+            icon_info = json.loads(requests.get(icon).text)
+            icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
+            icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
+            icons.append(icon_info)
     if user:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'alive': 'true'})
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true'})
     else:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'alive': 'false'})
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
 
 
 def image(request):

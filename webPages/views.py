@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
+from forms import forms
 
 
 # 토큰의 유효 여부로 로그인 상태를 확인하는 함수이다.
@@ -201,12 +202,14 @@ def infoCheck(request):
     if token:
         a = tokencheck(token)
         user = usercheck(str(a.get('id')))
+        print(user)
+        userForm = forms.UserInfoForm(initial={'user_nickname': user.get('uNickname'), 'user_email': user.get('uEmail'), 'user_warn_count': user.get('uWarnCount')})
         if not user:
-            return render(request, 'normal_user_info_check.html', {'alive': 'true', 'user': user['uNickname']})
+            return render(request, 'normal_user_info_check.html', {'alive': 'false'})
         else:
-            return render(request, 'normal_user_main.html', {'alive':'false'})
+            return render(request, 'normal_user_info_check.html', {'alive': 'true', 'user': user, 'userForm': userForm})
     else:
-        return render(request, 'normal_user_main.html', {'alive':'false'})
+        return render(request, 'normal_user_info_check.html', {'alive': 'false'})
 
 
 def normal_user_review_search(request):

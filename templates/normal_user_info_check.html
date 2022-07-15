@@ -3,8 +3,18 @@
 
 {% block main_contents %}
 <link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
+<script>
+
+</script>
 <div id="infoCheckAndUpdate">
-    <!-정보 확인 및 수정을 위한 공간-->
+    <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{userForm.as_table}}
+        </table>
+        <input type="submit" value="변경하기">
+    </form>
 </div>
 <div id="others">
     <!-사이트 탈퇴 혹은 작성한 리뷰 목록으로 이동하기 위한 공간-->

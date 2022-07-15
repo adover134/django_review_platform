@@ -12,6 +12,25 @@
 <p>작성일 : {{review.reviewDate}}</p>
 <p>원룸 주소 : {{review.address}}</p>
 <div id="reviewContent">
-    <p>{{review.reviewSentence|linebreaks}}</p>
+    {% for s in review.reviewSentence %}
+        <span>{{s}}</span>
+        <br>
+    {% endfor %}
 </div>
+<div id="icon">
+    <h1>아이콘</h1>
+    {% for i in icons %}
+        <a onclick="selectIcon(this)">
+            <img src="{% static i.iconKind %}">
+            <input type="text" hidden value="{{i.iconInformation}}">
+            <input type="text" hidden value="{% static i.iconKind %}">
+            <input type="text" hidden value="{% static i.changedIconKind %}">
+        </a>
+    {% endfor %}
+</div>
+<div id="images">
+    <!-사진들 놓을 곳-->
+    <!-JQuery 등을 써서 예쁘게 만들 수 있으면 좋겠습니다.-->
+</div>
+<script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
 {% endblock %}
