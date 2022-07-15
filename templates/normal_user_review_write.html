@@ -3,22 +3,11 @@
 {% url 'user-detail' pk=u_id as singleUser %}
 
 {%block main_contents %}
-<script>
-    function to_image(){
-        document.getElementById('text_review').style.display='none';
-        document.getElementById('image_review').style.display='inline-block';
-        document.getElementById('icons').style.display='inline-block';
-    }
-    function to_text(){
-        document.getElementById('text_review').style.display='block';
-        document.getElementById('image_review').style.display='none';
-        document.getElementById('icons').style.display='none';
-    }
-</script>
+<link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
 <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;">
 
 </div>
-<div style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
+<div onload="unloadevent()" style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
     <form id="text_review" action="http://127.0.0.1:8000/test/normal_user_review_write/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <button type="button" onclick="">텍스트</button>
@@ -41,4 +30,5 @@
     </form>
 
 </div>
+<script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
 {% endblock %}

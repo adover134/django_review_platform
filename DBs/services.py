@@ -27,7 +27,7 @@ sentences = """
 방이 많이 습해요
 건물 입구에 가까워요
 """
-
+'''
 sentences = sentence_spliter(sentences)
 kiwi = Kiwi()
 for sentence in sentences:
@@ -36,3 +36,4 @@ for sentence in sentences:
         if token.tag == 'JKS' or token.tag == 'JKC' or token.tag == 'JKG' or token.tag == 'JKO' or token.tag == 'JKB' or token.tag == 'JKV' or token.tag == 'JKQ' or token.tag == 'JX' or token.tag == 'JC':
             sentence.remove(token)
     print(sentence)
+'''

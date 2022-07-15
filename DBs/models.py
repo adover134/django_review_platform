@@ -42,7 +42,7 @@ class Review(models.Model):
     reviewTitle = models.CharField(max_length=50)
     reviewDate = models.DateField(default=datetime.date.today)
     reviewKind = models.IntegerField()
-    reviewSentence = models.TextField()
+    reviewSentence = models.JSONField()
 
     class Meta:
         db_table = 'Review'
@@ -51,6 +51,7 @@ class Review(models.Model):
 class Icon(models.Model):
     reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='includedIcon')
     iconKind = models.TextField()
+    changedIconKind = models.TextField()
     iconInformation = models.TextField()
 
     class Meta:
@@ -82,7 +83,7 @@ class CommonInfo(models.Model):
 
 class Image(models.Model):
     reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additionalImage')
-    image = models.URLField()
+    image = models.TextField(null=True)
 
     class Meta:
         db_table = 'Image'

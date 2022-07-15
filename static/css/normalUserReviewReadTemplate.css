@@ -3,3 +3,16 @@ div#reviewContent{
     height:250px;
     border:1px solid grey;
 }
+div#midContent{
+    height:1000px;
+}
+div.middle{
+    height:1000px;
+}
+div#icon{
+    height:228px;
+}
+div#images{
+    border:1px solid red;
+    height:261px;
+}

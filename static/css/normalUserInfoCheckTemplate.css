@@ -6,3 +6,7 @@ div#others{
     border:2px solid brown;
     height:100px;
 }
+
+input#id_user_warn_count{
+    width:40px;
+}

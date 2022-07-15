@@ -12,6 +12,8 @@ import json
 import copy
 from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ImageSerializer
 from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
+from DBs.services import sentence_spliter
+
 
 class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
@@ -105,7 +107,7 @@ class ReviewViewSets(ModelViewSet):
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
         # 텍스트 리뷰인 경우
         if reviewKind == 0:
-            data1['reviewSentence'] = data.get('reviewSentence')
+            data1['reviewSentence'] = sentence_spliter(data.get('reviewSentence'))
             # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
             # 시각화모듈(data['reviewSentence'])
         # 이미지 리뷰인 경우
@@ -234,10 +236,10 @@ class ReviewViewSets(ModelViewSet):
         data = self.get_serializer(instance).data
         # 수정할 리뷰의 종류 및 PK 를 획득한다.
         review_kind = data['reviewKind']
-        review_id = data['reviewId']
+        review_id = data['id']
         # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
-        for icon in data['icons']:
-            a=3
+        #for icon in data['icons']:
+        #    a=3
             #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
         # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
         data1 = request.data
@@ -249,7 +251,7 @@ class ReviewViewSets(ModelViewSet):
             #시각화모듈(reviewSentence)
             # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
             # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
-            data['reviewSentence']=review_sentence
+            data['reviewSentence']=sentence_spliter(review_sentence)
         # 이미지 리뷰인 경우
         elif review_kind == 1:
             # 리뷰 본문을 생성하기 위한 변수를 선언한다.
