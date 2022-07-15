@@ -26,8 +26,6 @@ function review_submit(e) {
         data: serializedData,
         success: function (response) {
             // on successfull creating object
-            // 1. clear the form.
-            $("#"+this.id).trigger('reset');
             window.location.replace('http://127.0.0.1:8000/test/normal_user_review_read/?id='+response);
         },
         error: function (response) {
