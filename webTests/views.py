@@ -61,8 +61,6 @@ def normal_user_review_write(request):
         a = views.tokencheck(token)
         user = views.usercheck(str(a.get('id')))
     if request.method == 'POST':
-        if is_ajax(request=request):
-            print('hihihi')
         data = dict(request.POST)
         data1 = {}
         if data.get('review_type')[0] == 'text':
