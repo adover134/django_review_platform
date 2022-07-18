@@ -1,31 +1,40 @@
-div#headMenu{
-    border:1px solid black;
-    width:1504px;
-    height:50px;
+div {
+  border: 1px solid #000;
 }
-div#logo{
-    display:inline-block;
-    float:left;
-    width:239px;
-    height:48px;
-    border:1px solid yellow;
-    background-color:yellow;
+
+div #headMenu {
+  width: 1504px;
+  height: 50px;
 }
-div#midContent{
-    position:relative;
-    width:1508px;
-    height:590px;
+
+div#logo {
+  display: inline-block;
+  floa: left;
+  width: 239px;
+  height: 48px;
+  border: 1px solid #ffc107;
+  background-color: #ffc107;
 }
-div.middle{
-    display:inline-block;
-    float:left;
-    height:590px;
+
+div#midContent {
+  position: relative;
+  width: 1508px;
+  height: 590px;
 }
-div#bottomInfoBox{
-    position:relative;
-    background-color:red;
-    top:2px;
-    border:1px solid blue;
-    width:1504px;
-    height:50px;
+
+div.middle {
+  display: inline-block;
+  float: left;
+  height: 590px;
 }
+
+div#bottomInfoBox {
+  position: relative;
+  background-color: #dc3545;
+  top: 2px;
+  border: 1px solid #0d6efd;
+  width: 1504px;
+  height: 50px;
+}
+
+/*# sourceMappingURL=baseTemplate.css.map */

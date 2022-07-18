@@ -7,7 +7,8 @@ from DBs.models import Review, User
 from webPages import views
 import requests
 import json
-from forms import forms
+from customForms import reviewWriteForms
+from customForms.searchForms import ReviewSearchForm
 
 
 def is_ajax(request):
@@ -64,13 +65,14 @@ def normal_user_review_write(request):
         data = dict(request.POST)
         data1 = {}
         if data.get('review_type')[0] == 'text':
-            form = forms.TextReviewWriteForm(request.POST, request.FILES)
+            form = reviewWriteForms.TextReviewWriteForm(request.POST, request.FILES)
             data1['reviewKind'] = 0
             data1['reviewSentence'] = data['review_sentence']
         else:
-            form = forms.ImageReviewWriteForm(request.POST, request.FILES)
+            form = reviewWriteForms.ImageReviewWriteForm(request.POST, request.FILES)
             data1['reviewKind'] = 1
         images = request.FILES.getlist('images')
+        print(form)
         if form.is_valid():
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
@@ -99,7 +101,7 @@ def handle_uploaded_file(f, name):
 
 
 def normal_user_review_write_page(request):
-    form = {'TextForm': forms.TextReviewWriteForm, 'ImageForm': forms.ImageReviewWriteForm}
+    form = {'TextForm': reviewWriteForms.TextReviewWriteForm, 'ImageForm': reviewWriteForms.ImageReviewWriteForm}
     token = request.COOKIES.get('token')
     if token:
         a = views.tokencheck(token)
@@ -108,6 +110,7 @@ def normal_user_review_write_page(request):
             form['alive'] = 'true'
         else:
             form['alive'] = 'false'
+
     return render(request, 'normal_user_review_write.html', form)
 
 
@@ -140,3 +143,12 @@ def normal_user_review_read(request):
 def image(request):
     print(request.GET)
     return render(request, 'normal_user_review_search.html')
+
+
+def review_search_page(request):
+    return render(request, 'tt.html', {'searchForm': ReviewSearchForm})
+
+
+def review_search_test(request):
+    form = ReviewSearchForm(request.GET)
+    return render(request, 'tt.html', {'searchForm': form})

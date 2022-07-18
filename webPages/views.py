@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
-from forms import forms
+from customForms import reviewWriteForms
 
 
 # 토큰의 유효 여부로 로그인 상태를 확인하는 함수이다.
@@ -203,7 +203,7 @@ def infoCheck(request):
         a = tokencheck(token)
         user = usercheck(str(a.get('id')))
         print(user)
-        userForm = forms.UserInfoForm(initial={'user_nickname': user.get('uNickname'), 'user_email': user.get('uEmail'), 'user_warn_count': user.get('uWarnCount')})
+        userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.get('uNickname'), 'user_email': user.get('uEmail'), 'user_warn_count': user.get('uWarnCount')})
         if not user:
             return render(request, 'normal_user_info_check.html', {'alive': 'false'})
         else:
@@ -214,10 +214,12 @@ def infoCheck(request):
 
 def normal_user_review_search(request):
     review_search_url = 'http://127.0.0.1:8000/db/review/'
-    if request.POST:
+    print(request.user)
+    if request.GET:
         #print(int(request.POST.get('built_from')))
-        data = dict(request.POST)
+        data = dict(request.GET)
         review_search_url = review_search_url+'?'
+        print(data)
         if data.get('builtFrom') and data.get('builtTo'):
             review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]+'&builtTo='+data.get('builtTo')[0]
         if data.get('address')[0] != '':

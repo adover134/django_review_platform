@@ -41,7 +41,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'DBs',
     'webTests',
+    'forms_fieldset',
+    'sass_processor',
 ]
+
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
+SASS_OUTPUT_STYLE = 'compact'
+SASS_PRECISION = 8
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,7 +75,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'index':'templatetags.index',
+                'index': 'templatetags.index',
             }
         },
     },
@@ -137,4 +144,13 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)

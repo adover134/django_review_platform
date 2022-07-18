@@ -1,0 +1,32 @@
+@import "color.scss";
+
+div #headMenu{
+  width:1504px;
+  height:50px;
+}
+div#logo{
+  display:inline-block;
+  floa:left;
+  width:239px;
+  height:48px;
+  border:1px solid $yellow;
+  background-color:$yellow;
+}
+div#midContent{
+  position:relative;
+  width:1508px;
+  height:590px;
+}
+div.middle{
+  display:inline-block;
+  float:left;
+  height:590px;
+}
+div#bottomInfoBox{
+  position:relative;
+  background-color:$red;
+  top:2px;
+  border:1px solid $blue;
+  width:1504px;
+  height:50px;
+}

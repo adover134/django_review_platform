@@ -28,11 +28,17 @@
             </button>
         </li>
     </ul>
+    <div style="display:inline-block; margin-left:211px;"></div>
+    <form id="search-form">
+        <input type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="search-box">
+        <button type="submit" id="search-button">Search</button>
+    </form>
     <div id="userInfo">
         {% if alive == 'true' %}
             <button type="button" class="loginout" onclick="location.href = '{{logout}}'">logout</button>
             <button id="myInfo" onclick="location.href = '{{infoCheck}}'">내 정보</button>
         {% else %}
+            <div style="display:inline-block; margin-left:100px;"></div>
             <button type="button" class="loginout" onclick="location.href = '{{login}}'">login</button>
         {% endif %}
     </div>

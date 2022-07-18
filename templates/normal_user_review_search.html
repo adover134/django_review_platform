@@ -21,11 +21,11 @@
     }
 </script>
 <div id="searchConditionForm" style="display:none;">
-    <form action="{{normalUserReviewSearch}}" method="post">
+    <form action="{{normalUserReviewSearch}}" method="get">
         {% csrf_token %}
         <fieldset id="common_info">
             <legend>건물 공유 시설</legend>
-            <input type="checkbox" id="parking_lot" name="commonInfo_1">
+            <input type="checkbox" id="parking_lot" name="commonInfo_1" value="why">
             <label class="checkbox-inline" for="parking_lot">주차장</label>
             <input type="checkbox" id="elevator" name="commonInfo_2">
             <label class="checkbox-inline" for="elevator">엘리베이터</label>
@@ -62,7 +62,7 @@
         </fieldset>
         <br><br>
         <label for="otherOptions">검색 텍스트 : </label>
-        <input name="otherOptions" id="otherOptions" type="text" value="이외에 검색하고 싶은 옵션, 환경 등을 적어주세요.">
+        <input name="otherOptions" id="otherOptions" type="text" placeholder="이외에 검색하고 싶은 옵션, 환경 등을 적어주세요.">
         <br><br>
         <input type="submit" value="Submit">
         <button type="button" id="searchFormClose" onclick="toggleSearch()">
