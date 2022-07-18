@@ -26,6 +26,10 @@ button.loginout{
     width:106px;
     height:50px;
     display:inline-block;
+    float:left;
+}
+form#search-form{
+    float:left;
 }
 button#myInfo{
     width:106px;
