@@ -1,19 +1,16 @@
-div {
-  border: 1px solid #000;
-}
-
-div #headMenu {
+div#headMenu {
   width: 1504px;
   height: 50px;
+  border: 1px solid #000;
 }
 
 div#logo {
   display: inline-block;
-  floa: left;
+  float: left;
   width: 239px;
   height: 48px;
-  border: 1px solid #ffc107;
-  background-color: #ffc107;
+  border: 1px solid #FFCD39;
+  background-color: #FFCD39;
 }
 
 div#midContent {
