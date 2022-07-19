@@ -1,33 +1,42 @@
-div#searchConditionForm{
-    position:absolute;
-    height:150px;
-    width:896px;
-    border:2px solid orange;
-    background-color:orange;
-    z-index:1;
+div#searchConditionForm {
+  position: absolute;
+  height: 150px;
+  width: 896px;
+  border: 2px solid orange;
+  background-color: orange;
+  z-index: 1;
 }
-div#reviewSearchResult{
-    position:relative;
-    height:586px;
-    width:896px;
-    border:2px solid skyblue;
+
+div#reviewSearchResult {
+  position: relative;
+  height: 586px;
+  width: 896px;
+  border: 2px solid skyblue;
 }
-fieldset#common_info{
-    display:inline;
+
+fieldset#common_info {
+  display: inline;
 }
-fieldset#built_year{
-    display:inline;
+
+fieldset#built_year {
+  display: inline;
 }
-fieldset#address{
-    display:inline;
+
+fieldset#address {
+  display: inline;
 }
-fieldset#address>input{
-    width:30px;
+
+fieldset#address > input {
+  width: 30px;
 }
-button#searchFormOpen{
-    position:absolute;
-    z-index:1;
+
+button#searchFormOpen {
+  position: absolute;
+  z-index: 1;
 }
-input#otherOptions{
-    width:350px;
+
+input#otherOptions {
+  width: 350px;
 }
+
+/*# sourceMappingURL=normalUserReviewSearchTemplate.css.map */

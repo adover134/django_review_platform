@@ -1,6 +1,9 @@
-div#rightSideMenu{
-    display:none;
+div#rightSideMenu {
+  display: none;
 }
-div#disclaimer>p{
-    text-align:center;
+
+div#disclaimer > p {
+  text-align: center;
 }
+
+/*# sourceMappingURL=normalUserSignUpTemplate.css.map */

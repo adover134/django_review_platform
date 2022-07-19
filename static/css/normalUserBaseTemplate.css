@@ -1,39 +1,48 @@
-div#mainMenu{
-    display:inline-block;
-    left:250px;
+div#mainMenu {
+  display: inline-block;
+  left: 250px;
 }
-div#mainMenu>ul{
-    margin:0px;
-    padding:0px;
-    display:inline-block;
-    float:left;
+
+div#mainMenu > ul {
+  margin: 0px;
+  padding: 0px;
+  display: inline-block;
+  float: left;
 }
-div#mainMenu>ul>li{
-    display:inline-block;
-    float:left;
+
+div#mainMenu > ul > li {
+  display: inline-block;
+  float: left;
 }
-div#mainMenu>ul>li>button{
-    width:150px;
-    height:50px;
-    padding:0;
-    border-width:1px;
-    background-color:green;
+
+div#mainMenu > ul > li > button {
+  width: 150px;
+  height: 50px;
+  padding: 0;
+  border-width: 1px;
+  background-color: green;
 }
-div#userInfo{
-    display:inline-block;
+
+div#userInfo {
+  display: inline-block;
 }
-button.loginout{
-    width:106px;
-    height:50px;
-    display:inline-block;
-    float:left;
+
+button.loginout {
+  width: 106px;
+  height: 50px;
+  display: inline-block;
+  float: left;
 }
-form#search-form{
-    float:left;
+
+form#search-form {
+  float: left;
 }
-button#myInfo{
-    width:106px;
-    height:50px;
-    display:inline-block;
-    float:left;
+
+button#myInfo {
+  width: 106px;
+  height: 50px;
+  display: inline-block;
+  float: left;
 }
+
+/*# sourceMappingURL=normalUserBaseTemplate.css.map */
