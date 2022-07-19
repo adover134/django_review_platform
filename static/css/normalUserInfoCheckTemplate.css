@@ -1,12 +1,15 @@
-div#infoCheckAndUpdate{
-    border:2px dashed greenyellow;
-    height:350px
-}
-div#others{
-    border:2px solid brown;
-    height:100px;
+div#infoCheckAndUpdate {
+  border: 2px dashed greenyellow;
+  height: 350px;
 }
 
-input#id_user_warn_count{
-    width:40px;
+div#others {
+  border: 2px solid brown;
+  height: 100px;
 }
+
+input#id_user_warn_count {
+  width: 40px;
+}
+
+/*# sourceMappingURL=normalUserInfoCheckTemplate.css.map */
