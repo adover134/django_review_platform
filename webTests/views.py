@@ -126,6 +126,7 @@ def normal_user_review_read(request):
     icon_urls = review.get('includedIcon')
     icons = []
     if icon_urls:
+        print(icon_urls)
         for icon in icon_urls:
             icon_info = json.loads(requests.get(icon).text)
             icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'

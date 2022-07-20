@@ -10,7 +10,7 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ImageSerializer
+from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ImageSerializer
 from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
 from DBs.services import sentence_spliter
 
@@ -145,7 +145,15 @@ class ReviewViewSets(ModelViewSet):
         data1 = dict(request.GET)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
         if not data1:
-            return super().list(self, request, args, kwargs)
+            queryset = self.filter_queryset(self.get_queryset())
+
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = ReviewSerializer2(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = ReviewSerializer2(queryset, many=True)
+            return Response(serializer.data)
         # 검색 조건으로 쿼리를 만든다.
         query_user_nickname = Q()  # 회원 닉네임으로 검색한다. 닉네임은 1개만 받는다.
         query_date = Q()  # 작성일을 기준으로 검색한다. 작성일은 from, to 2개를 받는다.
@@ -221,7 +229,7 @@ class ReviewViewSets(ModelViewSet):
         if room_data:
             searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
-        return Response(self.get_serializer(searched, many=True).data)
+        return Response(ReviewSerializer2(searched, many=True).data)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)

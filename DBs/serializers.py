@@ -38,6 +38,21 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ReviewSerializer2(serializers.ModelSerializer):
+
+    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
+    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    rAddress = serializers.CharField(source='rId.address', read_only=True)
+    includedIcon = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
 class RoomSerializer(serializers.ModelSerializer):
 
     commonInfo = serializers.ListField(

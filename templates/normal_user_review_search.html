@@ -1,33 +1,13 @@
 {% extends 'normal_user_base.html' %}
 {% load static %}
 
-{% block main_contents %}
-<link rel="stylesheet" href="{% static 'css/normalUserReviewSearchTemplate.css' %}">
-<script>
-    function toggleSearch(){
-        var a = document.getElementById('searchConditionForm').style.display;
-        if (a === "none")
-        {
-            document.getElementById('searchConditionForm').style.display='block';
-            document.getElementById('searchFormOpen').style.display='none';
-            document.getElementById('searchFormClose').style.display='inline-block';
-        }
-        if (a === "block")
-        {
-            document.getElementById('searchConditionForm').style.display='none';
-            document.getElementById('searchFormOpen').style.display='block';
-            document.getElementById('searchFormClose').style.display='none';
-        }
-    }
-    let current_URL = new URLSearchParams(window.location.search);
-    current_URL.delete('page');
-    console.log(current_URL);
-</script>
-<div id="searchConditionForm" style="display:none;">
-    <form action="{{normalUserReviewSearch}}" method="get">
+{% block left_side_bar %}
+<div class="col-2" id="searchConditionForm">
+    <h1>검색 필터</h1>
+    <form action="{{normalUserReviewSearch}}" onsubmit="get_address()" method="get">
         <fieldset id="common_info">
             <legend>건물 공유 시설</legend>
-            <input type="checkbox" id="parking_lot" name="commonInfo_1" value="why">
+            <input type="checkbox" id="parking_lot" name="commonInfo_1" value="parking_lot">
             <label class="checkbox-inline" for="parking_lot">주차장</label>
             <input type="checkbox" id="elevator" name="commonInfo_2">
             <label class="checkbox-inline" for="elevator">엘리베이터</label>
@@ -36,51 +16,73 @@
         </fieldset>
         <fieldset id="built_year">
             <legend>건축 연도</legend>
-            <select id="builtFrom" name="builtFrom"></select>
+            <select id="builtFrom" name="builtFrom" placeholder="~년 이후"></select>
             <span> ~ </span>
-            <select id="builtTo" name="builtTo"></select>
-            <script>
-                var i;
-                for (i=1960;i<=2022;i++)
-                {
-                    var a = document.createElement("option");
-                    var b = document.createElement("option");
-                    a.value=i;
-                    b.value=i;
-                    a.innerText=i;
-                    b.innerText=i;
-                    if (i===1960)
-                        a.selected='selected';
-                    if (i===2022)
-                        b.selected='selected';
-                    document.getElementById('builtFrom').appendChild(a);
-                    document.getElementById('builtTo').appendChild(b);
-                }
-            </script>
+            <select id="builtTo" name="builtTo" placeholder="~년 이전"></select>
         </fieldset>
-        <fieldset id="address">
-            <legend>건물 주소</legend>
-            <input type="text" name="address">동
-        </fieldset>
+        <br>
+        <label for="otherOptions">검색 텍스트</label>
+        <br>
+        <input class="col-10" name="otherOptions" id="otherOptions" type="text" placeholder="기타 검색 텍스트">
         <br><br>
-        <label for="otherOptions">검색 텍스트 : </label>
-        <input name="otherOptions" id="otherOptions" type="text" placeholder="이외에 검색하고 싶은 옵션, 환경 등을 적어주세요.">
-        <br><br>
+        <input name="address" id="search_address" style="display:none;">
         <input type="submit" value="Submit">
-        <button type="button" id="searchFormClose" onclick="toggleSearch()">
-            검색 조건 닫기
-        </button>
     </form>
 </div>
-<button type="button" id="searchFormOpen" onclick="toggleSearch()">
-    검색 조건 열기
-</button>
+{% endblock %}
+
+{% block main_contents %}
+<link rel="stylesheet" href="{% static 'css/normalUserReviewSearchTemplate.css' %}">
+
+<script  src="{% static 'js/normalUserReviewSearchTemplate.js' %}"></script>
 <div id="reviewSearchResult">
+    <fieldset>
+        <legend>건물 주소</legend>
+        <input type="text" name="address" id="address">동
+    </fieldset>
     <br>
-    {% for r in paged_review %}
-        <p>{{r.uNickname}} {{r.uEmail}}</p>
-        <a class="link-secondary" href="{{normalUserReviewRead}}?id={{r.id}}">{{ r.reviewTitle }}</a>
-    {% endfor %}
+    <table class="col-8">
+        <tbody>
+            <tr>
+                <th>
+                    대표 사진
+                </th>
+                <th class="text-center">
+                    작성자 / 이메일
+                </th>
+                <th class="text-center">
+                    리뷰 제목
+                </th>
+                <th class="text-center">
+                    추천 / 신고
+                </th>
+            </tr>
+            {% for r in paged_review %}
+                <tr>
+                    <td rowspan="2" class="col-1">
+                        <img>
+                    </td>
+                    <td class="review_writer text-center col-2">
+                        <span>{{r.uNickname}} / {{r.uEmail}}</span>
+                    </td>
+                    <td class="review_title text-center col-3">
+                        <a class="link-secondary" href="{{normalUserReviewRead}}?id={{r.id}}">{{ r.reviewTitle }}</a>
+                    </td>
+                    <td class="col-2 text-center">
+                        <a><img alt="추천"></a>
+                        <a><img alt="신고"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="review_icon col-5">
+                        {% for icon in r.includedIcon %}
+                            <img src="{% static 'images/iconImage/' %}{{icon}}.png">
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <br>
     {% if paged_review.has_previous %}
         <a id="prev_page">이전으로</a>
