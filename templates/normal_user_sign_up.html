@@ -5,6 +5,14 @@
 <link rel="stylesheet" href="{% static 'css/normalUserSignUpTemplate.css' %}">
 {% if request.path != signupPage %}
 <meta http-equiv="refresh" content="0; url='{{signupPage}}'">
+{% else %}
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            document.location.reload();
+        }
+    };
+</script>
 {% endif %}
 <script type="text/javascript">
     document.getElementById('mainDiv').style.width='1202px';

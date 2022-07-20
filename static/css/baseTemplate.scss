@@ -1,21 +1,18 @@
 @import "color.scss";
 
 div#headMenu{
-  width:1504px;
   height:50px;
   border:1px solid $black;
 }
-div#logo{
+#logo{
   display:inline-block;
   float:left;
-  width:239px;
   height:48px;
   border:1px solid $yellow-400;
   background-color:$yellow-400;
 }
 div#midContent{
   position:relative;
-  width:1508px;
   height:590px;
 }
 div.middle{
@@ -28,6 +25,5 @@ div#bottomInfoBox{
   background-color:$red;
   top:2px;
   border:1px solid $blue;
-  width:1504px;
   height:50px;
 }

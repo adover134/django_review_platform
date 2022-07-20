@@ -19,10 +19,12 @@
             document.getElementById('searchFormClose').style.display='none';
         }
     }
+    let current_URL = new URLSearchParams(window.location.search);
+    current_URL.delete('page');
+    console.log(current_URL);
 </script>
 <div id="searchConditionForm" style="display:none;">
     <form action="{{normalUserReviewSearch}}" method="get">
-        {% csrf_token %}
         <fieldset id="common_info">
             <legend>건물 공유 시설</legend>
             <input type="checkbox" id="parking_lot" name="commonInfo_1" value="why">
@@ -77,13 +79,20 @@
     <br>
     {% for r in paged_review %}
         <p>{{r.uNickname}} {{r.uEmail}}</p>
-        <p class="hoho">{{ r.reviewSentence|linebreaks }}</p>
+        <a class="link-secondary" href="{{normalUserReviewRead}}?id={{r.id}}">{{ r.reviewTitle }}</a>
     {% endfor %}
+    <br>
     {% if paged_review.has_previous %}
-        <a href="?page={{paged_review.previous_page_number}}">이전으로</a>
+        <a id="prev_page">이전으로</a>
+        <script>
+            document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.previous_page_number}}"
+        </script>
     {% endif %}
     {% if paged_review.has_next %}
-        <a href="?page={{paged_review.next_page_number}}">다음으로</a>
+        <a id="next_page">다음으로</a>
+        <script>
+            document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.next_page_number}}"
+        </script>
     {% endif %}
 </div>
 {% endblock %}

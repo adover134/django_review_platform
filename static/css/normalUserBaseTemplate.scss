@@ -1,40 +1,40 @@
 @import "color.scss";
+
 div#mainMenu{
     display:inline-block;
     left:250px;
 }
-div#mainMenu>ul{
-    margin:0px;
-    padding:0px;
-    display:inline-block;
-    float:left;
-}
-div#mainMenu>ul>li{
-    display:inline-block;
-    float:left;
-}
-div#mainMenu>ul>li>button{
-    width:150px;
+div#mainMenu>div.button{
     height:50px;
-    padding:0;
     border-width:1px;
     background-color:green;
+    border-color:$black;
+}
+div#mainMenu>div.button>a{
+    display:inline;
+    height:50px;
 }
 div#userInfo{
     display:inline-block;
 }
-button.loginout{
-    width:106px;
+button#login{
     height:50px;
     display:inline-block;
     float:left;
 }
 form#search-form{
+    display:inline-block;
     float:left;
 }
 button#myInfo{
-    width:106px;
     height:50px;
     display:inline-block;
     float:left;
+}
+.nav-item{
+    display:inline-block;
+    float:left;
+}
+.bg-red-500{
+    background-color: $red-500;
 }
