@@ -229,12 +229,15 @@ def normal_user_review_search(request):
         if data.get('commonInfo_'+str(i+1)):
             review_search_url = review_search_url+'&'+'commonInfo_'+str(i+1)+'=on'
     review_list = json.loads(requests.get(review_search_url).text)
+    print(review_list)
     paginator = Paginator(review_list, 3)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     token = request.COOKIES.get('token')
     context = {'paged_review': paged_review}
     if token:
-        if tokencheck(token):
-            context['alive'] = 'true'
+        a = tokencheck(token)
+        context['alive'] = 'true'
+        user = usercheck(str(a.get('id')))
+        context['user'] = user.get('uNickname')
     return render(request, 'normal_user_review_search.html', context)

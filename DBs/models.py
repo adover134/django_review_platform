@@ -57,6 +57,9 @@ class Icon(models.Model):
     class Meta:
         db_table = 'Icon'
 
+    def __str__(self):
+        return self.iconKind
+
 
 class Recommend(models.Model):
     uId = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='recommender')
