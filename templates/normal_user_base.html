@@ -5,41 +5,46 @@
 <!-템플릿 태그 중 url은 url.py에서 path마다 지정한 이름, 혹은 경로 규칙에 따라 url 값을 반환합니다.-->
 <!-전체 url 값을 페이지에 직접 노출시키지 않는다는 장점이 있습니다.-->
 <link rel="stylesheet" href="{% static 'css/normalUserBaseTemplate.css' %}">
-<div id="mainMenu">
-    <ul>
-        <li>
-            <button type="button">
-                원룸 검색
-            </button>
-        </li>
-        <li>
-            <button type="button" onclick="location.href = '{{normalUserReviewSearch}}'">
-                리뷰 검색
-            </button>
-        </li>
-        <li>
-            <button type="button">
-                리뷰 작성
-            </button>
-        </li>
-        <li>
-            <button type="button">
-                내 리뷰
-            </button>
-        </li>
-    </ul>
-    <div style="display:inline-block; float:left; margin-left:216px; height:1px;"></div>
-    <form id="search-form">
-        <input type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="search-box">
-        <button type="submit" id="search-button">Search</button>
+<div id="mainMenu" class="col-11">
+    <div class="button text-center nav-item col-1">
+        <a href = '#'>
+            지도
+        </a>
+    </div>
+    <div class="button text-center nav-item col-1">
+        <a href = '#'>
+            원룸
+        </a>
+    </div>
+    <div class="button text-center nav-item col-1">
+        <a href = '{{normalUserReviewSearch}}'>
+            리뷰
+        </a>
+    </div>
+    <div class="nav-item col-3" style="display:inline-block; float:left; height:50px;"></div>
+    <form CLASS="nav-item col-4" id="search-form" style="top:10px;">
+        <div class="nav-item col-9">
+            <input class="form-control" type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="search-box">
+        </div>
+        <div class="nav-item col-3">
+            <button class="form-control" type="submit" id="search-button">Search</button>
+        </div>
     </form>
-    <div id="userInfo">
+    <div class="col-2" id="userInfo">
         {% if alive == 'true' %}
-            <button type="button" class="loginout" onclick="location.href = '{{logout}}'">logout</button>
-            <button id="myInfo" onclick="location.href = '{{infoCheck}}'">내 정보</button>
+            <div class="nav-item dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{user}} 님, 환영합니다.
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href = '{{logout}}'>logout</a></li>
+                <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>내 정보</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </div>
         {% else %}
-            <div style="display:inline-block; float:left; width:106px;height:1px;"></div>
-            <button type="button" class="loginout" onclick="location.href = '{{login}}'">login</button>
+            <div class="nav-item col-6" style="display:inline-block; float:left; height:50px;"></div>
+            <button class="nav-item col-6" type="button" id="login" onclick="location.href = '{{login}}'">login</button>
         {% endif %}
     </div>
 </div>

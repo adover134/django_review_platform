@@ -5,6 +5,14 @@
 <link rel="stylesheet" href="{% static 'css/normalUserMainTemplate.css' %}">
 {% if request.path != main %}
 <meta http-equiv="refresh" content="0; url='{{main}}'">
+{% else %}
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            document.location.reload();
+        }
+    };
+</script>
 {% endif %}
 {% if msg %}
 <script>
@@ -14,7 +22,7 @@
 <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6d1ad052df81bb894aba3f443d1fd674&libraries=services&autoload=true"></script>
 <script type="text/javascript">
-    document.getElementById('mainDiv').style.width='1202px';
+    document.getElementById('mainDiv').classList.replace('col-8', 'col-10');
     var mapContainer = document.getElementById('mainDiv'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
