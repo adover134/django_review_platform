@@ -11,15 +11,53 @@
             document.location.reload();
         }
     };
+    var recommended='{{recommended}}';
+    if(recommended==='None' || recommended ==='')
+        recommended=false;
+    var reported='{{reported}}';
+    if(reported==='None' || recommended ==='')
+        reported=false;
+    var reviewNum='{{review.id}}';
+    var recommendImg="{% static 'images/iconImage/recommend.png' %}";
+    var recommendedImg="{% static 'images/iconImage/recommended.png' %}";
+    var reportImg="{% static 'images/iconImage/report.png' %}";
+    var reportedImg="{% static 'images/iconImage/reported.png' %}";
 </script>
 {% endif %}
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
-<h1>{{review.reviewTitle}}</h1>
-<p>작성자 : {{review.uNickname}}</p>
-<p>작성자 email : {{review.uEmail}}</p>
-<p>작성일 : {{review.reviewDate}}</p>
-<p>원룸 주소 : {{review.address}}</p>
-<div id="reviewContent">
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<div id="reviewInfo">
+    <div id="room_images" class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+        원룸 사진들을 슬라이드로 넣을 곳입니다.
+    </div>
+    <div class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+        <h1>{{review.reviewTitle}}</h1>
+        <p>작성자 : {{review.uNickname}}</p>
+        <p>작성자 email : {{review.uEmail}}</p>
+        <p>작성일 : {{review.reviewDate}}</p>
+        <p>원룸 주소 : {{review.address}}</p>
+    </div>
+    <div class="content col-2" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+        <p>수정/삭제 버튼 놓을 곳</p>
+        <p style="font-size:25px;">
+            {% if recommended %}
+                <a onclick="toggleRecommend()" href="javascript:void(0);" ><img id="rec" src="{% static 'images/iconImage/recommended.png' %}"></a>
+            {% else %}
+                <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec" src="{% static 'images/iconImage/recommend.png' %}"></a>
+            {% endif %}
+            : <span id="recommend_num">{{review.recommendedOn|length}}</span>
+        </p>
+        <p style="font-size:25px;">
+            {% if reported %}
+                <a><img id="rep" src="{% static 'images/iconImage/reported.png' %}"></a>
+            {% else %}
+                <a><img id="rep" src="{% static 'images/iconImage/report.png' %}"></a>
+            {% endif %}
+            : <span id="report_num">{{review.reportedOn|length}}</span>
+        </p>
+    </div>
+</div>
+<div id="reviewContent" class="content col">
     {% for s in review.reviewSentence %}
         <span>{{s}}</span>
         <br>
@@ -36,9 +74,9 @@
         </a>
     {% endfor %}
 </div>
-<div id="images">
-    <!-사진들 놓을 곳-->
-    <!-JQuery 등을 써서 예쁘게 만들 수 있으면 좋겠습니다.-->
+<div id="same_room_reviews">
+    <!-같은 원룸의 리뷰들 목록-->
+    <!-추천 순으로 약 5개만 출력-->
 </div>
 <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
 {% endblock %}

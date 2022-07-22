@@ -133,7 +133,7 @@ def normal_user_review_read(request):
             icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
             icons.append(icon_info)
     if user:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true'})
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user})
     else:
         return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
 
@@ -148,5 +148,4 @@ def review_search_page(request):
 
 
 def review_search_test(request):
-    form = ReviewSearchForm(request.GET)
-    return render(request, 'tt.html', {'searchForm': form})
+    return render(request, 'tt.html')

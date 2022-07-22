@@ -1,7 +1,9 @@
 @import "color.scss";
+div#reviewInfo{
+    height:200px;
+}
 div#reviewContent{
-    width:750px;
-    height:250px;
+    height:300px;
     border:1px solid grey;
 }
 div#midContent{
@@ -12,8 +14,4 @@ div.middle{
 }
 div#icon{
     height:228px;
-}
-div#images{
-    border:1px solid red;
-    height:261px;
 }

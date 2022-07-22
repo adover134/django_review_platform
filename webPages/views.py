@@ -1,7 +1,9 @@
 from django.shortcuts import render
 import requests
 import json
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
@@ -216,21 +218,20 @@ def normal_user_review_search(request):
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     print(request.user)
     data = dict(request.GET)
-    print(data)
     review_search_url = review_search_url+'?'
     print(data)
     if data.get('builtFrom') and data.get('builtTo'):
         review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]+'&builtTo='+data.get('builtTo')[0]
-    if data.get('address') != '':
+    if data.get('address'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
-        #review_search_url = review_search_url+'address='+data.get('address')
+        review_search_url = review_search_url+'address='+data.get('address')[0]
     for i in range(3):
-        if data.get('commonInfo_'+str(i+1)):
-            review_search_url = review_search_url+'&'+'commonInfo_'+str(i+1)+'=on'
+        if data.get('commonInfo'):
+            for c in data.get('commonInfo'):
+                review_search_url = review_search_url+'&'+'commonInfo='+c
     review_list = json.loads(requests.get(review_search_url).text)
-    print(review_list)
-    paginator = Paginator(review_list, 3)
+    paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     token = request.COOKIES.get('token')
@@ -241,3 +242,80 @@ def normal_user_review_search(request):
         user = usercheck(str(a.get('id')))
         context['user'] = user.get('uNickname')
     return render(request, 'normal_user_review_search.html', context)
+
+
+def normal_user_review_read(request):
+    token = request.COOKIES.get('token')
+    user = None
+    if token:
+        a = tokencheck(token)
+        user = usercheck(str(a.get('id')))
+    review = None
+    review_num = request.GET.get('id')
+    print(review_num)
+    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
+    address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
+    review['address'] = address
+    icon_urls = review.get('includedIcon')
+    icons = []
+    if icon_urls:
+        for icon in icon_urls:
+            icon_info = json.loads(requests.get(icon).text)
+            icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
+            icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
+            icons.append(icon_info)
+    if user:
+        # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
+        recommended = None
+        reported = None
+        recommends = review.get('recommendedOn')
+        print('w')
+        if recommends:
+            for recommend in recommends:
+                print(recommend)
+                if json.loads(requests.get(recommend).text).get('uId') == user.get('uId'):
+                    recommended = True
+                    break
+        # 해당 리뷰에 대해 신고한 사람 중 사용자가 있는지 확인
+        reports = review.get('reportedOn')
+        if reports:
+            for report in reports:
+                if json.loads(requests.get(report).text).get('uId') == user.get('uId'):
+                    reported = True
+                    break
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user.get('uNickname'), 'userInfo': user, 'recommended': recommended, 'reported': reported})
+    else:
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
+
+
+@api_view(['POST'])
+def normal_user_review_recommend(request):
+    data = dict(request.POST)
+    token = request.COOKIES.get('token')
+    user = None
+    if token:
+        a = tokencheck(token)
+        user = usercheck(str(a.get('id')))
+    if user:
+        # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
+        if data.get('recommended')[0] == 'false':
+            data1 = {'uId': user.get('uId'), 'reviewId': int(data.get('review')[0])}
+            print(data1)
+            a = requests.post('http://127.0.0.1:8000/db/recommend/', data=data1)
+        else:
+            # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
+            url = 'http://127.0.0.1:8000/db/recommend/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.get('uId'))
+            a = requests.get(url)
+            requests.delete('http://127.0.0.1:8000/db/recommend/'+a.text+'/')
+    return Response('success')
+
+
+def normal_user_review_report(request):
+    token = request.COOKIES.get('token')
+    user = None
+    if token:
+        a = tokencheck(token)
+        user = usercheck(str(a.get('id')))
+    if user:
+        # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
+        pass
