@@ -24,3 +24,77 @@ function tok(a){
         }
     }
 }
+const csrftoken = Cookies.get('csrftoken');
+function toggleRecommend(){
+    if (reported){
+        alert('이미 신고한 글입니다.');
+    }
+    else if(Cookies.get('token')==null){
+        alert('로그인이 필요합니다.');
+    }
+    else {
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8000/toggleRecommmend/",
+            async: false,
+            headers: {'X-CSRFToken': csrftoken},
+            dataType: 'json',
+            data: {
+                'review': reviewNum,
+                'recommended': recommended
+            },
+            success: function (response) {
+                // on successful creating object
+                if (recommended){
+                    document.getElementById('rec').src=recommendImg;
+                    recommended=false;
+                    document.getElementById('recommend_num').innerText = parseInt(document.getElementById('recommend_num').innerText)-1;
+                }
+                else{
+                    document.getElementById('rec').src=recommendedImg;
+                    recommended=true;
+                    document.getElementById('recommend_num').innerText = parseInt(document.getElementById('recommend_num').innerText)+1;
+                }
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert('error');
+            }
+        })
+    }
+}
+function toggleReport(){
+    if (recommended){
+        alert('이미 추천한 글입니다.');
+    }
+    else {
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8000/toggleRecommmend/",
+            async: false,
+            headers: {'X-CSRFToken': csrftoken},
+            dataType: 'json',
+            data: {
+                'review': reviewNum,
+                'reported': reported
+            },
+            success: function (response) {
+                // on successful creating object
+                if (reported){
+                    document.getElementById('rep').src=reportImg;
+                    reported = false;
+                    document.getElementById('report_num').innerText = parseInt(document.getElementById('report_num').innerText)-1;
+                }
+                else{
+                    document.getElementById('rep').src=reportedImg;
+                    reported = true;
+                    document.getElementById('report_num').innerText = parseInt(document.getElementById('report_num').innerText)-1;
+                }
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert('error');
+            }
+        })
+    }
+}

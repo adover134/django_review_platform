@@ -7,18 +7,18 @@
     <form action="{{normalUserReviewSearch}}" onsubmit="get_address()" method="get">
         <fieldset id="common_info">
             <legend>건물 공유 시설</legend>
-            <input type="checkbox" id="parking_lot" name="commonInfo_1" value="parking_lot">
+            <input type="checkbox" id="parking_lot" name="commonInfo" value="1">
             <label class="checkbox-inline" for="parking_lot">주차장</label>
-            <input type="checkbox" id="elevator" name="commonInfo_2">
+            <input type="checkbox" id="elevator" name="commonInfo" value="2">
             <label class="checkbox-inline" for="elevator">엘리베이터</label>
-            <input type="checkbox" id="CCTV" name="commonInfo_3">
+            <input type="checkbox" id="CCTV" name="commonInfo" value="3">
             <label class="checkbox-inline" for="CCTV">CCTV</label>
         </fieldset>
         <fieldset id="built_year">
             <legend>건축 연도</legend>
-            <select id="builtFrom" name="builtFrom" placeholder="~년 이후"></select>
+            <select id="builtFrom" name="builtFrom"></select>
             <span> ~ </span>
-            <select id="builtTo" name="builtTo" placeholder="~년 이전"></select>
+            <select id="builtTo" name="builtTo"></select>
         </fieldset>
         <br>
         <label for="otherOptions">검색 텍스트</label>
@@ -38,7 +38,7 @@
 <div id="reviewSearchResult">
     <fieldset>
         <legend>건물 주소</legend>
-        <input type="text" name="address" id="address">동
+        <input type="text" name="address" id="address1">동
     </fieldset>
     <br>
     <table class="col-8">
@@ -54,12 +54,12 @@
                     리뷰 제목
                 </th>
                 <th class="text-center">
-                    추천 / 신고
+                    <img src="{% static 'images/iconImage/recommend.png' %}" alt="추천"> / <img src="{% static 'images/iconImage/report.png' %}" alt="신고">
                 </th>
             </tr>
             {% for r in paged_review %}
                 <tr>
-                    <td rowspan="2" class="col-1">
+                    <td rowspan="3" class="col-1">
                         <img>
                     </td>
                     <td class="review_writer text-center col-2">
@@ -69,9 +69,13 @@
                         <a class="link-secondary" href="{{normalUserReviewRead}}?id={{r.id}}">{{ r.reviewTitle }}</a>
                     </td>
                     <td class="col-2 text-center">
-                        <a><img alt="추천"></a>
-                        <a><img alt="신고"></a>
+                        {{r.recommendedOn|length}} / {{r.reportedOn|length}}
                     </td>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-center">
+                        아이콘 목록
+                    </th>
                 </tr>
                 <tr>
                     <td colspan="3" class="review_icon col-5">

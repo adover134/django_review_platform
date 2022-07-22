@@ -32,6 +32,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         view_name='icon-detail'
     )
+    recommendedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='recommend-detail'
+    )
+    reportedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='report-detail'
+    )
 
     class Meta:
         model = Review

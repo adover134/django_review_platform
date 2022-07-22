@@ -26,6 +26,8 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('infoCheck/', views.infoCheck, name='infoCheck'),
     path('normalUserReviewSearch/', views.normal_user_review_search, name='normalUserReviewSearch'),
+    path('normal_user_review_read/', views.normal_user_review_read, name='normalUserReviewRead'),
+    path('toggleRecommmend/', views.normal_user_review_recommend, name='normalUserReviewRecommend'),
     path('db/', include('DBs.urls')),
     path('test/', include('webTests.urls'))
 ]
