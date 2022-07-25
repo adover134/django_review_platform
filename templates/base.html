@@ -18,11 +18,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 </head>
-<body>
+<body  style="font-family:'Noto Sans KR';">
     <div class="navbar-light" id="headMenu">
         <div class="nav-item col-1" style="display:inline-block; float:left; height:20px;"></div>
-        <a href="http://127.0.0.1:8000/" class="navbar-brand col-1" id="logo" style="display:inline-block; float:left;">로고 이미지</a>
+        <a href="http://127.0.0.1:8000/" class="navbar-brand col-1 text-center" id="logo" style="display:inline-block; float:left;">로고 이미지</a>
         {% block head_menu %}
         {% endblock %}
     </div>
