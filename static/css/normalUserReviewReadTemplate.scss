@@ -6,11 +6,9 @@ div#reviewContent{
     height:300px;
     border:1px solid grey;
 }
-div#midContent{
-    height:1000px;
-}
-div.middle{
-    height:1000px;
+div#mainDiv{
+    overflow-y:scroll;
+    overflow-x:hidden;
 }
 div#icon{
     height:228px;

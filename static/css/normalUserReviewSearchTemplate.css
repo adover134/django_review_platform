@@ -8,11 +8,8 @@ div#reviewSearchResult {
   position: relative;
   height: 100%;
   border: 2px solid skyblue;
-  overflow: scroll;
-}
-
-div#reviewSearchResult::-webkit-scrollbar {
-  display: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 fieldset#common_info {
