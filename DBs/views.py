@@ -433,6 +433,18 @@ class ReportViewSets(ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
 
+    def list(self, request, *args, **kwargs):
+        # URL의 파라미터들을 사전형 배열로 받는다.
+        data1 = dict(request.GET)
+        # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
+        if not data1:
+            return super().list(self, request, args, kwargs)
+        if data1.get('reviewId') and data1.get('uId'):
+            f = Q(uId= data1.get('uId')[0])
+            f.add(Q(reviewId= int(data1.get('reviewId')[0])), Q.AND)
+            result = Report.objects.filter(f)
+            return Response(result[0].id)
+
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
         instance = self.get_object()
@@ -458,6 +470,8 @@ class ReportViewSets(ModelViewSet):
         instance = self.get_object()
         # 시리얼라이저로 인스턴스를 직렬화()
         data = self.get_serializer(instance).data
+        if 'user' in request.GET:
+            return super().destroy(self, request, args, kwargs)
         # 신고를 작성한 회원의 회원번호를 구함
         u_id = data['uId']
         # 해당 회원의 retrieve 메소드를 HTTP GET 메소드를 이용하여 획득

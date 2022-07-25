@@ -41,7 +41,7 @@
         <p>수정/삭제 버튼 놓을 곳</p>
         <p style="font-size:25px;">
             {% if recommended %}
-                <a onclick="toggleRecommend()" href="javascript:void(0);" ><img id="rec" src="{% static 'images/iconImage/recommended.png' %}"></a>
+                <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec" src="{% static 'images/iconImage/recommended.png' %}"></a>
             {% else %}
                 <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec" src="{% static 'images/iconImage/recommend.png' %}"></a>
             {% endif %}
@@ -49,9 +49,9 @@
         </p>
         <p style="font-size:25px;">
             {% if reported %}
-                <a><img id="rep" src="{% static 'images/iconImage/reported.png' %}"></a>
+                <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep" src="{% static 'images/iconImage/reported.png' %}"></a>
             {% else %}
-                <a><img id="rep" src="{% static 'images/iconImage/report.png' %}"></a>
+                <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep" src="{% static 'images/iconImage/report.png' %}"></a>
             {% endif %}
             : <span id="report_num">{{review.reportedOn|length}}</span>
         </p>

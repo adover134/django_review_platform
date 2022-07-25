@@ -1,29 +1,34 @@
 @import "color.scss";
 
 div#headMenu{
-  height:50px;
-  border:1px solid $black;
+  width:auto;
+  height:7.5vh;
+  border-bottom:2px solid #B3B3B3;
+  background-color:$white;
 }
 #logo{
   display:inline-block;
   float:left;
-  height:48px;
-  border:1px solid $yellow-400;
+  height:100%;
+  border:2px solid $yellow-400;
   background-color:$yellow-400;
 }
 div#midContent{
+  display:block;
   position:relative;
-  height:700px;
+  height:82.5vh;
+  width:100%;
 }
 div.middle{
   display:inline-block;
   float:left;
-  height:700px;
+  height:100%;
 }
 div#bottomInfoBox{
   position:relative;
-  background-color:$red;
-  top:2px;
-  border:1px solid $blue;
-  height:50px;
+  background-color:#B3B3B3;
+  border:2px solid #B3B3B3;
+  border-bottom:none;
+  border-collapse:collapse;
+  height:10vh;
 }

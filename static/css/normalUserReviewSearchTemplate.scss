@@ -6,8 +6,12 @@ div#searchConditionForm{
 }
 div#reviewSearchResult{
     position:relative;
-    height:700px;
+    height:100%;
     border:2px solid skyblue;
+    overflow:scroll;
+}
+div#reviewSearchResult::-webkit-scrollbar{
+  display:none;
 }
 fieldset#common_info{
     display:block;

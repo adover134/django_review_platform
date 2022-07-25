@@ -70,7 +70,7 @@ function toggleReport(){
     else {
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8000/toggleRecommmend/",
+            url: "http://127.0.0.1:8000/toggleReport/",
             async: false,
             headers: {'X-CSRFToken': csrftoken},
             dataType: 'json',
@@ -88,7 +88,7 @@ function toggleReport(){
                 else{
                     document.getElementById('rep').src=reportedImg;
                     reported = true;
-                    document.getElementById('report_num').innerText = parseInt(document.getElementById('report_num').innerText)-1;
+                    document.getElementById('report_num').innerText = parseInt(document.getElementById('report_num').innerText)+1;
                 }
             },
             error: function (response) {

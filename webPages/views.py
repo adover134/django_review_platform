@@ -306,11 +306,13 @@ def normal_user_review_recommend(request):
             # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
             url = 'http://127.0.0.1:8000/db/recommend/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.get('uId'))
             a = requests.get(url)
-            requests.delete('http://127.0.0.1:8000/db/recommend/'+a.text+'/')
+            requests.delete('http://127.0.0.1:8000/db/recommend/'+a.text)
     return Response('success')
 
 
+@api_view(['POST'])
 def normal_user_review_report(request):
+    data = dict(request.POST)
     token = request.COOKIES.get('token')
     user = None
     if token:
@@ -318,4 +320,14 @@ def normal_user_review_report(request):
         user = usercheck(str(a.get('id')))
     if user:
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
-        pass
+        if data.get('reported')[0] == 'false':
+            data1 = {'uId': user.get('uId'), 'reviewId': int(data.get('review')[0])}
+            print(data1)
+            a = requests.post('http://127.0.0.1:8000/db/report/', data=data1)
+        else:
+            # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
+            url = 'http://127.0.0.1:8000/db/report/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.get('uId'))
+            a = requests.get(url)
+            print(a.text)
+            requests.delete('http://127.0.0.1:8000/db/report/'+a.text+'/?user=1')
+    return Response('success')
