@@ -20,21 +20,22 @@
     <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-    <div class="nav navbar-expand-lg navbar-light bg-red-500" id="headMenu">
+    <div class="navbar-light" id="headMenu">
+        <div class="nav-item col-1" style="display:inline-block; float:left; height:20px;"></div>
         <a href="http://127.0.0.1:8000/" class="navbar-brand col-1" id="logo" style="display:inline-block; float:left;">로고 이미지</a>
         {% block head_menu %}
         {% endblock %}
     </div>
     <div id="midContent">
-        <div class="middle col-2" id="leftSideMenu" style="border:1px solid black;">
+        <div class="middle col-2" id="leftSideMenu" style="border:2px solid #B3B3B3; border-left:none;">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle col-8" id="mainDiv" style="border:1px solid green;">
+        <div class="middle col-8" id="mainDiv" style="border:2px solid #B3B3B3;">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle col-2" id="rightSideMenu" style="border:1px solid #000000;">
+        <div class="middle col-2" id="rightSideMenu" style="border:2px solid #B3B3B3; border-right:none;">
             {% block right_side_bar %}
             {% endblock %}
         </div>

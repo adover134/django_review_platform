@@ -5,7 +5,7 @@
 <!-템플릿 태그 중 url은 url.py에서 path마다 지정한 이름, 혹은 경로 규칙에 따라 url 값을 반환합니다.-->
 <!-전체 url 값을 페이지에 직접 노출시키지 않는다는 장점이 있습니다.-->
 <link rel="stylesheet" href="{% static 'css/normalUserBaseTemplate.css' %}">
-<div id="mainMenu" class="col-11">
+<div id="mainMenu" class="col-10">
     <div class="button text-center nav-item col-1">
         <a href = '#'>
             지도
@@ -22,15 +22,12 @@
         </a>
     </div>
     <div class="nav-item col-3" style="display:inline-block; float:left; height:50px;"></div>
-    <form CLASS="nav-item col-4" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
+    <form CLASS="nav-item col-3" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
         <div class="nav-item col-9">
             <input class="form-control" type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
         </div>
-        <div class="nav-item col-3">
-            <button class="form-control" type="submit" id="search-button">Search</button>
-        </div>
     </form>
-    <div class="col-2" id="userInfo">
+    <div class="col-3" id="userInfo">
         {% if alive == 'true' %}
             <div class="nav-item dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -43,8 +40,8 @@
               </ul>
             </div>
         {% else %}
-            <div class="nav-item col-6" style="display:inline-block; float:left; height:50px;"></div>
             <button class="nav-item col-6" type="button" id="login" onclick="location.href = '{{login}}'">login</button>
+            <div class="nav-item col-6" style="display:inline-block; float:left; height:50px;"></div>
         {% endif %}
     </div>
 </div>
