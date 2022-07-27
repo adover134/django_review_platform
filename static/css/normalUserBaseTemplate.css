@@ -19,10 +19,11 @@ div#userInfo {
   display: inline-block;
 }
 
-button#login {
+a#login {
   height: 50px;
   display: inline-block;
   float: left;
+  background-color: #6EA8FE;
 }
 
 form#search-form {

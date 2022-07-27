@@ -52,12 +52,8 @@ def normal_user_review_search(request):
 
 @api_view(['POST'])
 def normal_user_review_write(request):
-    user = None
+    user = request.user
     review_id = None
-    token = request.COOKIES.get('token')
-    if token:
-        a = views.tokencheck(token)
-        user = views.usercheck(str(a.get('id')))
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
@@ -80,7 +76,8 @@ def normal_user_review_write(request):
             '''
             # 원룸 번호를 구한다.
             data1['roomId'] = room[0].get('id')
-            data1['uId'] = user.get('uId')
+            data1['uId'] = user.id
+            print(data1['uId'])
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
@@ -99,24 +96,13 @@ def handle_uploaded_file(f, name):
 
 def normal_user_review_write_page(request):
     form = {'TextForm': reviewWriteForms.TextReviewWriteForm, 'ImageForm': reviewWriteForms.ImageReviewWriteForm}
-    token = request.COOKIES.get('token')
-    if token:
-        a = views.tokencheck(token)
-        user = views.usercheck(str(a.get('id')))
-        if user:
-            form['alive'] = 'true'
-        else:
-            form['alive'] = 'false'
 
     return render(request, 'normal_user_review_write.html', form)
 
 
 def normal_user_review_read(request):
     token = request.COOKIES.get('token')
-    user = None
-    if token:
-        a = views.tokencheck(token)
-        user = views.usercheck(str(a.get('id')))
+    user = request.user
     review = None
     review_num = request.GET.get('id')
     print(review_num)
@@ -133,9 +119,9 @@ def normal_user_review_read(request):
             icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
             icons.append(icon_info)
     if user:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user})
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons})
     else:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons})
 
 
 def image(request):
