@@ -3,8 +3,7 @@
 
 {% block main_contents %}
 <link rel="stylesheet" href="{% static 'css/normalUserMainTemplate.css' %}">
-{% if request.path != main %}
-<meta http-equiv="refresh" content="0; url='{{main}}'">
+{% if request.path != login %}
 {% else %}
 <script>
     window.onpageshow = function(event) {
@@ -12,11 +11,6 @@
             document.location.reload();
         }
     };
-</script>
-{% endif %}
-{% if msg %}
-<script>
-    alert('{{msg}}');
 </script>
 {% endif %}
 <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>

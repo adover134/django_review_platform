@@ -1,22 +1,16 @@
 import datetime
 
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class User(models.Model):
-    uId = models.CharField(primary_key=True, max_length=20)
-    uNickname = models.TextField()
-    uEmail = models.EmailField(unique=True)
-    uAccessToken = models.TextField(null=True)
+class User(AbstractUser):
     uWarnCount = models.IntegerField(default=0)
     uActive = models.IntegerField(default=0)
     penaltyDate = models.DateField(default=datetime.date.today)
 
     class Meta:
         db_table = 'user_info'
-
-    def __str__(self):
-        return '%s/%s' % (self.uNickname, self.uEmail)
 
 
 class Manager(models.Model):

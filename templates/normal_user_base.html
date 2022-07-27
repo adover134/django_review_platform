@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load index %}
 
 {% block head_menu %}
 <!-템플릿 태그 중 url은 url.py에서 path마다 지정한 이름, 혹은 경로 규칙에 따라 url 값을 반환합니다.-->
@@ -28,10 +29,10 @@
         </div>
     </form>
     <div class="col-3" id="userInfo">
-        {% if alive == 'true' %}
+        {% if user and not user.is_anonymous %}
             <div class="nav-item dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                  {{user}} 님, 환영합니다.
+                  {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" href = '{{logout}}'>logout</a></li>
@@ -40,7 +41,7 @@
               </ul>
             </div>
         {% else %}
-            <button class="nav-item col-6" type="button" id="login" onclick="location.href = '{{login}}'">login</button>
+            <a class="nav-item col-6" type="button" id="login" href="{% url 'social:begin' 'kakao' %}?next={{ request.path }}">login</a>
             <div class="nav-item col-6" style="display:inline-block; float:left; height:50px;"></div>
         {% endif %}
     </div>
