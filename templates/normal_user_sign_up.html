@@ -36,11 +36,11 @@
         </li>
     </ul>
     <p id="disclaimer_end">
-        위의 주의사항들을 모두 읽으셨고 동의하신다면 회원가입 버튼을, 아니면 돌아가기 버튼을 눌러주세요.
+        위의 주의사항들을 모두 읽으셨고 동의하신다면 원하는 플랫폼의 로그인 버튼을, 아니면 돌아가기 버튼을 눌러주세요.
     </p>
 </div>
 <div id="sign_up">
-    <button type="button", onclick="location.href = 'http://127.0.0.1:8000/signup/'">회원가입</button>
-    <button type="button", onclick="location.href = 'http://127.0.0.1:8000/'">돌아가기</button>
+    <a type="button" href="{% url 'social:begin' 'kakao' %}?next={{ signup }}">카카오 로그인</a>
+    <button type="button" onclick="location.href = 'http://127.0.0.1:8000/'">돌아가기</button>
 </div>
 {% endblock %}

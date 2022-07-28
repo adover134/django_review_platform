@@ -6,4 +6,9 @@ div#disclaimer > p {
   text-align: center;
 }
 
+div#disclaimer {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 /*# sourceMappingURL=normalUserSignUpTemplate.css.map */
