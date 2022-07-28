@@ -41,7 +41,7 @@
               </ul>
             </div>
         {% else %}
-            <a class="nav-item col-6" type="button" id="login" href="{% url 'social:begin' 'kakao' %}?next={{ request.path }}">login</a>
+            <a class="nav-item col-6" type="button" id="login" href="{{ signupPage }}">login</a>
             <div class="nav-item col-6" style="display:inline-block; float:left; height:50px;"></div>
         {% endif %}
     </div>

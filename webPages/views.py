@@ -65,7 +65,6 @@ def main(request):
 
 # 로그인 시도 시에 처리되는 메소드
 def login(request):
-    print(request)
     return render(request, 'normal_user_main.html')
 
 
@@ -79,23 +78,8 @@ def signupPage(request):
 
 
 def signup(request):
-    token = request.COOKIES.get('token')
-    # 토큰 정보로 사용자 정보를 얻는다.
-    a = tokeninfo(token)
-    print(a)
-    # 획득한 사용자 정보를 바탕으로 DB에 넣을 값들을 정한다.
-    body = {
-        'uId': a.get('id'),
-        'uNickname': a.get('properties').get('nickname'),
-        'uEmail': a.get('kakao_account').get('email'),
-        'uAccessToken': token
-    }
-    # 새로운 회원을 DB에 추가하는 뷰를 수행한다.
-    requests.post('http://127.0.0.1:8000/db/user/', data=body)
-    # 메인 페이지에 기본 상태로 이동하는 render를 작성한다.
-    res = render(request, 'normal_user_main.html', {'alive': 'false'})
-    # 만약 토큰이 쿠키에 존재한다면 쿠키에서 제거한다.
-    res.delete_cookie('token')
+    print(request.user)
+    res = render(request, 'normal_user_main.html')
     return res
 
 
