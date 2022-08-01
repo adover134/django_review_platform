@@ -4,11 +4,12 @@ div#rightSideMenu {
 
 .slider > div {
   height: 34vh;
-  margin-bottom: 5vh;
+  min-height: 204px;
+  margin-bottom: 35px;
 }
 
 .bx-wrapper {
-  margin-bottom: 5vh;
+  margin-bottom: 35px;
 }
 
 /*# sourceMappingURL=normalUserMainTemplate.css.map */

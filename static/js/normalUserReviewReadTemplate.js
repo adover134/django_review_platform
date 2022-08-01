@@ -29,7 +29,7 @@ function toggleRecommend(){
     if (reported){
         alert('이미 신고한 글입니다.');
     }
-    else if(Cookies.get('token')==null){
+    else if(userloggedin == false){
         alert('로그인이 필요합니다.');
     }
     else {
@@ -66,6 +66,9 @@ function toggleRecommend(){
 function toggleReport(){
     if (recommended){
         alert('이미 추천한 글입니다.');
+    }
+    else if(userloggedin == false){
+        alert('로그인이 필요합니다.');
     }
     else {
         $.ajax({

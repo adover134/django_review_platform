@@ -10,15 +10,20 @@
 <script>
 $(document).ready(function(){
     $('.slider').bxSlider({
-        controls:false
     });
 });
 </script>
 <div class="slider" id="famous">
-    <div>1</div>
+    <div><a href="#">werwerwe</a></div>
     <div>2</div>
     <div>3</div>
-    <div>4</div>
+    <div>
+        작성자
+        추천 수
+        제목
+        대표 사진
+
+    </div>
 </div>
 <div class="slider" id="recent">
     <div>1</div>
@@ -37,6 +42,16 @@ $(document).ready(function(){
         }
     };
 </script>
+{% elif request.path == main %}
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            document.location.reload();
+        }
+    };
+</script>
+{% else %}
+<meta http-equiv="refresh" content="0; url='{{main}}'">
 {% endif %}
 <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6d1ad052df81bb894aba3f443d1fd674&libraries=services&autoload=true"></script>
