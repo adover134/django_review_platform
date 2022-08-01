@@ -2,9 +2,7 @@
 {% load static %}
 
 {% block main_contents %}
-{% if request.path != normalUserReviewRead %}
-<meta http-equiv="refresh" content="0; url='{{normalUserReviewRead}}?id={{review_num}}'">
-{% else %}
+{% if request.path == normalUserReviewRead %}
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) {
@@ -22,6 +20,15 @@
     var recommendedImg="{% static 'images/iconImage/recommended.png' %}";
     var reportImg="{% static 'images/iconImage/report.png' %}";
     var reportedImg="{% static 'images/iconImage/reported.png' %}";
+</script>
+{% endif %}
+{% if user %}
+<script>
+    var userloggedin=true;
+</script>
+{% else %}
+<script>
+    var userloggedin=false;
 </script>
 {% endif %}
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">

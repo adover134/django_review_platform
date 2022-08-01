@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block left_side_bar %}
-<div class="col-2" id="searchConditionForm">
+<div id="searchConditionForm">
     <h1>검색 필터</h1>
     <form action="{{normalUserReviewSearch}}" onsubmit="get_address()" method="get">
         <fieldset id="common_info">
@@ -36,10 +36,12 @@
 
 <script  src="{% static 'js/normalUserReviewSearchTemplate.js' %}"></script>
 <div id="reviewSearchResult">
-    <fieldset>
-        <legend>건물 주소</legend>
-        <input type="text" name="address" id="address1">동
-    </fieldset>
+    <form action="{{normalUserReviewSearch}}" method="get">
+        <fieldset>
+            <legend>건물 주소</legend>
+            <input type="text" name="address" id="address1">동
+        </fieldset>
+    </form>
     <br>
     <table class="col-8">
         <tbody>

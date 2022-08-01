@@ -4,7 +4,7 @@
 {% url 'login' as login %}
 {% url 'main' as main %}
 {% url 'signup' as signup %}
-{% url 'signupPage' as signupPage %}
+{% url 'loginPage' as loginPage %}
 {% url 'infoCheck' as infoCheck %}
 {% url 'normalUserReviewSearch' as normalUserReviewSearch %}
 {% url 'normalUserReviewRead' as normalUserReviewRead %}
@@ -23,7 +23,10 @@
 <body>
     <div class="navbar-light" id="headMenu">
         <div class="nav-item col-1" style="display:inline-block; float:left; height:20px;"></div>
-        <a href="http://127.0.0.1:8000/" class="navbar-brand col-1 text-center" id="logo" style="display:inline-block; float:left;">로고 이미지</a>
+        <div>
+            <div style="height:0.7vh;"></div>
+            <a href="http://127.0.0.1:8000/" class="navbar-brand col-1 text-center" id="logo" style="display:inline-block; float:left;"><img style="width:6vh; height:6vh;" src="{% static 'images/logo/logo.png' %}" alt="로고 이미지"></a>
+        </div>
         {% block head_menu %}
         {% endblock %}
     </div>

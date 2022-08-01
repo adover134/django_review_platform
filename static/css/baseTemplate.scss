@@ -3,24 +3,26 @@
 
 body{
   font-family:'Noto Sans KR', sans-serif !important;
+  min-height:600px;
+  min-width:1200px;
 }
 div#headMenu{
   width:auto;
   height:7.5vh;
+  min-height:45px;
   border-bottom:2px solid #B3B3B3;
-  background-color:$white;
+  background-color:#A23355;
 }
 #logo{
   display:inline-block;
   float:left;
   height:100%;
-  border:2px solid $yellow-400;
-  background-color:$yellow-400;
 }
 div#midContent{
   display:block;
   position:relative;
   height:82.5vh;
+  min-height:495px;
   width:100%;
 }
 div.middle{
@@ -35,4 +37,5 @@ div#bottomInfoBox{
   border-bottom:none;
   border-collapse:collapse;
   height:10vh;
+  min-height:60px;
 }

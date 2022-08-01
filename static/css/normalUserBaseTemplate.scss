@@ -7,12 +7,13 @@ div#mainMenu{
 div#mainMenu>div.button{
     height:50px;
     border-width:1px;
-    background-color:green;
-    border-color:$black;
 }
 div#mainMenu>div.button>a{
     display:inline;
+    color:white;
+    text-decoration:none;
     height:50px;
+    background-color:none;
 }
 div#userInfo{
     display:inline-block;
@@ -21,7 +22,8 @@ a#login{
     height:50px;
     display:inline-block;
     float:left;
-    background-color:$blue-300;
+    color:white;
+    text-decoration:none;
 }
 form#search-form{
     display:inline-block;

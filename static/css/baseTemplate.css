@@ -1,26 +1,28 @@
 body {
   font-family: "Noto Sans KR", sans-serif !important;
+  min-height: 600px;
+  min-width: 1200px;
 }
 
 div#headMenu {
   width: auto;
   height: 7.5vh;
+  min-height: 45px;
   border-bottom: 2px solid #B3B3B3;
-  background-color: #fff;
+  background-color: #A23355;
 }
 
 #logo {
   display: inline-block;
   float: left;
   height: 100%;
-  border: 2px solid #FFCD39;
-  background-color: #FFCD39;
 }
 
 div#midContent {
   display: block;
   position: relative;
   height: 82.5vh;
+  min-height: 495px;
   width: 100%;
 }
 
@@ -37,6 +39,7 @@ div#bottomInfoBox {
   border-bottom: none;
   border-collapse: collapse;
   height: 10vh;
+  min-height: 60px;
 }
 
 /*# sourceMappingURL=baseTemplate.css.map */

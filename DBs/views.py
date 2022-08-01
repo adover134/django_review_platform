@@ -470,12 +470,13 @@ class ReportViewSets(ModelViewSet):
         instance = self.get_object()
         # 시리얼라이저로 인스턴스를 직렬화()
         data = self.get_serializer(instance).data
-        if 'user' in request.GET:
+        # 관리자 여부 확인
+        if not request.user.is_staff:
             return super().destroy(self, request, args, kwargs)
         # 신고를 작성한 회원의 회원번호를 구함
         u_id = data['uId']
         # 해당 회원의 retrieve 메소드를 HTTP GET 메소드를 이용하여 획득
-        user = json.loads(requests.get('http://127.0.0.1:8000/db/user/' + u_id + '/').text)
+        user = json.loads(requests.get('http://127.0.0.1:8000/db/user/' + str(u_id) + '/').text)
         # 회원의 경고 횟수를 1 증가
         user['uWarnCount'] = user['uWarnCount'] + 1
         # 경고 횟수에 따라서 상태 변경
@@ -491,7 +492,7 @@ class ReportViewSets(ModelViewSet):
         elif user['uWarnCount'] >= 5:
             user['uActive'] = 1
         # 회원 정보 update
-        requests.put('http://127.0.0.1:8000/db/user/' + u_id + '/', data=user)
+        requests.put('http://127.0.0.1:8000/db/user/' + str(u_id) + '/', data=user)
         # 신고 데이터 삭제
         return super().destroy(self, request, args, kwargs)
 

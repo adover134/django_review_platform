@@ -73,8 +73,8 @@ def logout(request):
     return redirect('/')
 
 
-def signupPage(request):
-    return render(request, 'normal_user_sign_up.html')
+def loginPage(request):
+    return render(request, 'normal_user_login.html')
 
 
 def signup(request):
@@ -118,25 +118,14 @@ def normal_user_review_search(request):
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    token = request.COOKIES.get('token')
     context = {'paged_review': paged_review}
-    if token:
-        a = tokencheck(token)
-        context['alive'] = 'true'
-        user = usercheck(str(a.get('id')))
-        context['user'] = user.get('uNickname')
     return render(request, 'normal_user_review_search.html', context)
 
 
 def normal_user_review_read(request):
-    token = request.COOKIES.get('token')
-    user = None
-    if token:
-        a = tokencheck(token)
-        user = usercheck(str(a.get('id')))
+    user = request.user
     review = None
     review_num = request.GET.get('id')
-    print(review_num)
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
@@ -153,21 +142,19 @@ def normal_user_review_read(request):
         recommended = None
         reported = None
         recommends = review.get('recommendedOn')
-        print('w')
         if recommends:
             for recommend in recommends:
-                print(recommend)
-                if json.loads(requests.get(recommend).text).get('uId') == user.get('uId'):
+                if json.loads(requests.get(recommend).text).get('uId') == user.id:
                     recommended = True
                     break
         # 해당 리뷰에 대해 신고한 사람 중 사용자가 있는지 확인
         reports = review.get('reportedOn')
         if reports:
             for report in reports:
-                if json.loads(requests.get(report).text).get('uId') == user.get('uId'):
+                if json.loads(requests.get(report).text).get('uId') == user.id:
                     reported = True
                     break
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user.get('uNickname'), 'userInfo': user, 'recommended': recommended, 'reported': reported})
+        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user, 'recommended': recommended, 'reported': reported})
     else:
         return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
 
@@ -175,20 +162,16 @@ def normal_user_review_read(request):
 @api_view(['POST'])
 def normal_user_review_recommend(request):
     data = dict(request.POST)
-    token = request.COOKIES.get('token')
-    user = None
-    if token:
-        a = tokencheck(token)
-        user = usercheck(str(a.get('id')))
+    user = request.user
     if user:
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
         if data.get('recommended')[0] == 'false':
-            data1 = {'uId': user.get('uId'), 'reviewId': int(data.get('review')[0])}
+            data1 = {'uId': user.id, 'reviewId': int(data.get('review')[0])}
             print(data1)
             a = requests.post('http://127.0.0.1:8000/db/recommend/', data=data1)
         else:
             # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
-            url = 'http://127.0.0.1:8000/db/recommend/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.get('uId'))
+            url = 'http://127.0.0.1:8000/db/recommend/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.id)
             a = requests.get(url)
             requests.delete('http://127.0.0.1:8000/db/recommend/'+a.text)
     return Response('success')
@@ -197,21 +180,17 @@ def normal_user_review_recommend(request):
 @api_view(['POST'])
 def normal_user_review_report(request):
     data = dict(request.POST)
-    token = request.COOKIES.get('token')
-    user = None
-    if token:
-        a = tokencheck(token)
-        user = usercheck(str(a.get('id')))
+    user = request.user
     if user:
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
         if data.get('reported')[0] == 'false':
-            data1 = {'uId': user.get('uId'), 'reviewId': int(data.get('review')[0])}
+            data1 = {'uId': user.id, 'reviewId': int(data.get('review')[0])}
             print(data1)
             a = requests.post('http://127.0.0.1:8000/db/report/', data=data1)
         else:
             # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
-            url = 'http://127.0.0.1:8000/db/report/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.get('uId'))
+            url = 'http://127.0.0.1:8000/db/report/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.id)
             a = requests.get(url)
             print(a.text)
-            requests.delete('http://127.0.0.1:8000/db/report/'+a.text+'/?user=1')
+            requests.delete('http://127.0.0.1:8000/db/report/'+a.text)
     return Response('success')
