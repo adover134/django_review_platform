@@ -1,6 +1,9 @@
 @import "color.scss";
-div#searchConditionForm{
+div#leftSideMenu{
     background-color:#6CD979;
+}
+div#searchConditionForm{
+    margin-left:10px;
 }
 div#reviewSearchResult{
     position:relative;
