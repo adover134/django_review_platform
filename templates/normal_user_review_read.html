@@ -22,13 +22,13 @@
     var reportedImg="{% static 'images/iconImage/reported.png' %}";
 </script>
 {% endif %}
-{% if user %}
+{% if user.is_anonymous %}
 <script>
-    var userloggedin=true;
+    let userloggedin=false;
 </script>
 {% else %}
 <script>
-    var userloggedin=false;
+    let userloggedin=true;
 </script>
 {% endif %}
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">

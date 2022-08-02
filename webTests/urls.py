@@ -22,7 +22,6 @@ urlpatterns = [
     path('normal_user_base/', views.normal_user_base),
     path('normal_user_review_search/', views.normal_user_review_search),
     path('normal_user_review_write/', views.normal_user_review_write),
-    path('normal_user_review_write_page/', views.normal_user_review_write_page),
     path('normal_user_review_read/', views.normal_user_review_read),
     path('image_test/', views.image),
     path('normal_user_review_search_test/', views.review_search_page),

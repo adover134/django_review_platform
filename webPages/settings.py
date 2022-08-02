@@ -56,6 +56,7 @@ SASS_PRECISION = 8
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -171,3 +172,9 @@ STATICFILES_DIRS = (
 )
 
 AUTH_USER_MODEL = 'DBs.User'
+
+#Django Session Timeout Code
+SESSION_EXPIRE_SECONDS = 10800
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY_GRACE_PERIOD = 60
+#SESSION_TIMEOUT_REDIRECT = 'http://127.0.0.1:8000/'
