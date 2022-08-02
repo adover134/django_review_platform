@@ -101,3 +101,5 @@ function toggleReport(){
         })
     }
 }
+
+console.log(userloggedin);

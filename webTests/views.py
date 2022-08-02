@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect,HttpRequest
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from DBs.models import Review, User
 from webPages import views
 import requests
 import json
@@ -92,12 +91,6 @@ def handle_uploaded_file(f, name):
         for chunk in f.chunks():
             destination.write(chunk)
     return 'images/'+name+'.png'
-
-
-def normal_user_review_write_page(request):
-    form = {'TextForm': reviewWriteForms.TextReviewWriteForm, 'ImageForm': reviewWriteForms.ImageReviewWriteForm}
-
-    return render(request, 'normal_user_review_write.html', form)
 
 
 def normal_user_review_read(request):

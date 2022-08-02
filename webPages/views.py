@@ -3,7 +3,6 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 import requests
 import json
-from django.http import HttpResponseRedirect, HttpResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from datetime import datetime
@@ -122,6 +121,13 @@ def normal_user_review_search(request):
     return render(request, 'normal_user_review_search.html', context)
 
 
+@login_required(login_url='/loginPage/')
+def normal_user_review_write_page(request):
+    form = {'TextForm': reviewWriteForms.TextReviewWriteForm, 'ImageForm': reviewWriteForms.ImageReviewWriteForm}
+
+    return render(request, 'normal_user_review_write.html', form)
+
+
 def normal_user_review_read(request):
     user = request.user
     review = None
@@ -137,7 +143,7 @@ def normal_user_review_read(request):
             icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
             icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
             icons.append(icon_info)
-    if user:
+    if user.id:
         # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
         recommended = None
         reported = None
@@ -163,7 +169,7 @@ def normal_user_review_read(request):
 def normal_user_review_recommend(request):
     data = dict(request.POST)
     user = request.user
-    if user:
+    if user.id:
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
         if data.get('recommended')[0] == 'false':
             data1 = {'uId': user.id, 'reviewId': int(data.get('review')[0])}
@@ -181,7 +187,7 @@ def normal_user_review_recommend(request):
 def normal_user_review_report(request):
     data = dict(request.POST)
     user = request.user
-    if user:
+    if user.id:
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
         if data.get('reported')[0] == 'false':
             data1 = {'uId': user.id, 'reviewId': int(data.get('review')[0])}
