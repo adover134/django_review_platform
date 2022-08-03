@@ -3,8 +3,8 @@
 
 {% block left_side_bar %}
 <div id="searchConditionForm">
-    <h1>검색 필터</h1>
-    <form action="{{normalUserReviewSearch}}" onsubmit="get_address()" method="get">
+    <p style="font-size:30px;">검색 필터</p>
+    <form id="search_filter" action="{{normalUserReviewSearch}}" onsubmit="get_address()" method="get">
         <fieldset id="common_info">
             <legend>건물 공유 시설</legend>
             <input type="checkbox" id="parking_lot" name="commonInfo" value="1">
@@ -26,7 +26,7 @@
         <input class="col-10" name="otherOptions" id="otherOptions" type="text" placeholder="기타 검색 텍스트">
         <br><br>
         <input name="address" id="search_address" style="display:none;">
-        <input type="submit" value="Submit">
+        <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();">적용</a>
     </form>
 </div>
 {% endblock %}

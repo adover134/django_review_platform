@@ -57,7 +57,6 @@ def useralive(warn_count, penalty_date):
     return True
 
 
-@login_required(login_url='/login/')
 def main(request):
     return render(request, 'normal_user_main.html')
 
@@ -103,8 +102,12 @@ def normal_user_review_search(request):
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
     print(data)
-    if data.get('builtFrom') and data.get('builtTo'):
-        review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]+'&builtTo='+data.get('builtTo')[0]
+    if data.get('builtFrom'):
+        review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
+    if data.get('builtTo'):
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url+'&'
+        review_search_url = review_search_url+'builtTo='+data.get('builtTo')[0]
     if data.get('address'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'

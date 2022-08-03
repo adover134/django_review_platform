@@ -1,7 +1,3 @@
-div#leftSideMenu {
-  background-color: #0D781A;
-}
-
 div#searchConditionForm {
   margin-left: 10px;
 }
@@ -16,6 +12,10 @@ div#reviewSearchResult {
 
 fieldset#common_info {
   display: block;
+}
+
+fieldset#common_info > label {
+  color: #A23355;
 }
 
 fieldset#built_year {
