@@ -198,10 +198,13 @@ class ReviewViewSets(ModelViewSet):
         if data1.get('address'):
             roomRetrieveURL = roomRetrieveURL + 'address=' + data1.get('address')[0]
         # 건축년도에 대한 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
-        if data1.get('builtFrom') and data1.get('builtTo'):
+        if data1.get('builtFrom'):
             if roomRetrieveURL[-1] != '?':
                 roomRetrieveURL = roomRetrieveURL + '&'
-            roomRetrieveURL = roomRetrieveURL + 'builtFrom=' + data1.get('builtFrom')[0] + '&'
+            roomRetrieveURL = roomRetrieveURL + 'builtFrom=' + data1.get('builtFrom')[0]
+        if data1.get('builtTo'):
+            if roomRetrieveURL[-1] != '?':
+                roomRetrieveURL = roomRetrieveURL + '&'
             roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
         # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
         #N = len(CommonInfo.objects.all())
@@ -313,10 +316,14 @@ class RoomViewSets(ModelViewSet):
                 query_address.add(Q(address__contains=ad), Q.OR)
             query.add(query_address, Q.AND)
         # 건축년도에 대한 검색을 수행하는 쿼리를 만든다.
-        if data1.get('builtFrom') and data1.get('builtTo'):
+        if data1.get('builtFrom') or data1.get('builtTo'):
             query_built_year = Q()  # 건축년도에 대한 쿼리이다.
-            built_from = data1.get('builtFrom')[0]
-            built_to = data1.get('builtTo')[0]
+            built_from = 0
+            built_to = 2023
+            if data1.get('builtFrom'):
+                built_from = data1.get('builtFrom')[0]
+            if data1.get('builtTo'):
+                built_to = data1.get('builtTo')[0]
             query_built_year = Q(builtYear__range=(int(built_from), int(built_to)))
             query.add(query_built_year, Q.AND)
         #N = len(CommonInfo.objects.all())

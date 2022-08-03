@@ -31,15 +31,15 @@
         {% endblock %}
     </div>
     <div id="midContent">
-        <div class="middle col-2" id="leftSideMenu" style="border:2px solid #B3B3B3; border-left:none;">
+        <div class="middle" id="leftSideMenu" style="border:2px solid #B3B3B3; border-left:none; width:20vw;">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle col-8" id="mainDiv" style="border:2px solid #B3B3B3;">
+        <div class="middle" id="mainDiv" style="border:2px solid #B3B3B3; width:60vw;">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle col-2" id="rightSideMenu" style="border:2px solid #B3B3B3; border-right:none;">
+        <div class="middle" id="rightSideMenu" style="border:2px solid #B3B3B3; border-right:none; width:20vw;">
             {% block right_side_bar %}
             {% endblock %}
         </div>
