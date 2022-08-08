@@ -1,5 +1,5 @@
 {% extends 'normal_user_base.html' %}
-{% load static %}
+{% load index static %}
 
 {% block left_side_bar %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
@@ -38,7 +38,7 @@ $(document).ready(function(){
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) {
-            document.location.reload();
+            window.location.replace('{{main}}');
         }
     };
 </script>
@@ -46,7 +46,7 @@ $(document).ready(function(){
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) {
-            document.location.reload();
+            window.location.replace('{{main}}');
         }
     };
 </script>
@@ -54,15 +54,21 @@ $(document).ready(function(){
 <meta http-equiv="refresh" content="0; url='{{main}}'">
 {% endif %}
 <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6d1ad052df81bb894aba3f443d1fd674&libraries=services&autoload=true"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{javakey|java_key}}&libraries=services&autoload=true"></script>
 <script type="text/javascript">
-    document.getElementById('mainDiv').classList.replace('col-8', 'col-10');
+    document.getElementById('leftSideMenu').style.width='20%';
+    document.getElementById('mainDiv').style.width='80%';
+    document.getElementById('mainDiv').style.minWidth='960px';
     var mapContainer = document.getElementById('mainDiv'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
             level: 5 // 지도의 확대 레벨
         };
     // 지도 생성
+    function resizeMap() {
+        var mapContainer = document.getElementById('map');
+        mapContainer.style.width = document.getElementById('mainDiv').style.width;
+    }
     var map = new kakao.maps.Map(mapContainer, mapOption);
 </script>
 {% endblock %}

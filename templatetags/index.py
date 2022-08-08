@@ -1,5 +1,6 @@
 from django import template
 import json
+from webPages.config import KAKAO_JAVA_KEY
 
 
 register = template.Library()
@@ -22,5 +23,9 @@ def get_type(value):
 
 @register.filter
 def to_json(value):
-    print(json.loads(value))
     return json.loads(value)
+
+
+@register.filter
+def java_key(value):
+    return KAKAO_JAVA_KEY
