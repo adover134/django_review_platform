@@ -9,61 +9,16 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
 from customForms import reviewWriteForms
-
-
-# 토큰의 유효 여부로 로그인 상태를 확인하는 함수이다.
-# 토큰이 유효하다면 토큰의 정보들을 반환하고, 아니라면 None을 반환한다.
-def tokencheck(token):
-    a = requests.get('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': 'Bearer '+token}).json()
-    # 경고 메시지를 받은 경우 == 토큰이 유효하지 않은 경우이다.
-    if a.get('msg'):
-        return None
-    return a
-
-
-#토큰 정보를 반환하는 함수이다.
-#한 줄이지만 표현의 간소화를 위해 함수로 작성한다.
-def tokeninfo(token):
-    return requests.get('https://kapi.kakao.com/v2/user/me', headers={"Authorization": 'Bearer ' + token}).json()
-
-
-#회원번호로 가입된 사람인지 확인한다. 가입되었다면 True를 반환한다.
-def usercheck(u_id):
-    user = requests.get('http://127.0.0.1:8000/db/user/' + u_id + '/').json()
-    if user.get('detail') == 'Not found.':
-        return None
-    else:
-        return user
-
-
-# 경고횟수와 최근 경고일을 통해 접속 가능 여부를 확인한다. 접속 가능 시 True, 불가능 시 False를 반환한다.
-def useralive(warn_count, penalty_date):
-    # 경고 횟수가 20회라면 영구 탈퇴인 상태이다.
-    if warn_count == 20:
-        return 4
-
-    # 만약 경고 횟수가 15회 이상이라면
-    elif warn_count >= 15:
-        # 최근 경고일을 확인한다.
-        p_date = datetime.strptime(penalty_date, '%Y-%m-%d')
-        # 경고일로부터 한 달 후의 날짜를 구한다.
-        end_date = p_date + relativedelta(months=1)
-        # 오늘 날짜를 구한다.
-        today = datetime.today()
-        # 한 달의 기간이 안 끝났다면 로그인이 안 된다.
-        if today.year < end_date.year or (today.year == end_date.year and today.month < end_date.month) or (today.year == end_date.year and today.month == end_date.month and today.day < end_date.day):
-            return 3
-    # 로그인 가능 시 회원 정보 반환
-    return True
+from webPages.config import KAKAO_JAVA_KEY
 
 
 def main(request):
-    return render(request, 'normal_user_main.html')
+    return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
 
 
 # 로그인 시도 시에 처리되는 메소드
 def login(request):
-    return render(request, 'normal_user_main.html')
+    return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
 
 
 def logout(request):
@@ -77,23 +32,18 @@ def loginPage(request):
 
 def signup(request):
     print(request.user)
-    res = render(request, 'normal_user_main.html')
+    res = render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
     return res
 
 
 def infoCheck(request):
-    token = request.COOKIES.get('token')
-    if token:
-        a = tokencheck(token)
-        user = usercheck(str(a.get('id')))
-        print(user)
-        userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.get('uNickname'), 'user_email': user.get('uEmail'), 'user_warn_count': user.get('uWarnCount')})
-        if not user:
-            return render(request, 'normal_user_info_check.html', {'alive': 'false'})
-        else:
-            return render(request, 'normal_user_info_check.html', {'alive': 'true', 'user': user, 'userForm': userForm})
-    else:
+    user = request.user
+    print(user)
+    userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.get('uNickname'), 'user_email': user.get('uEmail'), 'user_warn_count': user.get('uWarnCount')})
+    if not user:
         return render(request, 'normal_user_info_check.html', {'alive': 'false'})
+    else:
+        return render(request, 'normal_user_info_check.html', {'alive': 'true', 'user': user, 'userForm': userForm})
 
 
 def normal_user_review_search(request):

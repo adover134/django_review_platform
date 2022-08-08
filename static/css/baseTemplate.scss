@@ -25,6 +25,15 @@ div#midContent{
   min-height:495px;
   width:100%;
 }
+div#leftSideMenu{
+  min-width:240px;
+}
+div#mainDiv{
+  min-width:720px;
+}
+div#rightSideMenu{
+  min-width:240px;
+}
 div.middle{
   display:inline-block;
   float:left;

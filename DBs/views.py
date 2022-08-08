@@ -59,7 +59,7 @@ class ManagerViewSets(ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request, *ars, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
         instance = self.get_object()
         # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.

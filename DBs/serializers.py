@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     writer = serializers.HyperlinkedRelatedField(
