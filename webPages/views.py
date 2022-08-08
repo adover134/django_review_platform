@@ -14,6 +14,7 @@ from webPages.config import KAKAO_JAVA_KEY
 
 def main(request):
     print('hi')
+    print('hello?')
     return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
 
 
