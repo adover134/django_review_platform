@@ -34,7 +34,7 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main_contents %}
-{% if request.path == login %}
+    {% if request.path == login %}
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) {
