@@ -39,3 +39,20 @@ button#searchFormOpen{
     border:1px solid $blue-600;
     height:35px;
 }
+#search_filter>fieldset>legend{
+    font-size:1rem;
+}
+#searchConditionForm{
+    padding-left:5px;
+    padding-right:10px;
+}
+#searchConditionForm>p{
+    margin-top:20px;
+    font-size:30px;
+}
+#search_filter>fieldset{
+    margin-bottom:30px;
+}
+#search_filter>fieldset>label #search_filter>label{
+    margin-bottom:10px;
+}

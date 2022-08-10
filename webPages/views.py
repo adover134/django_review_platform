@@ -38,11 +38,11 @@ def signup(request):
 def infoCheck(request):
     user = request.user
     print(user)
-    userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.get('uNickname'), 'user_email': user.get('uEmail'), 'user_warn_count': user.get('uWarnCount')})
+    userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.last_name+user.first_name, 'user_email': user.email, 'user_warn_count': user.uWarnCount})
     if not user:
-        return render(request, 'normal_user_info_check.html', {'alive': 'false'})
+        return render(request, 'normal_user_info_check.html')
     else:
-        return render(request, 'normal_user_info_check.html', {'alive': 'true', 'user': user, 'userForm': userForm})
+        return render(request, 'normal_user_info_check.html', {'userForm': userForm})
 
 
 def normal_user_review_search(request):
@@ -62,8 +62,8 @@ def normal_user_review_search(request):
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
     for i in range(3):
-        if data.get('commonInfo'):
-            for c in data.get('commonInfo'):
+        if data.get('icons'):
+            for c in data.get('icons'):
                 review_search_url = review_search_url+'&'+'commonInfo='+c
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)

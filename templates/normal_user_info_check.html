@@ -3,9 +3,6 @@
 
 {% block main_contents %}
 <link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
-<script>
-    document.getElementById('dropdownMenuButton1').innerText='{{user.uNickname}}님, 환영합니다.';
-</script>
 <div id="infoCheckAndUpdate">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
     <form method="POST" enctype="multipart/form-data">
