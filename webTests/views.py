@@ -66,6 +66,8 @@ def normal_user_review_write(request):
         images = request.FILES.getlist('images')
         print(form)
         if form.is_valid():
+            print(request.POST)
+            print(request.FILES)
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address='+data['address'][0]).text)
