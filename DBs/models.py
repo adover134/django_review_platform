@@ -84,3 +84,6 @@ class Image(models.Model):
 
     class Meta:
         db_table = 'Image'
+
+    def __str__(self):
+        return self.image

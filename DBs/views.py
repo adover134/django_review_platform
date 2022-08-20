@@ -181,50 +181,56 @@ class ReviewViewSets(ModelViewSet):
                     else:
                         break
                 query.add(query_recommend, Q.AND)
-        # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
-        if data1.get('report'):
-            query_report = Q()
-            reports = Report.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
-            if reports[0]['total'] >= data1['report']:
-                for rep in reports:
-                    if rep['total'] >= data1['report']:
-                        query_report.add(Q(revId=rep['revId']), Q.OR)
-                    else:
-                        break
-                query.add(query_report, Q.AND)
-        # 원룸에 대한 정보를 검색하기 위한 URL
-        roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
-        # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
-        if data1.get('address'):
-            roomRetrieveURL = roomRetrieveURL + 'address=' + data1.get('address')[0]
-        # 건축년도에 대한 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
-        if data1.get('builtFrom'):
-            if roomRetrieveURL[-1] != '?':
-                roomRetrieveURL = roomRetrieveURL + '&'
-            roomRetrieveURL = roomRetrieveURL + 'builtFrom=' + data1.get('builtFrom')[0]
-        if data1.get('builtTo'):
-            if roomRetrieveURL[-1] != '?':
-                roomRetrieveURL = roomRetrieveURL + '&'
-            roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
-        # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
-        #N = len(CommonInfo.objects.all())
-        N=3
-        if data1.get('commonInfo'):
-            for info in data1.get('commonInfo'):
+        # 만약 원룸 번호가 들어왔다면
+        if data1.get('roomId'):
+        # 원룸 번호에 대한 리뷰 검색
+            pass
+        #아니라면
+        else:
+            # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
+            if data1.get('report'):
+                query_report = Q()
+                reports = Report.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
+                if reports[0]['total'] >= data1['report']:
+                    for rep in reports:
+                        if rep['total'] >= data1['report']:
+                            query_report.add(Q(revId=rep['revId']), Q.OR)
+                        else:
+                            break
+                    query.add(query_report, Q.AND)
+            # 원룸에 대한 정보를 검색하기 위한 URL
+            roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
+            # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
+            if data1.get('address'):
+                roomRetrieveURL = roomRetrieveURL + 'address=' + data1.get('address')[0]
+            # 건축년도에 대한 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
+            if data1.get('builtFrom'):
                 if roomRetrieveURL[-1] != '?':
                     roomRetrieveURL = roomRetrieveURL + '&'
-                roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
+                roomRetrieveURL = roomRetrieveURL + 'builtFrom=' + data1.get('builtFrom')[0]
+            if data1.get('builtTo'):
+                if roomRetrieveURL[-1] != '?':
+                    roomRetrieveURL = roomRetrieveURL + '&'
+                roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
+            # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
+            #N = len(CommonInfo.objects.all())
+            N=3
+            if data1.get('commonInfo'):
+                for info in data1.get('commonInfo'):
+                    if roomRetrieveURL[-1] != '?':
+                        roomRetrieveURL = roomRetrieveURL + '&'
+                    roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
 
-        # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
-        room_data = None
-        if roomRetrieveURL[-1] != '?':
-            room_data = json.loads(requests.get(roomRetrieveURL).text)
-        # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
-        if room_data:
-            query_room = Q()
-            for r in room_data:
-                query_room.add(Q(roomId=r['id']), Q.OR)
-            query.add(query_room, Q.AND)
+            # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
+            room_data = None
+            if roomRetrieveURL[-1] != '?':
+                room_data = json.loads(requests.get(roomRetrieveURL).text)
+            # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
+            if room_data:
+                query_room = Q()
+                for r in room_data:
+                    query_room.add(Q(roomId=r['id']), Q.OR)
+                query.add(query_room, Q.AND)
         # 아이콘 정보로 조회하는 쿼리를 만들어 추가한다.
         # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         searched = None

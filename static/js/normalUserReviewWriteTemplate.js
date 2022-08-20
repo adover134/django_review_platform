@@ -16,14 +16,20 @@ $("#image_review").submit(review_submit)
 function review_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
+    console.log(e)
     // serialize the data for sending the form data.
-    var serializedData = $(this).serialize();
+    var form = new FormData(e.currentTarget);
+
+    for (let key of form.keys()) { console.log(key); }
+    for (let value of form.values()) { console.log(value);}
     // make POST ajax call
     $.ajax({
         type: 'POST',
         url: "http://127.0.0.1:8000/test/normal_user_review_write/",
         async: false,
-        data: serializedData,
+        data: form,
+        processData: false,
+        contentType: false,
         success: function (response) {
             // on successfull creating object
             window.location.replace('http://127.0.0.1:8000/test/normal_user_review_read/?id='+response);
