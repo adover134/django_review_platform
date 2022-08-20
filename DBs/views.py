@@ -212,7 +212,7 @@ class ReviewViewSets(ModelViewSet):
             serializer = ReviewSerializer(searched, context={'request': request}, many=True)
             return Response(serializer.data)
         ###############################################################
-        # 검색 관련 로직
+        #검색 관련 로직
         else:
             # 원룸에 대한 정보를 검색하기 위한 URL
             roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
