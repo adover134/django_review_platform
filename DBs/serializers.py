@@ -28,6 +28,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
     uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
+
+    additionalImage = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
     includedIcon = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
