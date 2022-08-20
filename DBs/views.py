@@ -248,7 +248,7 @@ class ReviewViewSets(ModelViewSet):
                     query_room.add(Q(roomId=r['id']), Q.OR)
                 query.add(query_room, Q.AND)
 
-        # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
+            # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
         return Response(ReviewSerializer2(searched, many=True).data)
