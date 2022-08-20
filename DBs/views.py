@@ -181,7 +181,6 @@ class ReviewViewSets(ModelViewSet):
                     else:
                         break
                 query.add(query_recommend, Q.AND)
-        # 만약 원룸 번호가 들어왔다면
         # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
         if data1.get('report'):
             query_report = Q()
@@ -213,6 +212,7 @@ class ReviewViewSets(ModelViewSet):
             serializer = ReviewSerializer(searched, context={'request': request}, many=True)
             return Response(serializer.data)
         ###############################################################
+        # 검색 관련 로직
         else:
             # 원룸에 대한 정보를 검색하기 위한 URL
             roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
