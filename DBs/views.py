@@ -181,7 +181,6 @@ class ReviewViewSets(ModelViewSet):
                     else:
                         break
                 query.add(query_recommend, Q.AND)
-        # 만약 원룸 번호가 들어왔다면
         # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
         if data1.get('report'):
             query_report = Q()
@@ -213,6 +212,7 @@ class ReviewViewSets(ModelViewSet):
             serializer = ReviewSerializer(searched, context={'request': request}, many=True)
             return Response(serializer.data)
         ###############################################################
+        #검색 관련 로직
         else:
             # 원룸에 대한 정보를 검색하기 위한 URL
             roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
@@ -237,18 +237,18 @@ class ReviewViewSets(ModelViewSet):
                         roomRetrieveURL = roomRetrieveURL + '&'
                     roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
 
-                # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
-                room_data = None
-                if roomRetrieveURL[-1] != '?':
-                    room_data = json.loads(requests.get(roomRetrieveURL).text)
-                # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
-                if room_data:
-                    query_room = Q()
-                    for r in room_data:
-                        query_room.add(Q(roomId=r['id']), Q.OR)
-                    query.add(query_room, Q.AND)
+            # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
+            room_data = None
+            if roomRetrieveURL[-1] != '?':
+                room_data = json.loads(requests.get(roomRetrieveURL).text)
+            # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
+            if room_data:
+                query_room = Q()
+                for r in room_data:
+                    query_room.add(Q(roomId=r['id']), Q.OR)
+                query.add(query_room, Q.AND)
 
-        # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
+            # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
         return Response(ReviewSerializer2(searched, many=True).data)
