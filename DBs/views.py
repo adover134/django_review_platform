@@ -268,7 +268,7 @@ class ReviewViewSets(ModelViewSet):
         review_kind = data['reviewKind']
         review_id = data['id']
         # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
-        #for icon in data['icons']:
+        #for icon in data['icons']:x
         #    a=3
             #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
         # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)

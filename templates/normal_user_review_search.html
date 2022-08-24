@@ -89,7 +89,7 @@
     <br>
     {% if paged_review.has_previous %}
         <a id="prev_page">이전으로</a>
-        <script>
+        <script><x></x>
             document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.previous_page_number}}"
         </script>
     {% endif %}

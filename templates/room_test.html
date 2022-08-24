@@ -1,0 +1,71 @@
+
+{% extends 'normal_user_base.html' %} 얘한테 가보면 base.html이있어
+{% load static %}
+<body>
+
+{% block left_side_bar %}
+    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
+    <div style="height: 100% ;text-align:center" >
+        <img class="left-side-room-img" style= "display: block; margin: 2.8vh auto 2.8vh auto; height: 13vw; width :23vh;" src="{% static 'images/45.png' %}">
+        <div style ="font-size : 20px;">
+            <strong><span>주소:</span><span>{{ room.address }}</span></strong>
+        </div>
+    <div>
+            <span><br>건축연도 : </span><span>{{ room.builtYear }}</span>
+        </div>
+    <div>
+            <span> 층수 :</span><span>{{ room.commonInfo }}</span>
+        </div>
+    <div>
+            <span> 옵션 : </span><span> </span>
+        </div>
+    </div>
+{% endblock %}
+{% block main_contents %}
+
+    <div style=" float:right; margin : 2.98vh; ">
+        <div style="display: inline-block;">
+        <select>
+            <option value = >최신 순</option>
+            <option>추천 순</option>
+            <option>정확도 순</option>
+        </select>
+            </div>
+        <div style="display: inline-block;">
+        <form action='//'>
+            <input type='button' value = '리뷰 작성'>
+        </form>
+            </div>
+    </div>
+<div style="margin : 15vh;" ></div>
+{% for review in reviews %}
+    <div style=" background-color: #f5d682; border: 3px; margin: 2.8vh 2.8vh 2.8vh 2.8vh; width : height: 17.6vh ;" >
+        <img class="left-side-room-img" align = "left" style= " height: 12vh; width :6.8vw; " src="{% static 'images/45.png' %}"  >
+
+        <span style="font-size: 25px;"><strong>최신 리뷰 제목{{ review.reviewTitle }}</strong></span> <span style = "float : right;"> 추천 수 {{ room.builtYear }} </span>
+        <div><span sytle = "vertical-align:middle;">{{ room.commonInfo }}</span></div>
+        <span>ㅇㅏㅇㅣㅋㅗㄴ</span>
+
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+
+
+
+
+</body>
+<script>
+<!--    1. reviews 데이터를 어디 변수 잠깐 저장
+    var reviews = [[ reviews ]]
+
+2. reviews 데이터의
+최신순 : 날짜 reviewDate 필드에 따라서 정렬
+추천수순 : recommend 필드 값에 따라서 정렬
+정확도순 : -->
+
+3. 정렬순 버튼을 클릭하면, 연결 필요
+
+</script>
+</html>
