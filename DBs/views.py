@@ -148,13 +148,14 @@ class ReviewViewSets(ModelViewSet):
 
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = ReviewSerializer2(page, many=True)
+                serializer = ReviewSerializer(page, context={'request': request}, many=True)
                 return self.get_paginated_response(serializer.data)
 
-            serializer = ReviewSerializer2(queryset, many=True)
+            serializer = ReviewSerializer(queryset, context={'request': request}, many=True)
             return Response(serializer.data)
-        # 검색 조건을 쿼리로 만들어 저장할 변수를 만든다.
+        # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
+        searched = None
 
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uNickname'):
@@ -196,21 +197,15 @@ class ReviewViewSets(ModelViewSet):
         if data1.get('icon'):
             query_icon = Q()
             query.add(query_icon, Q.AND)
-        searched = None
 
         ###############################################################
         # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시)
         if data1.get('roomId'):
             rId = data1.get('roomId')[0]
-            rId = rId[:-1]
+            rId = rId.replace('/', '')
             query_roomId = Q(roomId_id=rId)
 
             query.add(query_roomId, Q.AND)
-            searched = Review.objects.filter(query)
-
-            #Serializer 별도 설정
-            serializer = ReviewSerializer(searched, context={'request': request}, many=True)
-            return Response(serializer.data)
         ###############################################################
         #검색 관련 로직
         else:
@@ -229,8 +224,6 @@ class ReviewViewSets(ModelViewSet):
                     roomRetrieveURL = roomRetrieveURL + '&'
                 roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
             # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
-            #N = len(CommonInfo.objects.all())
-            N=3
             if data1.get('commonInfo'):
                 for info in data1.get('commonInfo'):
                     if roomRetrieveURL[-1] != '?':
@@ -251,7 +244,7 @@ class ReviewViewSets(ModelViewSet):
             # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
-        return Response(ReviewSerializer2(searched, many=True).data)
+        return Response(ReviewSerializer(searched, many=True).data)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)
