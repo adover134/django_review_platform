@@ -2,7 +2,6 @@
 {% extends 'normal_user_base.html' %} 얘한테 가보면 base.html이있어
 {% load static %}
 <body>
-
 {% block left_side_bar %}
     <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
     <div style="height: 100% ;text-align:center" >
@@ -23,7 +22,7 @@
 {% endblock %}
 {% block main_contents %}
 
-    <div style=" float:right; margin : 2.98vh; ">
+    <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
         <div style="display: inline-block;">
         <select>
             <option value = >최신 순</option>
@@ -33,18 +32,18 @@
             </div>
         <div style="display: inline-block;">
         <form action='//'>
-            <input type='button' value = '리뷰 작성'>
+            <input style = " cursor : pointer;  background-color : white;" type='button' value = '리뷰 작성'>
         </form>
             </div>
     </div>
 <div style="margin : 15vh;" ></div>
 {% for review in reviews %}
-    <div style=" background-color: #f5d682; border: 3px; margin: 2.8vh 2.8vh 2.8vh 2.8vh; width : height: 17.6vh ;" >
+    <div style="border: 3px; margin: auto 8vh auto; line-height: 2.8vh;height: 17.6vh ;" >
         <img class="left-side-room-img" align = "left" style= " height: 12vh; width :6.8vw; " src="{% static 'images/45.png' %}"  >
 
-        <span style="font-size: 25px;"><strong>최신 리뷰 제목{{ review.reviewTitle }}</strong></span> <span style = "float : right;"> 추천 수 {{ room.builtYear }} </span>
-        <div><span sytle = "vertical-align:middle;">{{ room.commonInfo }}</span></div>
-        <span>ㅇㅏㅇㅣㅋㅗㄴ</span>
+        <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;최신 리뷰 제목{{ review.reviewTitle }}</span></strong> <span style = "float : right;"> 추천 수 {{ room.builtYear }} </span>
+        <div sytle = "color: #ECECEC;">&ensp; 리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용{{ room.commonInfo }}</div>
+        <span style = "color : #A23355 ;font-size: 2vw *3.7vh; letter-spacing :1vw; ">&ensp;ㅇㅏㅇㅣㅋㅗㄴ</span>
 
     </div>
 
