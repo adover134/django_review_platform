@@ -152,3 +152,20 @@ def normal_user_review_report(request):
             print(a.text)
             requests.delete('http://127.0.0.1:8000/db/report/'+a.text)
     return Response('success')
+
+
+# 특정 원룸 클릭시 리뷰목록과 함께 나오는 페이지
+def room_with_reviews_display(request):
+    roomId = request.GET['roomId'] #파라미터로 넘어오는 원룸 아이디 데이터
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+    reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text) #원룸 ID를 가진 리뷰 데이터 목록
+
+    data = {
+        'room': room,
+        'reviews': reviews,
+    }
+
+    print('room : ', room)
+    print('reviews : ', reviews)
+
+    return render(request, 'room_test.html', data)
