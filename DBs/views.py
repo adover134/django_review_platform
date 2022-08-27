@@ -206,6 +206,27 @@ class ReviewViewSets(ModelViewSet):
             query_roomId = Q(roomId_id=rId)
 
             query.add(query_roomId, Q.AND)
+            searched = Review.objects.filter(query)
+
+            # 정렬조건
+            if data1.get('sorted'):
+                sort_value = data1.get('sorted')[0]
+                sort_value = sort_value.replace('/', '')
+
+                match sort_value:
+                    # 최신순
+                    case '1':
+                        searched = Review.objects.filter(query).order_by('reviewDate')
+                    # 추천순
+                    case '2':
+                        searched = Review.objects.filter(query).annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
+                    # 정확도순(아이콘 많은 순)
+                    case '3':
+                        searched = Review.objects.filter(query).annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
+
+            #Serializer 설정
+            serializer = ReviewSerializer(searched, context={'request': request}, many=True)
+            return Response(serializer.data)
         ###############################################################
         #검색 관련 로직
         else:
@@ -261,7 +282,7 @@ class ReviewViewSets(ModelViewSet):
         review_kind = data['reviewKind']
         review_id = data['id']
         # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
-        #for icon in data['icons']:x
+        #for icon in data['icons']:
         #    a=3
             #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
         # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
