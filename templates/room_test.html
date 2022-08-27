@@ -1,10 +1,9 @@
 {% extends 'normal_user_base.html' %}
 {% load static %}
-<body>
 {% block left_side_bar %}
     <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
     <div style="height: 100% ;text-align:center" >
-        <img class="left-side-room-img" style= "display: block; margin: 2.8vh auto 2.8vh auto; height: 13vw; width :23vh;" src="{% static 'images/45.png' %}">
+        <img class="left-side-room-img" style= "display: block; margin: 2.8vh auto 2.8vh auto; height: 13vw; width :23vh;" src="{% static 'images/roomImage/' %}{{room.id}}.png">
         <div style ="font-size : 20px;">
             <strong><span>주소:</span><span>{{ room.address }}</span></strong>
         </div>
@@ -41,31 +40,31 @@
         </form>
             </div>
     </div>
-<div style="margin : 15vh;" ></div>
-{% for review in reviews %}
-    <div style="border: 3px; margin: auto 8vh auto; line-height: 2.8vh;height: 17.6vh ;" >
-        <img class="left-side-room-img" align = "left" style= " height: 12vh; width :6.8vw; " src="{% static 'images/45.png' %}"  >
-
-        <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;
-{#                리뷰 제목 #}
-                최신 리뷰 제목 -> {{ review.reviewTitle }}</span></strong>
-        <span style = "float : right;">
-{#            추천 수 데이터 #}
-            추천 수 {{ review.recommendedOn|length }}</span>
-        <div sytle = "color: #ECECEC;">&ensp;
-{#            리뷰 내용 데이터 #}
-            리뷰내용 -> {{ review.reviewSentence }}</div>
-        <span style = "color : #A23355 ;font-size: 2vw *3.7vh; letter-spacing :1vw; ">&ensp;
-{#            리뷰별 아이콘 데이터 목록 #}
-            아이콘 -> (추가예정)</span>
-    </div>
-
-{% endfor %}
+<div style="margin : 15vh;" >
+    {% for review in reviews %}
+        <div style="border: 3px; margin: auto 0 auto; line-height: 2.8vh;height: 20vh;" >
+            <div style= "height: 12vh; width :6.8vw; display:inline-block; float:left;">
+                {% if review.additionalImage %}
+                    <img class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}"  >
+                {% endif %}
+            </div>
+            <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;
+    {#                리뷰 제목 #}
+                    최신 리뷰 제목 -> {{ review.reviewTitle }}</span></strong>
+            <span style = "float : right;">
+    {#            추천 수 데이터 #}
+                추천 수 {{ review.recommendedOn|length }}</span>
+            <div style = "color: #ECECEC;">&ensp;
+    {#            리뷰 내용 데이터 #}
+                리뷰내용 -> {{ review.reviewSentence }}</div>
+            <span style = "color : #A23355 ;font-size: 1.88vw; letter-spacing :1vw; ">&ensp;
+    {#            리뷰별 아이콘 데이터 목록 #}
+                아이콘 -> (추가예정)</span>
+        </div>
+    {% endfor %}
+</div>
+<script>
+    console.log('hohoho');
+</script>
 
 {% endblock %}
-
-</body>
-<script>
-
-</script>
-</html>
