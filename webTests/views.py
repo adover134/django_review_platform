@@ -92,7 +92,7 @@ def handle_uploaded_file(f, name):
     with open('static/images/'+name+'.png', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-    return 'images/'+name+'.png'
+    return name+'.png'
 
 
 def normal_user_review_read(request):
