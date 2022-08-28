@@ -82,9 +82,9 @@ def normal_user_review_write(request):
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
-                img = json.loads(requests.post('http://127.0.0.1:8000/db/image/', data={'reviewId': review_id}).text)
+                img = json.loads(requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
                 img_name = handle_uploaded_file(image, str(img.get('id')))
-                requests.put('http://127.0.0.1:8000/db/image/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
+                requests.put('http://127.0.0.1:8000/db/reviewImage/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
         return Response(str(review_id))
 
 
