@@ -10,7 +10,7 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
+from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
 from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 from DBs.services import sentence_spliter
 
@@ -199,7 +199,7 @@ class ReviewViewSets(ModelViewSet):
             query.add(query_icon, Q.AND)
 
         ###############################################################
-        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시)
+        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시. 3-1안)
         if data1.get('roomId'):
             rId = data1.get('roomId')[0]
             rId = rId.replace('/', '')
@@ -224,8 +224,14 @@ class ReviewViewSets(ModelViewSet):
                     case '3':
                         searched = Review.objects.filter(query).annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
+            # pagination
+            page = self.paginate_queryset(searched)
+            if page is not None:
+                serializer = ReviewSerializerString(page, context={'request': request}, many=True)
+                return self.get_paginated_response(serializer.data)
+
             #Serializer 설정
-            serializer = ReviewSerializer(searched, context={'request': request}, many=True)
+            serializer = ReviewSerializerString(searched, context={'request': request}, many=True)
             return Response(serializer.data)
         ###############################################################
         #검색 관련 로직
