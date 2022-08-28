@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
+from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -74,6 +74,10 @@ class RoomSerializer(serializers.ModelSerializer):
     commonInfo = serializers.ListField(
         child=serializers.IntegerField()
     )
+    roomImage = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Room
@@ -108,8 +112,15 @@ class CommonInfoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class ReviewImageSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Image
+        model = ReviewImage
+        fields = '__all__'
+
+
+class RoomImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RoomImage
         fields = '__all__'
