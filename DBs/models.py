@@ -78,12 +78,23 @@ class CommonInfo(models.Model):
         db_table = 'CommonInfo'
 
 
-class Image(models.Model):
+class ReviewImage(models.Model):
     reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additionalImage')
     image = models.TextField(null=True)
 
     class Meta:
-        db_table = 'Image'
+        db_table = 'ReviewImage'
+
+    def __str__(self):
+        return self.image
+
+
+class RoomImage(models.Model):
+    roomId = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='roomImage')
+    image = models.TextField(null=True)
+
+    class Meta:
+        db_table = 'RoomImage'
 
     def __str__(self):
         return self.image

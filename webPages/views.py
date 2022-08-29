@@ -152,3 +152,35 @@ def normal_user_review_report(request):
             print(a.text)
             requests.delete('http://127.0.0.1:8000/db/report/'+a.text)
     return Response('success')
+
+
+# 특정 원룸 클릭시 리뷰목록과 함께 나오는 페이지
+def room_with_reviews_display(request):
+    roomId = request.GET['roomId'] #파라미터로 넘어오는 원룸 아이디 데이터
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+
+    # 정렬 파라미터 존재 조건
+    if 'sorted' in request.GET:
+        sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
+        print('sorted = ', sorted)
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?roomId=' + roomId + '&' + 'sorted=' + sorted + '/').text)  # 원룸 ID를 가진 리뷰 데이터 정렬한 목록
+
+    else:
+        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text) #원룸 ID를 가진 리뷰 데이터 목록
+
+    #paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    paged_review = paginator.get_page(page)
+
+    data = {
+        'room': room,
+        'reviews': paged_review,
+    }
+
+    print('room : ', room)
+    print('reviews : ', reviews)
+    print('paged_review = ', paged_review)
+
+    return render(request, 'room_test.html', data)

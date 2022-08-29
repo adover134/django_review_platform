@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
+from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -69,10 +69,42 @@ class ReviewSerializer2(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ReviewSerializerString(serializers.ModelSerializer):
+
+    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
+    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    rAddress = serializers.CharField(source='rId.address', read_only=True)
+
+    additionalImage = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
+    includedIcon = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
+    recommendedOn = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
+    reportedOn = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
 class RoomSerializer(serializers.ModelSerializer):
 
     commonInfo = serializers.ListField(
         child=serializers.IntegerField()
+    )
+    roomImage = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
     )
 
     class Meta:
@@ -108,8 +140,19 @@ class CommonInfoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class ReviewImageSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Image
+        model = ReviewImage
+        fields = '__all__'
+
+
+class RoomImageSerializer(serializers.ModelSerializer):
+
+    commonInfo = serializers.ListField(
+       child=serializers.IntegerField(min_value=0, max_value=10000), allow_null=True
+    )
+
+    class Meta:
+        model = RoomImage
         fields = '__all__'

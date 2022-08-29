@@ -11,7 +11,8 @@ router.register('icon', views.IconViewSets)
 router.register('recommend', views.RecommendViewSets)
 router.register('report', views.ReportViewSets)
 router.register('commonInfo', views.CommonInfoViewSets)
-router.register('image', views.ImageViewSets)
+router.register('reviewImage', views.ReviewImageViewSets)
+router.register('roomImage', views.RoomImageViewSets)
 
 """
 뷰셋을 직접 URL path로 경우는 아래처럼
