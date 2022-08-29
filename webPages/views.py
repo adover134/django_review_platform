@@ -169,12 +169,18 @@ def room_with_reviews_display(request):
     else:
         reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text) #원룸 ID를 가진 리뷰 데이터 목록
 
+    #paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    paged_review = paginator.get_page(page)
+
     data = {
         'room': room,
-        'reviews': reviews,
+        'reviews': paged_review,
     }
 
     print('room : ', room)
     print('reviews : ', reviews)
+    print('paged_review = ', paged_review)
 
     return render(request, 'room_test.html', data)
