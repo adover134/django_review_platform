@@ -29,3 +29,8 @@ def to_json(value):
 @register.filter
 def java_key(value):
     return KAKAO_JAVA_KEY
+
+
+@register.filter
+def page(paginator, value):
+    return paginator.get_page(value)

@@ -121,6 +121,10 @@ class ReviewImageSerializer(serializers.ModelSerializer):
 
 class RoomImageSerializer(serializers.ModelSerializer):
 
+    commonInfo = serializers.ListField(
+       child=serializers.IntegerField(min_value=0, max_value=10000), allow_null=True
+    )
+
     class Meta:
         model = RoomImage
         fields = '__all__'
