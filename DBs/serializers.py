@@ -50,6 +50,17 @@ class ReviewSerializer(serializers.ModelSerializer):
         view_name='report-detail'
     )
 
+
+    # 리뷰 작성자의 이름을 합쳐서 출력
+    def get_reviewWriter(self, obj):
+        return f'{obj.uId.last_name} {obj.uId.first_name}'
+
+
+    def get_representiveImage(self, obj):
+        a = [image.image for image in obj.additionalImage.all()]
+        return a
+
+
     class Meta:
         model = Review
         fields = '__all__'
