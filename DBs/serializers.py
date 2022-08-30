@@ -25,7 +25,8 @@ class ManagerSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    # SerializerMethodField는 get_[field name] 로 선언되는 메소드의 반환값을 사용한다.
+    reviewWriter = serializers.SerializerMethodField()
+    representiveImage = serializers.SerializerMethodField()
     uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
