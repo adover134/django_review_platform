@@ -25,8 +25,9 @@ class ManagerSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
-    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    reviewWriter = serializers.SerializerMethodField()
+    representiveImage = serializers.SerializerMethodField()
+    uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
     additionalImage = serializers.StringRelatedField(
@@ -48,6 +49,17 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         view_name='report-detail'
     )
+
+
+    # 리뷰 작성자의 이름을 합쳐서 출력
+    def get_reviewWriter(self, obj):
+        return f'{obj.uId.last_name} {obj.uId.first_name}'
+
+
+    def get_representiveImage(self, obj):
+        a = [image.image for image in obj.additionalImage.all()]
+        return a
+
 
     class Meta:
         model = Review
