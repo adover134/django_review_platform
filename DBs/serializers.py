@@ -25,8 +25,8 @@ class ManagerSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
-    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    # SerializerMethodField는 get_[field name] 로 선언되는 메소드의 반환값을 사용한다.
+    uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
     additionalImage = serializers.StringRelatedField(
@@ -55,14 +55,33 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer2(serializers.ModelSerializer):
-
-    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
-    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    reviewWriter = serializers.SerializerMethodField()
+    uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
-    includedIcon = serializers.StringRelatedField(
+
+    additionalImage = serializers.StringRelatedField(
         many=True,
         read_only=True,
     )
+    includedIcon = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='icon-detail'
+    )
+    recommendedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='recommend-detail'
+    )
+    reportedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='report-detail'
+    )
+
+    # 리뷰 작성자의 이름을 합쳐서 출력
+    def get_reviewWriter(self, obj):
+        return f'{obj.uId.last_name} {obj.uId.first_name}'
 
     class Meta:
         model = Review
@@ -71,8 +90,8 @@ class ReviewSerializer2(serializers.ModelSerializer):
 
 class ReviewSerializerString(serializers.ModelSerializer):
 
-    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
-    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    reviewWriter = serializers.SerializerMethodField()
+    uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
     additionalImage = serializers.StringRelatedField(
@@ -91,6 +110,9 @@ class ReviewSerializerString(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
+
+    def get_reviewWriter(self, obj):
+        return f'{obj.uId.last_name}{obj.uId.first_name}'
 
     class Meta:
         model = Review

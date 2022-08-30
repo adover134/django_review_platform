@@ -2,3 +2,6 @@ config.py
 
 *.pyc
 DBs/migrations/0001_initial.py
+base1.html
+index.html
+ajax_datatable_views.py

@@ -129,4 +129,4 @@ def review_search_page(request):
 
 
 def review_search_test(request):
-    return render(request, 'tt.html')
+    return render(request, 'index.html', {})

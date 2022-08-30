@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_datatables',
     'DBs',
     'webTests',
     'forms_fieldset',
@@ -47,6 +48,19 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'social_django',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_datatables.renderers.DatatablesRenderer',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_datatables.filters.DatatablesFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 50,
+}
 
 SASS_PROCESSOR_ENABLED = True
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
@@ -123,6 +137,8 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
 
@@ -167,3 +183,12 @@ SESSION_EXPIRE_SECONDS = 10800
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY_GRACE_PERIOD = 60
 #SESSION_TIMEOUT_REDIRECT = 'http://127.0.0.1:8000/'
+
+
+AJAX_DATATABLE_MAX_COLUMNS = 30
+AJAX_DATATABLE_TRACE_COLUMNDEFS = False               #  enables debug tracing of applied column defs
+AJAX_DATATABLE_TRACE_QUERYDICT = False                #  enables debug tracing of datatables requests
+AJAX_DATATABLE_TRACE_QUERYSET = False                 #  enables debug tracing of applied query
+AJAX_DATATABLE_TEST_FILTERS = False                   # trace results for each individual filter, for debugging purposes
+AJAX_DATATABLE_DISABLE_QUERYSET_OPTIMIZATION = False  # all queryset optimizations are disabled
+AJAX_DATATABLE_STRIP_HTML_TAGS = True                 # string HTML tags when rendering the table
