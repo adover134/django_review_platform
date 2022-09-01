@@ -216,13 +216,13 @@ class ReviewViewSets(ModelViewSet):
                 match sort_value:
                     # 최신순
                     case '1':
-                        searched = Review.objects.filter(query).order_by('reviewDate')
+                        searched = searched.order_by('reviewDate')
                     # 추천순
                     case '2':
-                        searched = Review.objects.filter(query).annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
+                        searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
                     # 정확도순(아이콘 많은 순)
                     case '3':
-                        searched = Review.objects.filter(query).annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
+                        searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
             # pagination
             page = self.paginate_queryset(searched)
@@ -271,7 +271,7 @@ class ReviewViewSets(ModelViewSet):
             # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
-        return Response(ReviewSerializer(searched, many=True).data)
+        return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)

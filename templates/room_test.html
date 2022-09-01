@@ -23,7 +23,7 @@
 
     <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
         <div style="display: inline-block;">
-        <select id="sort_select_box" name="sort_select_box">
+        <select id="sort_select_box" name="sort_select_box" onchange="sort()">
             <option value="1">최신 순</option>
             {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
             {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
@@ -41,12 +41,12 @@
         </form>
             </div>
     </div>
-<div style="margin : 15vh;" >
+<div style="margin : 15vh;" id="reviews">
     {% for review in reviews %}
         <div style="border: 3px; margin: auto 0 auto; line-height: 2.8vh;height: 20vh;" >
             <div style= "height: 12vh; width :6.8vw; display:inline-block; float:left;">
                 {% if review.additionalImage %}
-                    <img class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}.png">
+                    <img class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
                 {% endif %}
             </div>
             <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;
@@ -62,12 +62,39 @@
     {#            리뷰별 아이콘 데이터 목록 #}
                 {% if review.includedIcon %}
                     {% for icon in review.includedIcon %}
-                        <img src="{% static 'images/iconImage/' %}{{ icon }}.png">
+                        <img src="{% static 'images/iconImage/' %}{{ icon }}">
                     {% endfor %}
                 {% endif %}
             </span>
         </div>
     {% endfor %}
 </div>
+<script>
+    function sort(){
+        let selected = document.getElementById('sort_select_box');
+        let a = window.location.href;
+        let b = a.indexOf('sorted');
+        window.location.href = a.slice(0, b)+'sorted='+document.getElementById('sort_select_box').value;
+    }
+    window.onload=function() {
+        let a = new URLSearchParams(window.location.search).get('sorted');
+        var b = document.createElement("option");
+        switch (a) {
+            case '2':
+                b.innerText = '추천 순';
+                break;
+            case '3':
+                b.innerText = '정확도 순';
+                break;
+            case '1':
+            default:
+                b.innerText = '최신 순';
+                break;
+        }
+        b.selected = true;
+        b.style.display = 'none';
+        document.getElementById('sort_select_box').appendChild(b);
+    }
+</script>
 
 {% endblock %}
