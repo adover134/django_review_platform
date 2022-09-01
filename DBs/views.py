@@ -159,7 +159,7 @@ class ReviewViewSets(ModelViewSet):
 
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uNickname'):
-            query_user_nickname = Q(uNickname=data1['uNickname'])
+            query_user_nickname = Q(uNickname=data1['reviewWriter'])
             query.add(query_user_nickname, Q.AND)
         # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('date'):

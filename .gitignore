@@ -2,3 +2,4 @@ config.py
 
 *.pyc
 DBs/migrations/0001_initial.py
+*.png
