@@ -78,13 +78,12 @@ def normal_user_review_write(request):
             # 원룸 번호를 구한다.
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
-            print(data1['uId'])
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
-                img = json.loads(requests.post('http://127.0.0.1:8000/db/image/', data={'reviewId': review_id}).text)
+                img = json.loads(requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
                 img_name = handle_uploaded_file(image, str(img.get('id')))
-                requests.put('http://127.0.0.1:8000/db/image/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
+                requests.put('http://127.0.0.1:8000/db/reviewImage/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
         return Response(str(review_id))
 
 
@@ -100,14 +99,12 @@ def normal_user_review_read(request):
     user = request.user
     review = None
     review_num = request.GET.get('id')
-    print(review_num)
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
     icon_urls = review.get('includedIcon')
     icons = []
     if icon_urls:
-        print(icon_urls)
         for icon in icon_urls:
             icon_info = json.loads(requests.get(icon).text)
             icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
@@ -129,4 +126,4 @@ def review_search_page(request):
 
 
 def review_search_test(request):
-    return render(request, 'tt.html')
+    return render(request, 'index2.html')

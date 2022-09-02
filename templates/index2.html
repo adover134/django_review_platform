@@ -1,0 +1,113 @@
+{% extends "base2.html" %}
+{% load static %}
+{% block main_contents %}
+<div class="row" id="tabletabletable"  >
+    <div class="col-sm-12">
+        <table id="review" class="table table-striped" style="width:100%;">
+            <thead style="display:none;">
+                <tr>
+                    <th></th>
+                    <th>리뷰 제목</th>
+                    <th>작성자</th>
+                    <th>이메일</th>
+                    <th>이미지</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<footer class="footer" style="margin-top: 25px;">
+    <div class="container">
+        <p class="text-muted text-center">
+            Data from
+        </p>
+    </div>
+</footer>
+{% endblock %}
+{% block extra_js %}
+<script>
+let imageUrl = "/static/images/";
+function format(d) {
+    // `d` is the original data object for the row
+    if (d.representiveImage) {
+        a = (
+            '<table style="width:100%;" class="reviews">' +
+            '<tr>' +
+            '<td rowspan="3" style="width:150px;" class="images">' +
+            '<img alt="대표이미지" src=' + imageUrl + d.representiveImage + ' style="width:130px;">');
+    }
+    else {
+        a = (
+            '<table style="width:100%;" class="reviews">' +
+            '<tr>' +
+            '<td rowspan="3" style="width:150px; height:150px;" class="images">' +
+            '');
+    }
+    return a + (
+        '</td>' +
+        '<td rowspan="1" style="width:40%;"><a href="http://127.0.0.1:8000/test/normal_user_review_read/?id='+(d.id).toString()+'">' +
+        d.reviewTitle +
+        '</a></td>' +
+        '<td>' +
+        d.reviewWriter +
+        '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td colspan="2">D</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td colspan="2">E</td>' +
+        '</tr>' +
+        '</table>'
+    );
+}
+$(document).ready(function() {
+    var table = $('#review').DataTable({
+        "lengthMenu": [ 10, 25, 50, 75, 100 ],
+        "serverSide": true,
+        "ajax": "/db/review/?format=datatables",
+        "columns": [
+            {"data": "id", "visible": false},
+            {"data": "reviewTitle", "visible": false},
+            {"data": "reviewWriter", "visible": false},
+            {"data": "uEmail", "visible": false},
+            {"data": "representiveImage", "visible": false},
+        ],
+        "columnDefs": [
+        {
+          "targets": 0,
+          "visible": false,
+        }],
+        "order": [0, 'asc'],
+        "fnDrawCallback": function( oSettings, json ) {
+          this.api().rows().every( function () {
+            this.child(format(this.data())).show();
+          });
+        }
+    });
+    $('.btn-decade').on('click', function() {
+        table.columns().search('');
+        var rel = $(this).attr('rel');
+        if (rel) {
+            table.columns(3).search('^' + rel + '[0-9]$', true).draw();
+        } else {
+            table.draw();
+        }
+    });
+});
+</script>
+<style>
+  #review>tbody>tr>td{
+      border:none;
+  }
+  div#tabletabletable{
+    position:relative;
+    height:100%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+  }
+  .images{
+      background-color: #B3B3B3;
+  }
+</style>
+{% endblock %}

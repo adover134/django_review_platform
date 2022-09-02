@@ -10,8 +10,8 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ImageSerializer
-from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
+from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
+from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 from DBs.services import sentence_spliter
 
 
@@ -199,7 +199,7 @@ class ReviewViewSets(ModelViewSet):
             query.add(query_icon, Q.AND)
 
         ###############################################################
-        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시)
+        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시. 3-1안)
         if data1.get('roomId'):
             rId = data1.get('roomId')[0]
             rId = rId.replace('/', '')
@@ -224,8 +224,14 @@ class ReviewViewSets(ModelViewSet):
                     case '3':
                         searched = Review.objects.filter(query).annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
+            # pagination
+            page = self.paginate_queryset(searched)
+            if page is not None:
+                serializer = ReviewSerializerString(page, context={'request': request}, many=True)
+                return self.get_paginated_response(serializer.data)
+
             #Serializer 설정
-            serializer = ReviewSerializer(searched, context={'request': request}, many=True)
+            serializer = ReviewSerializerString(searched, context={'request': request}, many=True)
             return Response(serializer.data)
         ###############################################################
         #검색 관련 로직
@@ -560,9 +566,34 @@ class CommonInfoViewSets(ModelViewSet):
         return Response("Update Success!")
 
 
-class ImageViewSets(ModelViewSet):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
+class ReviewImageViewSets(ModelViewSet):
+    queryset = ReviewImage.objects.all()
+    serializer_class = ReviewImageSerializer
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
+
+
+class RoomImageViewSets(ModelViewSet):
+    queryset = RoomImage.objects.all()
+    serializer_class = RoomImageSerializer
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.

@@ -48,9 +48,9 @@ def infoCheck(request):
 def normal_user_review_search(request):
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     print(request.user)
+    reviews = []
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
-    print(data)
     if data.get('builtFrom'):
         review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
     if data.get('builtTo'):
@@ -66,7 +66,13 @@ def normal_user_review_search(request):
             for c in data.get('icons'):
                 review_search_url = review_search_url+'&'+'commonInfo='+c
     review_list = json.loads(requests.get(review_search_url).text)
-    paginator = Paginator(review_list, 5)
+    reviews.append(review_list.get('results'))
+    while review_list.get('next') is not None:
+        review_list = json.loads(review_list.get('next').text)
+        review_list = json.loads(requests.get(review_search_url).text)
+        reviews.append(review_list.get('results'))
+    print('aaaaa :', reviews)
+    paginator = Paginator(reviews[0], 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     context = {'paged_review': paged_review}
