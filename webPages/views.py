@@ -13,7 +13,15 @@ from webPages.config import KAKAO_JAVA_KEY
 
 
 def main(request):
-    return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
+    review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
+
+    data = {
+        'javakey': KAKAO_JAVA_KEY,
+        'latest_reviews': review_data['latest_reviews'],
+        'popular_reviews': review_data['popular_reviews'],
+    }
+
+    return render(request, 'normal_user_main.html', data)
 
 
 # 로그인 시도 시에 처리되는 메소드
@@ -67,7 +75,7 @@ def normal_user_review_search(request):
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    print('a:', paged_review[2])
+    # print('a:', paged_review[2])
     context = {'paged_review': paged_review}
     return render(request, 'normal_user_review_search.html', context)
 

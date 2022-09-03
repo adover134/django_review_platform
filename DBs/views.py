@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.shortcuts import render
@@ -621,3 +622,22 @@ def ajaxTest(request):
     manager = json.loads(requests.get('http://127.0.0.1:8000/db/manager/').text)
     print(manager)
     return render(request, 'test.html', {"manager": manager})
+
+@api_view(['GET'])
+def getMainPageReview(request):
+    reviews = Review.objects.all()
+    latest_data = reviews.order_by('-reviewDate')[:4]
+    popular_data = reviews.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')[:4]
+
+    data = {
+        'latest_reviews': ReviewSerializerString(latest_data, context={'request': request}, many=True).data,
+        'popular_reviews': ReviewSerializerString(popular_data, context={'request': request}, many=True).data,
+    }
+
+    return Response(data)
+
+
+
+
+
+
