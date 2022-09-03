@@ -197,7 +197,6 @@ class ReviewViewSets(ModelViewSet):
         if data1.get('icon'):
             query_icon = Q()
             query.add(query_icon, Q.AND)
-
         ###############################################################
         # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시. 3-1안)
         if data1.get('roomId'):
@@ -256,21 +255,23 @@ class ReviewViewSets(ModelViewSet):
                     if roomRetrieveURL[-1] != '?':
                         roomRetrieveURL = roomRetrieveURL + '&'
                     roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
-
             # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
             room_data = None
             if roomRetrieveURL[-1] != '?':
                 room_data = json.loads(requests.get(roomRetrieveURL).text)
             # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
-            if room_data:
+            if len(room_data) > 0:
                 query_room = Q()
                 for r in room_data:
                     query_room.add(Q(roomId=r['id']), Q.OR)
                 query.add(query_room, Q.AND)
-
             # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
-        searched = Review.objects.filter(query)
+        if query == Q():
+            searched = None
+        else:
+            searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
+        print(searched)
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):

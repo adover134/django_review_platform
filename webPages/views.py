@@ -47,10 +47,8 @@ def infoCheck(request):
 
 def normal_user_review_search(request):
     review_search_url = 'http://127.0.0.1:8000/db/review/'
-    print(request.user)
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
-    print(data)
     if data.get('builtFrom'):
         review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
     if data.get('builtTo'):
@@ -61,6 +59,7 @@ def normal_user_review_search(request):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
+        print(review_search_url)
     for i in range(3):
         if data.get('icons'):
             for c in data.get('icons'):
