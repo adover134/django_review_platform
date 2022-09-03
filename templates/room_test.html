@@ -41,7 +41,6 @@
         </form>
             </div>
     </div>
-<<<<<<< Updated upstream
 <div style="margin : 15vh;" id="reviews">
     {% for review in reviews %}
         <div style="border: 3px; margin: auto 0 auto; line-height: 2.8vh;height: 20vh;" >
@@ -70,27 +69,6 @@
         </div>
     {% endfor %}
 </div>
-=======
-<div style="margin : 15vh;" ></div>
-{% for review in reviews %}
-    <div style="border: 3px; margin: auto 8vh auto; line-height: 2.8vh;height: 17.6vh ;" >
-        <img class="left-side-room-img" align = "left" style= " height: 12vh; width :6.8vw; " src="{% static 'images/45.png' %}"  >
-
-        <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;최신 리뷰 제목{{ review.reviewTitle }}</span></strong> <span style = "float : right;"> 추천 수 {{ room.builtYear }} </span>
-        <div sytle = "color: #ECECEC;">&ensp; 리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용</div>
-        <span style = "color : #A23355 ;font-size: 2vw *3.7vh; letter-spacing :1vw; ">&ensp;ㅇㅏㅇㅣㅋㅗㄴ</span>
-
-    </div>
-
-{% endfor %}
-
-{% endblock %}
-
-
-
-
-</body>
->>>>>>> Stashed changes
 <script>
     function sort(){
         let selected = document.getElementById('sort_select_box');
