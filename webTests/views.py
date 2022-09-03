@@ -76,6 +76,7 @@ def normal_user_review_write(request):
             
             '''
             # 원룸 번호를 구한다.
+            print(room)
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
             print(data1['uId'])

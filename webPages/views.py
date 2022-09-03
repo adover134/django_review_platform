@@ -59,7 +59,6 @@ def normal_user_review_search(request):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
-        print(review_search_url)
     for i in range(3):
         if data.get('icons'):
             for c in data.get('icons'):
@@ -68,6 +67,7 @@ def normal_user_review_search(request):
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
+    print('a:', paged_review[2])
     context = {'paged_review': paged_review}
     return render(request, 'normal_user_review_search.html', context)
 
