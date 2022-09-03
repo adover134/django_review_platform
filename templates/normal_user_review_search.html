@@ -36,7 +36,7 @@
     <form action="{{normalUserReviewSearch}}" method="get">
         <fieldset>
             <legend>건물 주소</legend>
-            <input type="text" name="address" id="address1">동
+            <input type="text" name="address" id="address1">
         </fieldset>
     </form>
     <br>
@@ -62,7 +62,7 @@
                         <img>
                     </td>
                     <td class="review_writer text-center col-2">
-                        <span>{{r.uNickname}} / {{r.uEmail}}</span>
+                        <span>{{r.reviewWriter}} / {{r.uEmail}}</span>
                     </td>
                     <td class="review_title text-center col-3">
                         <a class="link-secondary" href="{{normalUserReviewRead}}?id={{r.id}}">{{ r.reviewTitle }}</a>
@@ -89,7 +89,7 @@
     <br>
     {% if paged_review.has_previous %}
         <a id="prev_page">이전으로</a>
-        <script><x></x>
+        <script>
             document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.previous_page_number}}"
         </script>
     {% endif %}

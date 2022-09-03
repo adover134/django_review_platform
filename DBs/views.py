@@ -10,8 +10,8 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ImageSerializer
-from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
+from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
+from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 from DBs.services import sentence_spliter
 
 
@@ -148,17 +148,18 @@ class ReviewViewSets(ModelViewSet):
 
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = ReviewSerializer2(page, many=True)
+                serializer = ReviewSerializer(page, context={'request': request}, many=True)
                 return self.get_paginated_response(serializer.data)
 
-            serializer = ReviewSerializer2(queryset, many=True)
+            serializer = ReviewSerializer(queryset, context={'request': request}, many=True)
             return Response(serializer.data)
-        # 검색 조건을 쿼리로 만들어 저장할 변수를 만든다.
+        # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
+        searched = None
 
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uNickname'):
-            query_user_nickname = Q(uNickname=data1['uNickname'])
+            query_user_nickname = Q(uNickname=data1['reviewWriter'])
             query.add(query_user_nickname, Q.AND)
         # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('date'):
@@ -196,20 +197,40 @@ class ReviewViewSets(ModelViewSet):
         if data1.get('icon'):
             query_icon = Q()
             query.add(query_icon, Q.AND)
-        searched = None
-
         ###############################################################
-        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시)
+        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시. 3-1안)
         if data1.get('roomId'):
             rId = data1.get('roomId')[0]
-            rId = rId[:-1]
+            rId = rId.replace('/', '')
             query_roomId = Q(roomId_id=rId)
 
             query.add(query_roomId, Q.AND)
             searched = Review.objects.filter(query)
 
-            #Serializer 별도 설정
-            serializer = ReviewSerializer(searched, context={'request': request}, many=True)
+            # 정렬조건
+            if data1.get('sorted'):
+                sort_value = data1.get('sorted')[0]
+                sort_value = sort_value.replace('/', '')
+
+                match sort_value:
+                    # 최신순
+                    case '1':
+                        searched = searched.order_by('reviewDate')
+                    # 추천순
+                    case '2':
+                        searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
+                    # 정확도순(아이콘 많은 순)
+                    case '3':
+                        searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
+
+            # pagination
+            page = self.paginate_queryset(searched)
+            if page is not None:
+                serializer = ReviewSerializerString(page, context={'request': request}, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            #Serializer 설정
+            serializer = ReviewSerializerString(searched, context={'request': request}, many=True)
             return Response(serializer.data)
         ###############################################################
         #검색 관련 로직
@@ -229,29 +250,29 @@ class ReviewViewSets(ModelViewSet):
                     roomRetrieveURL = roomRetrieveURL + '&'
                 roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
             # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
-            #N = len(CommonInfo.objects.all())
-            N=3
             if data1.get('commonInfo'):
                 for info in data1.get('commonInfo'):
                     if roomRetrieveURL[-1] != '?':
                         roomRetrieveURL = roomRetrieveURL + '&'
                     roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
-
             # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
             room_data = None
             if roomRetrieveURL[-1] != '?':
                 room_data = json.loads(requests.get(roomRetrieveURL).text)
             # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
-            if room_data:
+            if len(room_data) > 0:
                 query_room = Q()
                 for r in room_data:
                     query_room.add(Q(roomId=r['id']), Q.OR)
                 query.add(query_room, Q.AND)
-
             # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
-        searched = Review.objects.filter(query)
+        if query == Q():
+            searched = None
+        else:
+            searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
-        return Response(ReviewSerializer2(searched, many=True).data)
+        print(searched)
+        return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)
@@ -268,7 +289,7 @@ class ReviewViewSets(ModelViewSet):
         review_kind = data['reviewKind']
         review_id = data['id']
         # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
-        #for icon in data['icons']:x
+        #for icon in data['icons']:
         #    a=3
             #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
         # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
@@ -546,9 +567,34 @@ class CommonInfoViewSets(ModelViewSet):
         return Response("Update Success!")
 
 
-class ImageViewSets(ModelViewSet):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
+class ReviewImageViewSets(ModelViewSet):
+    queryset = ReviewImage.objects.all()
+    serializer_class = ReviewImageSerializer
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+        for key in data2:
+            if data2[key] != '':
+                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response("Update Success!")
+
+
+class RoomImageViewSets(ModelViewSet):
+    queryset = RoomImage.objects.all()
+    serializer_class = RoomImageSerializer
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.

@@ -1,0 +1,19 @@
+div#reviewInfo {
+  height: 200px;
+}
+
+div#reviewContent {
+  height: 300px;
+  border: 1px solid grey;
+}
+
+div#mainDiv {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+div#icon {
+  height: 228px;
+}
+
+/*# sourceMappingURL=normalUserRoomReadTemplate.css.map */
