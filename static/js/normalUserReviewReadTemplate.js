@@ -35,7 +35,7 @@ function toggleRecommend(){
     else {
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8000/toggleRecommmend/",
+            url: "/toggleRecommmend/",
             async: false,
             headers: {'X-CSRFToken': csrftoken},
             dataType: 'json',
@@ -73,7 +73,7 @@ function toggleReport(){
     else {
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8000/toggleReport/",
+            url: "/toggleReport/",
             async: false,
             headers: {'X-CSRFToken': csrftoken},
             dataType: 'json',
