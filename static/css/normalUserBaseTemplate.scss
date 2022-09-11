@@ -13,7 +13,6 @@ div#mainMenu>div.button>a{
     color:white;
     text-decoration:none;
     height:50px;
-    background-color:none;
 }
 div#userInfo{
     display:inline-block;
@@ -40,4 +39,7 @@ button#myInfo{
 }
 .bg-red-500{
     background-color: $red-500;
+}
+body{
+    overflow-y:hidden;
 }

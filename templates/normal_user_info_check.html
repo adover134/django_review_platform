@@ -14,7 +14,7 @@
 </script>
 {% endif %}
 <link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
-<div id="infoCheckAndUpdate">
+<div id="infoCheckAndUpdate" style="height:39vh;">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
     <h1>회원 정보 설정</h1>
     <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
@@ -36,61 +36,22 @@
 </div>
 
 <!- 레이아웃 결정용! -->
-<div>
-    <h1>레이아웃 설정</h1>
-    <input type="radio" name="layout" id="layout1" value="1" checked>
-    <label for="layout1"><img src="{% static 'images/2.png' %}"></label>
-    <input type="radio" name="layout" id="layout2" value="2">
-    <label for="layout2"><img src="{% static 'images/2.png' %}"></label>
-</div>
-
-<div style="word-spacing:15px; float:right; margin : 2.98vh; ">
-    <div style="display: inline-block;">
-    <select id="sort_select_box" name="sort_select_box" onchange="sort()">
-        <option value="1">최신 순</option>
-        {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-        {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-        <option value="2">추천 순</option>
-        {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-        {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-        <option value="3">정확도 순</option>
-        {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-        {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
-    </select>
+<div style="height:39vh;">
+    <div style="top:13.3vh;">
+        <h1>레이아웃 설정</h1>
+    </div>
+    <form method="POST" enctype="multipart/form-data" action="/change_user_layout/">
+        <input type="radio" name="layout" id="layout1" value="1" checked style="display:none;">
+        <div style="display:inline-block; left:6vw; position:relative; z-index:1;">
+            <label for="layout1"><img src="{% static 'images/layouts/1.png' %}" style="width:21vw; height:25.5vh;" id="layout1img"></label>
         </div>
-    <div style="display: inline-block;">
-    <form action='//'>
-        <input style = " cursor : pointer;  background-color : white;" type='button' value = '리뷰 작성'>
+        <input type="radio" name="layout" id="layout2" value="2" style="display:none;">
+        <div style="display:inline-block; right:6vw; float:right; position:relative;">
+            <label for="layout2"><img src="{% static 'images/layouts/2.png' %}" style="width:21vw; height:25.5vh;" id="layout2img"></label>
+        </div>
+        <br><br>
+        <input type="submit" value="변경하기" style="float:right;">
     </form>
-        </div>
-</div>
-<div style="margin : 15vh;" id="reviews">
-    {% for review in reviews %}
-        <div style="border: 3px; margin: auto 0 auto; line-height: 2.8vh;height: 20vh;" >
-            <div style= "height: 12vh; width :6.8vw; display:inline-block; float:left;">
-                {% if review.additionalImage %}
-                    <img class="left-side-room-img" style= "height: 12vh; width :6.8vw;" src="{% static 'images/' %}{{review.additionalImage|first}}">
-                {% endif %}
-            </div>
-            <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;
-    {#                리뷰 제목 #}
-                    최신 리뷰 제목 -> {{ review.reviewTitle }}</span></strong>
-            <span style = "float : right;">
-    {#            추천 수 데이터 #}
-                추천 수 {{ review.recommendedOn|length }}</span>
-            <div style = "color: #ECECEC;">&ensp;
-    {#            리뷰 내용 데이터 #}
-                리뷰내용 -> {{ review.reviewSentence }}</div>
-            <span style = "color : #A23355 ;font-size: 1.88vw; letter-spacing :1vw; ">&ensp;
-    {#            리뷰별 아이콘 데이터 목록 #}
-                {% if review.includedIcon %}
-                    {% for icon in review.includedIcon %}
-                        <img src="{% static 'images/iconImage/' %}{{ icon }}">
-                    {% endfor %}
-                {% endif %}
-            </span>
-        </div>
-    {% endfor %}
 </div>
 <script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
 {% endblock %}

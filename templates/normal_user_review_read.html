@@ -34,17 +34,17 @@
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <div id="reviewInfo">
-    <div id="room_images" class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+    <div id="room_images" class="content col-5" style="display:inline-block; float:left; height:220px; border:1px solid black;">
         원룸 사진들을 슬라이드로 넣을 곳입니다.
     </div>
-    <div class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+    <div class="content col-5" style="display:inline-block; float:left; height:220px; border:1px solid black;">
         <h1>{{review.reviewTitle}}</h1>
         <p>작성자 : {{review.uNickname}}</p>
         <p>작성자 email : {{review.uEmail}}</p>
         <p>작성일 : {{review.reviewDate}}</p>
         <p>원룸 주소 : {{review.address}}</p>
     </div>
-    <div class="content col-2" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+    <div class="content col-2" style="display:inline-block; float:left; height:220px; border:1px solid black;">
         <p>수정/삭제 버튼 놓을 곳</p>
         <p style="font-size:25px;">
             {% if recommended %}

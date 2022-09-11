@@ -1,3 +1,5 @@
+var l1i = document.getElementById('layout1img');
+var l2i = document.getElementById('layout2img');
 function sort(){
     let selected = document.getElementById('sort_select_box');
     let a = window.location.href;
@@ -33,3 +35,22 @@ function get_layout(){
         }
     }
 }
+function layout_change(event){
+    let checked = event.target;
+    if (checked.id === 'layout1img')
+    {
+        l2i.style.border='none';
+        l1i.style.border='2px solid blue';
+        document.getElementById('layout1').checked=true;
+        document.getElementById('layout2').checked=false;
+    }
+    if (checked.id === 'layout2img')
+    {
+        l1i.style.border='none';
+        l2i.style.border='2px solid blue';
+        document.getElementById('layout1').checked=false;
+        document.getElementById('layout2').checked=true;
+    }
+}
+l1i.addEventListener('click', layout_change)
+l2i.addEventListener('click', layout_change)

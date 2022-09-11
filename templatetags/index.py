@@ -42,7 +42,7 @@ def page(paginator, value):
 def check_active(user):
     print(user.penaltyDate)
     print(type(user.penaltyDate))
-    print(user.penaltyDate+relativedelta(days=30))
+    print(user.penaltyDate+relativedelta(day=3, days=30))
     if user.uActive == 1:
         state = str(user.penaltyDate+relativedelta(days=7))+'까지 신고 불가'
     elif user.uActive == 2:

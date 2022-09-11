@@ -33,6 +33,8 @@ urlpatterns = [
     path('toggleReport/', views.normal_user_review_report, name='normalUserReviewReport'),
     path('room_with_reviews_display/', views.room_with_reviews_display),
     path('change_user_info/', views.change_user_info),
+    path('change_user_layout/', views.change_user_layout),
+    path('normal_user_review_list/', views.check_user_reviews, name='wroteReviews'),
     path('db/', include('DBs.urls')),
     path('test/', include('webTests.urls'))
 ]

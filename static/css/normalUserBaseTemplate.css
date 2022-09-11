@@ -13,7 +13,6 @@ div#mainMenu > div.button > a {
   color: white;
   text-decoration: none;
   height: 50px;
-  background-color: none;
 }
 
 div#userInfo {
@@ -46,6 +45,10 @@ button#myInfo {
 
 .bg-red-500 {
   background-color: #dc3545;
+}
+
+body {
+  overflow-y: hidden;
 }
 
 /*# sourceMappingURL=normalUserBaseTemplate.css.map */
