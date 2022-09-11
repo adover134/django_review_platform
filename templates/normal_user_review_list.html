@@ -3,19 +3,21 @@
 
 {% block main_contents %}
 <div style="height:100%;">
-    <div id="user_info" style="width:90%; height:35%; margin-left:5%; margin-right:5%; padding-top:5vh;">
-        <h1 style="font-weight:bolder;">
-            {{user.last_name}}{{user.first_name}} 님
-        </h1>
-        <p>
-            {{user.email}}
-        </p>
-        <p>
-            활동 상태 : <span>{{user|check_active}}</span>
-        </p>
-    </div>
+    {% block informations %}
+        <div id="user_info" style="width:100%; height:35%; margin-left:5%; margin-right:5%; padding-top:5vh;">
+            <h1 style="font-weight:bolder;">
+                {{user.last_name}}{{user.first_name}} 님
+            </h1>
+            <p>
+                {{user.email}}
+            </p>
+            <p>
+                활동 상태 : <span>{{user|check_active}}</span>
+            </p>
+        </div>
+    {% endblock %}
     <div id="list" style="height:65%;">
-        <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
+        <div style="word-spacing:15px; float:right; margin : 2.98vh; height:10%;">
             <div style="display: inline-block;">
             <select id="sort_select_box" name="sort_select_box" onchange="sort()">
                 <option value="1">최신 순</option>
@@ -35,8 +37,7 @@
             </form>
             </div>
         </div>
-        <br>
-        <div style="margin : 15vh;" id="reviews">
+        <div style="padding-left: 5vh; padding-right: 5vh; padding-top: 5vh; width:100%; height:90%;" id="reviews">
             {% for review in reviews %}
                 <div style="border: 3px; margin: auto 0 auto; height: 20vh;" >
                     <div style= "height: 15vh; width :14%; display:inline-block; float:left;">

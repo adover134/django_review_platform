@@ -4,7 +4,7 @@ a.link-secondary {
   text-decoration: none;
 }
 
-div#list {
+div#reviews {
   overflow-y: scroll;
   overflow-x: hidden;
 }
