@@ -34,10 +34,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
-    includedIcon = serializers.HyperlinkedRelatedField(
+    includedIcon = serializers.StringRelatedField(
         many=True,
         read_only=True,
-        view_name='icon-detail'
     )
     recommendedOn = serializers.HyperlinkedRelatedField(
         many=True,
@@ -58,8 +57,10 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def get_representiveImage(self, obj):
         a = [image.image for image in obj.additionalImage.all()]
-        return a
-
+        if len(a) > 0:
+            return a[0]
+        else:
+            return None
 
     class Meta:
         model = Review
@@ -67,29 +68,15 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer2(serializers.ModelSerializer):
+
     reviewWriter = serializers.SerializerMethodField()
     uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
+    includedIcon = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
 
-    additionalImage = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
-    includedIcon = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='icon-detail'
-    )
-    recommendedOn = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='recommend-detail'
-    )
-    reportedOn = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='report-detail'
-    )
 
     # 리뷰 작성자의 이름을 합쳐서 출력
     def get_reviewWriter(self, obj):
@@ -123,8 +110,10 @@ class ReviewSerializerString(serializers.ModelSerializer):
         read_only=True,
     )
 
+
+    # 리뷰 작성자의 이름을 합쳐서 출력
     def get_reviewWriter(self, obj):
-        return f'{obj.uId.last_name}{obj.uId.first_name}'
+        return f'{obj.uId.last_name} {obj.uId.first_name}'
 
     class Meta:
         model = Review
