@@ -1,41 +1,9 @@
 {% extends 'normal_user_base.html' %}
-{% load index static %}
-
+{% load static %}
 {% block main_contents %}
-{% if request.path != infoCheck %}
-<meta http-equiv="refresh" content="0; url='{{infoCheck}}'">
-{% else %}
-<script>
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            document.location.reload();
-        }
-    };
-</script>
-{% endif %}
-<link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
-<div id="infoCheckAndUpdate" style="height:32vh;">
-    <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
-    <h1>회원 정보 설정</h1>
-    <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
-        {% csrf_token %}
-        <table>
-            {{userForm.as_table}}
-        </table>
-        <div style="float:right;">
-            <input type="submit" value="변경하기">
-            <button type="button">탈퇴하기</button>
-        </div>
-    </form>
-    <p>
-        경고 횟수 : <span>{{user.uWarnCount}}</span>회
-    </p>
-    <p>
-        활동 상태 : <span>{{user|check_active}}</span>
-    </p>
-</div>
-
-<div style="word-spacing:15px; float:right; margin : 2.98vh; ">
+    {% block info %}
+    {% endblock %}
+    <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
         <div style="display: inline-block;">
         <select id="sort_select_box" name="sort_select_box" onchange="sort()">
             <option value="1">최신 순</option>
@@ -110,5 +78,5 @@
         document.getElementById('sort_select_box').appendChild(b);
     }
 </script>
-<script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
+
 {% endblock %}

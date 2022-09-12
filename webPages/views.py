@@ -13,7 +13,15 @@ from webPages.config import KAKAO_JAVA_KEY
 
 
 def main(request):
-    return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
+    review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
+
+    data = {
+        'javakey': KAKAO_JAVA_KEY,
+        'latest_reviews': review_data['latest_reviews'],
+        'popular_reviews': review_data['popular_reviews'],
+    }
+
+    return render(request, 'normal_user_main.html', data)
 
 
 # 로그인 시도 시에 처리되는 메소드
@@ -35,6 +43,7 @@ def signup(request):
     return res
 
 
+@login_required(login_url='/loginPage/')
 def infoCheck(request):
     user = request.user
     userForm = reviewWriteForms.UserInfoForm(initial={'성': user.last_name, '이름': user.first_name, '이메일': user.email, '경고횟수': user.uWarnCount})
@@ -55,10 +64,8 @@ def infoCheck(request):
 
 def normal_user_review_search(request):
     review_search_url = 'http://127.0.0.1:8000/db/review/'
-    print(request.user)
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
-    print(data)
     if data.get('builtFrom'):
         review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
     if data.get('builtTo'):
@@ -77,6 +84,7 @@ def normal_user_review_search(request):
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
+    # print('a:', paged_review[2])
     context = {'paged_review': paged_review}
     return render(request, 'normal_user_review_search.html', context)
 
@@ -194,3 +202,59 @@ def room_with_reviews_display(request):
     }
 
     return render(request, 'room_test.html', data)
+
+
+@login_required(login_url='/loginPage/')
+def change_user_info(request):
+    user = request.user
+    if request.method == 'POST':
+        data = dict(request.POST)
+        print(data)
+        data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'), 'layout': data.get('레이아웃')}
+        requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
+
+    return render(request, 'normal_user_info_check.html')
+
+
+@login_required(login_url='/loginPage/')
+def change_user_layout(request):
+    user = request.user
+    if request.method == 'POST':
+        data = dict(request.POST)
+        print(data)
+        data1 = {'layout': data.get('레이아웃')}
+        requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
+
+    return render(request, 'normal_user_info_check.html')
+
+def check_user_reviews(request):
+    # 정렬 파라미터 존재 조건
+    user = request.user
+    if 'sorted' in request.GET:
+        sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
+        print('sorted = ', sorted)
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
+    else:
+        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text) # 로그인 한 회원이 작성한 리뷰 데이터 목록
+
+    #paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    paged_review = paginator.get_page(page)
+    return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
+# 리뷰 열람 페이지
+    # 해당 리뷰 정보를 받는다.
+    # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
+    # 리뷰 정보와 리뷰 리스트를 context로 반환
+    
+    
+# 관련 리뷰 반환
+    # 입력 받은 원룸 주소를 기준으로 리뷰들을 구한다.
+    # 구한 리뷰들을 반환한다.
+
+
+# 원룸 열람 페이지
+    # 해당 원룸 정보를 받는다.
+    # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
+    # 원룸 정보와 리뷰 리스트를 context로 반환

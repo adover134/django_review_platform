@@ -29,3 +29,6 @@ for (i=1960;i<=2022;i++)
 function get_address(){
     document.getElementById('search_address').value = document.getElementById('address1').value;
 }
+window.onload=function() {
+    document.getElementById("address1").value = new URLSearchParams(window.location.search).get('address');
+}

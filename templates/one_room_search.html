@@ -4,37 +4,36 @@
     <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
     <div style="text-align:left;" >
         <div style ="font-size : 25px;">
-            <strong><span><br>리뷰 검색 필터</span></strong>
+            <strong><span><br>원룸 검색 필터 </span></strong>
         </div>
     <div>
-            <span><br>포함된 아이콘</span><span><br>
-    <label><input type="checkbox" name="color" value="blue"> ♬ </label>
-      <label><input type="checkbox" name="color" value="red"> ★ </label>
-        <label><input type="checkbox" name="color" value="blue"> ● </label>
-      <label><input type="checkbox" name="color" value="red"> △ </label>
+            <span><br>공유 시설</span><span><br>
+    <label><input type="checkbox" name="color" value="blue"> 주차장 </label>
+      <label><input type="checkbox" name="color" value="red"> 엘레베이터 </label>
+        <label><input type="checkbox" name="color" value="blue"> CCTV </label>
     </span>
         </div>
-    <div>
+        <div>
         <span><br> 리뷰 작성일</span><br>
         <div style="display: inline-block;">
             <select name="sort_select_box" onchange="sort()">
-            <option value="1">시작일</option>
+            <option value="1">최소 연도</option>
         </select>
             </div>
             ~
         <div style="display: inline-block;">
             <select name="sort_select_box" onchange="sort()">
-            <option value="1">종료일</option>
+            <option value="1">최대 연도</option>
         </select>
             </div>
     </div>
     <div>
-        <span><br> 검색 테스트</span><br><span>
+        <span><br> 검색 테스트</span><br>
         <form CLASS="nav-item col-3" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
             <div class="nav-item col-9">
-            <input style="width : 200px;"class="form-control" type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
+            <input style="width : 200px;"class="form-control" type="search" placeholder="기타 검색 텍스트" aria-label="Search" id="address" name="address">
         </div>
-    </form> </span>
+    </form>
         </div>
     </div>
 {% endblock %}

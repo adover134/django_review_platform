@@ -1,41 +1,13 @@
 {% extends 'normal_user_base.html' %}
-{% load index static %}
-
+{% load static %}
 {% block main_contents %}
-{% if request.path != infoCheck %}
-<meta http-equiv="refresh" content="0; url='{{infoCheck}}'">
-{% else %}
-<script>
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            document.location.reload();
-        }
-    };
-</script>
-{% endif %}
-<link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
-<div id="infoCheckAndUpdate" style="height:32vh;">
-    <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
-    <h1>회원 정보 설정</h1>
-    <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
-        {% csrf_token %}
-        <table>
-            {{userForm.as_table}}
-        </table>
-        <div style="float:right;">
-            <input type="submit" value="변경하기">
-            <button type="button">탈퇴하기</button>
+    {% block info %}
+    {% endblock %}
+    <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
+        <div class="search" style=" float : left; margin: auto; width: 750px; " >
+            <input type="text" placeholder="검색어 입력" style="  width: 70%; border: 1px solid #bbb; border-radius: 8px; padding: 10px 12px; font-size: 15px;">
+            <img style = "width: 30px; top: 30px; right: 30px; margin: auto;" src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png">
         </div>
-    </form>
-    <p>
-        경고 횟수 : <span>{{user.uWarnCount}}</span>회
-    </p>
-    <p>
-        활동 상태 : <span>{{user|check_active}}</span>
-    </p>
-</div>
-
-<div style="word-spacing:15px; float:right; margin : 2.98vh; ">
         <div style="display: inline-block;">
         <select id="sort_select_box" name="sort_select_box" onchange="sort()">
             <option value="1">최신 순</option>
@@ -48,11 +20,6 @@
             {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
             {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
         </select>
-            </div>
-        <div style="display: inline-block;">
-        <form action='//'>
-            <input style = " cursor : pointer;  background-color : white;" type='button' value = '리뷰 작성'>
-        </form>
             </div>
     </div>
 <div style="margin : 15vh;" id="reviews">
@@ -109,6 +76,7 @@
         b.style.display = 'none';
         document.getElementById('sort_select_box').appendChild(b);
     }
+
 </script>
-<script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
+
 {% endblock %}

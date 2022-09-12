@@ -25,18 +25,28 @@ function review_submit(e) {
     // make POST ajax call
     $.ajax({
         type: 'POST',
-        url: "http://127.0.0.1:8000/test/normal_user_review_write/",
+        url: "/test/normal_user_review_write/",
         async: false,
         data: form,
         processData: false,
         contentType: false,
         success: function (response) {
             // on successfull creating object
-            window.location.replace('http://127.0.0.1:8000/test/normal_user_review_read/?id='+response);
+            window.location.replace('/test/normal_user_review_read/?id='+response);
         },
         error: function (response) {
             // alert the error if any error occured
             alert(response["responseJSON"]["error"]);
         }
     })
+}
+window.onload = function(){
+    document.getElementById("id_address").addEventListener("click", function(){ //주소입력칸을 클릭하면
+        //카카오 지도 발생
+        new daum.Postcode({
+            oncomplete: function(data) { //선택시 입력값 세팅
+                document.getElementById("id_address").value = data.address; // 주소 넣기
+            }
+        }).open();
+    });
 }

@@ -8,6 +8,7 @@
 {% url 'infoCheck' as infoCheck %}
 {% url 'normalUserReviewSearch' as normalUserReviewSearch %}
 {% url 'normalUserReviewRead' as normalUserReviewRead %}
+{% url 'wroteReviews' as wroteReviews %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,21 +26,21 @@
         <div class="nav-item col-1" style="display:inline-block; float:left; height:20px;"></div>
         <div>
             <div style="height:0.7vh;"></div>
-            <a href="http://127.0.0.1:8000/" class="navbar-brand col-1 text-center" id="logo" style="display:inline-block; float:left;"><img style="width:6vh; height:6vh;" src="{% static 'images/logo/logo.png' %}" alt="로고 이미지"></a>
+            <a href="/" class="navbar-brand col-1 text-center" id="logo" style="display:inline-block; float:left;"><img style="width:6vh; height:6vh;" src="{% static 'images/logo/logo.png' %}" alt="로고 이미지"></a>
         </div>
         {% block head_menu %}
         {% endblock %}
     </div>
     <div id="midContent">
-        <div class="middle" id="leftSideMenu" style="border:2px solid #B3B3B3; border-left:none; width:20vw ;">
+        <div class="middle" id="leftSideMenu" style="border:2px solid #B3B3B3; border-left:none; width:20% ;">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle" id="mainDiv" style="border:2px solid #B3B3B3; width:60vw;">
+        <div class="middle" id="mainDiv" style="border:2px solid #B3B3B3; width:60%;">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle" id="rightSideMenu" style="border:2px solid #B3B3B3; border-right:none; width:20vw;">
+        <div class="middle" id="rightSideMenu" style="border:2px solid #B3B3B3; border-right:none; width:20%;">
             {% block right_side_bar %}
             {% endblock %}
         </div>

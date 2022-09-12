@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.shortcuts import render
@@ -32,10 +33,12 @@ class UserViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        print(data2)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
+        print(data1)
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -67,9 +70,9 @@ class ManagerViewSets(ModelViewSet):
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
         # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -158,9 +161,11 @@ class ReviewViewSets(ModelViewSet):
         searched = None
 
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
-        if data1.get('uNickname'):
-            query_user_nickname = Q(uNickname=data1['uNickname'])
-            query.add(query_user_nickname, Q.AND)
+        if data1.get('uId'):
+            u = data1.get('uId')[0].replace('/', '')
+            print(u)
+            query_user = Q(uId=u)
+            query.add(query_user, Q.AND)
         # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('date'):
             query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
@@ -197,7 +202,6 @@ class ReviewViewSets(ModelViewSet):
         if data1.get('icon'):
             query_icon = Q()
             query.add(query_icon, Q.AND)
-
         ###############################################################
         # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시. 3-1안)
         if data1.get('roomId'):
@@ -216,13 +220,13 @@ class ReviewViewSets(ModelViewSet):
                 match sort_value:
                     # 최신순
                     case '1':
-                        searched = Review.objects.filter(query).order_by('reviewDate')
+                        searched = searched.order_by('reviewDate')
                     # 추천순
                     case '2':
-                        searched = Review.objects.filter(query).annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
+                        searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
                     # 정확도순(아이콘 많은 순)
                     case '3':
-                        searched = Review.objects.filter(query).annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
+                        searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
             # pagination
             page = self.paginate_queryset(searched)
@@ -237,7 +241,7 @@ class ReviewViewSets(ModelViewSet):
         #검색 관련 로직
         else:
             # 원룸에 대한 정보를 검색하기 위한 URL
-            roomRetrieveURL = 'http://127.0.0.1:8000/db/room/' + '?'
+            roomRetrieveURL = 'http://127.0.0.1:8000/db/room/?'
             # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
             if data1.get('address'):
                 roomRetrieveURL = roomRetrieveURL + 'address=' + data1.get('address')[0]
@@ -256,22 +260,23 @@ class ReviewViewSets(ModelViewSet):
                     if roomRetrieveURL[-1] != '?':
                         roomRetrieveURL = roomRetrieveURL + '&'
                     roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
-
             # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
-            room_data = None
             if roomRetrieveURL[-1] != '?':
                 room_data = json.loads(requests.get(roomRetrieveURL).text)
             # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
-            if room_data:
-                query_room = Q()
-                for r in room_data:
-                    query_room.add(Q(roomId=r['id']), Q.OR)
-                query.add(query_room, Q.AND)
-
+                if len(room_data) > 0:
+                    query_room = Q()
+                    for r in room_data:
+                        query_room.add(Q(roomId=r['id']), Q.OR)
+                    query.add(query_room, Q.AND)
             # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
-        searched = Review.objects.filter(query)
+        if query == Q():
+            searched = None
+        else:
+            searched = Review.objects.filter(query)
         # 검색된 값을 반환한다.
-        return Response(ReviewSerializer(searched, many=True).data)
+        print(searched)
+        return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)
@@ -414,10 +419,10 @@ class IconViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -459,10 +464,10 @@ class RecommendViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -496,10 +501,10 @@ class ReportViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -552,10 +557,10 @@ class CommonInfoViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -577,10 +582,10 @@ class ReviewImageViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -602,10 +607,10 @@ class RoomImageViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+        # data1에서, 입력받은 값들만 변환한다.
+        for key in data1:
+            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
+                data1[key] = data2[key][0]
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -620,3 +625,22 @@ def ajaxTest(request):
     manager = json.loads(requests.get('http://127.0.0.1:8000/db/manager/').text)
     print(manager)
     return render(request, 'test.html', {"manager": manager})
+
+@api_view(['GET'])
+def getMainPageReview(request):
+    reviews = Review.objects.all()
+    latest_data = reviews.order_by('-reviewDate')[:4]
+    popular_data = reviews.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')[:4]
+
+    data = {
+        'latest_reviews': ReviewSerializerString(latest_data, context={'request': request}, many=True).data,
+        'popular_reviews': ReviewSerializerString(popular_data, context={'request': request}, many=True).data,
+    }
+
+    return Response(data)
+
+
+
+
+
+
