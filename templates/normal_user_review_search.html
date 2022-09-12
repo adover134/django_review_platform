@@ -3,7 +3,9 @@
 
 {% block left_side_bar %}
 <div id="searchConditionForm">
-    <p>리뷰 검색 필터</p>
+    <div style ="font-size : 25px; font-weight: bolder; text-align:left;">
+        <span><br>리뷰 검색 필터</span>
+    </div>
     <form id="search_filter" action="{{normalUserReviewSearch}}" onsubmit="get_address()" method="get">
         <fieldset id="icons">
             <legend>포함된 아이콘</legend>

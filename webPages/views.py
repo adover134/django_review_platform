@@ -37,12 +37,20 @@ def signup(request):
 
 def infoCheck(request):
     user = request.user
-    print(user)
-    userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.last_name+user.first_name, 'user_email': user.email, 'user_warn_count': user.uWarnCount})
-    if not user:
-        return render(request, 'normal_user_info_check.html')
+    userForm = reviewWriteForms.UserInfoForm(initial={'성': user.last_name, '이름': user.first_name, '이메일': user.email, '경고횟수': user.uWarnCount})
+    if 'sorted' in request.GET:
+        sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
+        print('sorted = ', sorted)
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
     else:
-        return render(request, 'normal_user_info_check.html', {'userForm': userForm})
+        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text) # 로그인 한 회원이 작성한 리뷰 데이터 목록
+
+    #paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    paged_review = paginator.get_page(page)
+    return render(request, 'normal_user_info_check.html', {'userForm': userForm, 'reviews': reviews})
 
 
 def normal_user_review_search(request):
