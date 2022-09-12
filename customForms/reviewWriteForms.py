@@ -28,6 +28,3 @@ class UserInfoForm(forms.Form):
     성 = forms.CharField()
     이름 = forms.CharField()
     이메일 = forms.EmailField()
-
-class UserLayoutForm(forms.Form):
-    레이아웃 = forms.IntegerField(widget=forms.HiddenInput(attrs={'autocomplete': 'off'}))
