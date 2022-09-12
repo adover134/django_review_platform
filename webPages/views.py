@@ -187,8 +187,14 @@ def room_with_reviews_display(request):
 
     #paginator
     paginator = Paginator(reviews, 5)
+    print(type(paginator))
     page = request.GET.get('page')
-    paged_review = paginator.get_page(page)
+    if page:
+        paged_review = paginator.get_page(page)
+    else:
+        paged_review = paginator
+
+    print(paged_review)
 
     data = {
         'room': room,
