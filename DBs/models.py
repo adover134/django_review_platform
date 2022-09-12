@@ -8,7 +8,6 @@ class User(AbstractUser):
     uWarnCount = models.IntegerField(default=0)
     uActive = models.IntegerField(default=0)
     penaltyDate = models.DateField(default=datetime.date.today)
-    layout = models.IntegerField(default=1)
 
     class Meta:
         db_table = 'user_info'
