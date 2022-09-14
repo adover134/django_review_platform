@@ -86,5 +86,38 @@ $(document).ready(function(){
         mapContainer.style.width = document.getElementById('mainDiv').style.width;
     }
     var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    {# 지도에 원룸 위치 표시 #}
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    $.ajax({
+        url: 'http://127.0.0.1:8000/db/room/',
+        method: "GET",
+        dataType: "json"
+    })
+        .done(function (json){
+            $.each(json, function (key, value){
+                // 주소로 좌표를 검색합니다
+                geocoder.addressSearch(value.address, function(result, status) {
+
+                // 정상적으로 검색이 완료됐으면
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords
+                    });
+
+                    // 인포윈도우로 장소에 대한 설명을 표시합니다
+                    var infowindow = new kakao.maps.InfoWindow({
+                        content: '<div style="width:150px;text-align:center;padding:6px 0;">원룸 이름</div>'
+                    });
+
+                    infowindow.open(map, marker);
+                }})
+            })
+        });
 </script>
 {% endblock %}
