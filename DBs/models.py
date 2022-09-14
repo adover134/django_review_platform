@@ -23,6 +23,7 @@ class Manager(models.Model):
 
 class Room(models.Model):
     address = models.TextField()
+    name = models.TextField()
     builtYear = models.CharField(max_length=5, null=True)
     commonInfo = models.JSONField(null=True)
 
