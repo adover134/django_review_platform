@@ -1,6 +1,18 @@
 {% extends 'normal_user_base.html' %}
 {% load index static %}
 
+{% if request.path != main %}
+<meta http-equiv="refresh" content="0; url='{{main}}'">
+{% else %}
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            document.location.reload();
+        }
+    };
+</script>
+{% endif %}
+
 {% block left_side_bar %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
