@@ -3,17 +3,6 @@
 
 {% block main_contents %}
 <link rel="stylesheet" href="{% static 'css/normalUserSignUpTemplate.css' %}">
-{% if request.path != loginPage %}
-<meta http-equiv="refresh" content="0; url='{{loginPage}}'">
-{% else %}
-<script>
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            document.location.reload();
-        }
-    };
-</script>
-{% endif %}
 <div id="disclaimer">
     <p id="disclaimer_head">
         주의사항
