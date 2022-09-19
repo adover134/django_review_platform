@@ -13,6 +13,14 @@ from webPages.config import KAKAO_JAVA_KEY
 
 
 def main(request):
+    review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
+
+    data = {
+        'javakey': KAKAO_JAVA_KEY,
+        'latest_reviews': review_data['latest_reviews'],
+        'popular_reviews': review_data['popular_reviews'],
+    }
+
     return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
 
 
@@ -35,14 +43,23 @@ def signup(request):
     return res
 
 
+@login_required(login_url='/loginPage/')
 def infoCheck(request):
     user = request.user
-    print(user)
-    userForm = reviewWriteForms.UserInfoForm(initial={'user_nickname': user.last_name+user.first_name, 'user_email': user.email, 'user_warn_count': user.uWarnCount})
-    if not user:
-        return render(request, 'normal_user_info_check.html')
+    userForm = reviewWriteForms.UserInfoForm(initial={'성': user.last_name, '이름': user.first_name, '이메일': user.email, '경고횟수': user.uWarnCount})
+    if 'sorted' in request.GET:
+        sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
+        print('sorted = ', sorted)
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
     else:
-        return render(request, 'normal_user_info_check.html', {'userForm': userForm})
+        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text) # 로그인 한 회원이 작성한 리뷰 데이터 목록
+
+    #paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    paged_review = paginator.get_page(page)
+    return render(request, 'normal_user_info_check.html', {'userForm': userForm, 'reviews': reviews})
 
 
 def normal_user_review_search(request):
@@ -170,8 +187,14 @@ def room_with_reviews_display(request):
 
     #paginator
     paginator = Paginator(reviews, 5)
+    print(type(paginator))
     page = request.GET.get('page')
-    paged_review = paginator.get_page(page)
+    if page:
+        paged_review = paginator.get_page(page)
+    else:
+        paged_review = paginator
+
+    print(paged_review)
 
     data = {
         'room': room,
@@ -187,8 +210,7 @@ def change_user_info(request):
     if request.method == 'POST':
         data = dict(request.POST)
         print(data)
-        data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'),
-                 'layout': data.get('레이아웃')}
+        data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'), 'layout': data.get('레이아웃')}
         requests.put('http://localhost:8000/db/user/' + str(user.id) + '/', data=data1)
 
     return render(request, 'normal_user_info_check.html')
@@ -205,16 +227,13 @@ def change_user_layout(request):
 
     return render(request, 'normal_user_info_check.html')
 
-
 def check_user_reviews(request):
     # 정렬 파라미터 존재 조건
     user = request.user
     if 'sorted' in request.GET:
         sorted = request.GET['sorted']  # 파라미터로 넘어오는 정렬순을 나타내는 데이터
         print('sorted = ', sorted)
-        reviews = json.loads(requests.get(
-            'http://127.0.0.1:8000/db/review/?uId=' + str(
-                user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
+        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
     else:
         reviews = json.loads(
             requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 목록
@@ -254,8 +273,6 @@ def room_test(request):
         'reviews': paged_review,
     }
     return render(request, 'normal_user_room_read.html', {'reviews': paged_review})
-
-
 # 리뷰 열람 페이지
 # 해당 리뷰 정보를 받는다.
 # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
