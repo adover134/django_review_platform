@@ -178,8 +178,7 @@ def room_with_reviews_display(request):
         'reviews': paged_review,
     }
 
-    print('room : ', room)
-    print('reviews : ', reviews)
-    print('paged_review = ', paged_review)
-
     return render(request, 'room_test.html', data)
+
+def write_review_page(request):
+    return render(request, 'write_review_page.html')

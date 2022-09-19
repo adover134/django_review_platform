@@ -14,22 +14,38 @@ $(document).ready(function(){
 });
 </script>
 <div class="slider" id="famous">
-    <div><a href="#">werwerwe</a></div>
-    <div>2</div>
-    <div>3</div>
-    <div>
-        작성자
-        추천 수
-        제목
-        대표 사진
-
-    </div>
+    {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
+        <div> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+            <span>작성자 : {{ popular_review.reviewWriter }}</span>
+            <span>추천 수 : {{ popular_review.recommendedOn|length }}</span>
+            <div>리뷰 제목 : {{ popular_review.reviewTitle }}</div>
+            <div>리뷰 내용 : {{ popular_review.reviewSentence }}</div>
+            <span>대표 사진</span>
+            <img class="left-side-room-img" src="{% static 'images/' %}{{ popular_review.additionalImage|first }}">
+            <span>아이콘 목록 :
+                {% for popular_icon in popular_review.includedIcon %}
+                    <img src="{% static 'images/iconImage/' %}{{ popular_icon }}">
+                {% endfor %}
+            </span>
+        </div>
+    {% endfor %}
 </div>
 <div class="slider" id="recent">
-    <div>1</div>
-    <div>2</div>
-    <div>3</div>
-    <div>4</div>
+    {% for latest_review in latest_reviews %} {# 최신순 데이터 최대 4개 출력 #}
+        <div> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+            <span>작성자 : {{ latest_review.reviewWriter }}</span>
+            <span>추천 수 : {{ latest_review.recommendedOn|length }}</span>
+            <div>리뷰 제목 : {{ latest_review.reviewTitle }}</div>
+            <div>리뷰 내용 : {{ latest_review.reviewSentence }}</div>
+            <span>대표 사진</span>
+            <img class="left-side-room-img" src="{% static 'images/' %}{{ latest_review.additionalImage|first }}">
+            <span>아이콘 목록 :
+                {% for latest_icon in latest_review.includedIcon %}
+                    <img src="{% static 'images/iconImage/' %}{{ latest_icon }}">
+                {% endfor %}
+            </span>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}
 
