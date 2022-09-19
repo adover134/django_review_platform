@@ -21,7 +21,7 @@ def main(request):
         'popular_reviews': review_data['popular_reviews'],
     }
 
-    return render(request, 'normal_user_main.html', {'javakey': KAKAO_JAVA_KEY})
+    return render(request, 'normal_user_main.html', data)
 
 
 # 로그인 시도 시에 처리되는 메소드
