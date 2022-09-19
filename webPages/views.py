@@ -259,8 +259,7 @@ def room_test(request):
             'http://127.0.0.1:8000/db/review/?roomId=' + roomId + '&' + 'sorted=' + sorted + '/').text)  # 원룸 ID를 가진 리뷰 데이터 정렬한 목록
 
     else:
-        reviews = json.loads(
-            requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text)  # 원룸 ID를 가진 리뷰 데이터 목록
+        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text)  # 원룸 ID를 가진 리뷰 데이터 목록
 
     # paginator
     paginator = Paginator(reviews, 5)
@@ -280,14 +279,13 @@ def room_test(request):
     # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 리뷰 정보와 리뷰 리스트를 context로 반환
 
+
 # 관련 리뷰 반환
     # 입력 받은 원룸 주소를 기준으로 리뷰들을 구한다.
     # 구한 리뷰들을 반환한다.
+
 
 # 원룸 열람 페이지
     # 해당 원룸 정보를 받는다.
     # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 원룸 정보와 리뷰 리스트를 context로 반환
-
-def write_review_page(request):
-    return render(request, 'write_review_page.html')
