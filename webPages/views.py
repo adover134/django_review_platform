@@ -211,7 +211,7 @@ def change_user_info(request):
         data = dict(request.POST)
         print(data)
         data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'), 'layout': data.get('레이아웃')}
-        requests.put('http://localhost:8000/db/user/' + str(user.id) + '/', data=data1)
+        requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
 
     return render(request, 'normal_user_info_check.html')
 
