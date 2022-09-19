@@ -223,7 +223,7 @@ def change_user_layout(request):
         data = dict(request.POST)
         print(data)
         data1 = {'layout': data.get('레이아웃')}
-        requests.put('http://localhost:8000/db/user/' + str(user.id) + '/', data=data1)
+        requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
 
     return render(request, 'normal_user_info_check.html')
 
@@ -233,7 +233,9 @@ def check_user_reviews(request):
     if 'sorted' in request.GET:
         sorted = request.GET['sorted']  # 파라미터로 넘어오는 정렬순을 나타내는 데이터
         print('sorted = ', sorted)
-        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?uId=' + str(
+                user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
     else:
         reviews = json.loads(
             requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 목록
@@ -273,10 +275,9 @@ def room_test(request):
         'reviews': paged_review,
     }
     return render(request, 'normal_user_room_read.html', {'reviews': paged_review})
-# 리뷰 열람 페이지
-# 해당 리뷰 정보를 받는다.
-# 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
-# 리뷰 정보와 리뷰 리스트를 context로 반환
+    # 해당 리뷰 정보를 받는다.
+    # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
+    # 리뷰 정보와 리뷰 리스트를 context로 반환
 
 
 # 관련 리뷰 반환
@@ -287,7 +288,7 @@ def room_test(request):
 # 원룸 열람 페이지
 # 해당 원룸 정보를 받는다.
 # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
-# 원룸 정보와 리뷰 리스트를 context로 반환
+# 원룸 정보와 리뷰 리스트를 context로 반환 반환
 
 def write_review_page(request):
     return render(request, 'write_review_page.html')
