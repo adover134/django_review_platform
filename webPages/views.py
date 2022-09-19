@@ -180,5 +180,97 @@ def room_with_reviews_display(request):
 
     return render(request, 'room_test.html', data)
 
+
+@login_required(login_url='/loginPage/')
+def change_user_info(request):
+    user = request.user
+    if request.method == 'POST':
+        data = dict(request.POST)
+        print(data)
+        data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'),
+                 'layout': data.get('레이아웃')}
+        requests.put('http://localhost:8000/db/user/' + str(user.id) + '/', data=data1)
+
+    return render(request, 'normal_user_info_check.html')
+
+
+@login_required(login_url='/loginPage/')
+def change_user_layout(request):
+    user = request.user
+    if request.method == 'POST':
+        data = dict(request.POST)
+        print(data)
+        data1 = {'layout': data.get('레이아웃')}
+        requests.put('http://localhost:8000/db/user/' + str(user.id) + '/', data=data1)
+
+    return render(request, 'normal_user_info_check.html')
+
+
+def check_user_reviews(request):
+    # 정렬 파라미터 존재 조건
+    user = request.user
+    if 'sorted' in request.GET:
+        sorted = request.GET['sorted']  # 파라미터로 넘어오는 정렬순을 나타내는 데이터
+        print('sorted = ', sorted)
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?uId=' + str(
+                user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
+    else:
+        reviews = json.loads(
+            requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 목록
+
+    # paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    paged_review = paginator.get_page(page)
+    return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
+
+
+def room_test(request):
+    roomId = request.GET['roomId']  # 파라미터로 넘어오는 원룸 아이디 데이터
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text)  # 해당 원룸 데이터
+
+    # 정렬 파라미터 존재 조건
+    if 'sorted' in request.GET:
+        sorted = request.GET['sorted']  # 파라미터로 넘어오는 정렬순을 나타내는 데이터
+        print('sorted = ', sorted)
+        reviews = json.loads(requests.get(
+            'http://127.0.0.1:8000/db/review/?roomId=' + roomId + '&' + 'sorted=' + sorted + '/').text)  # 원룸 ID를 가진 리뷰 데이터 정렬한 목록
+
+    else:
+        reviews = json.loads(
+            requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text)  # 원룸 ID를 가진 리뷰 데이터 목록
+
+    # paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    if page:
+        paged_review = paginator.get_page(page)
+    else:
+        paged_review = paginator.get_page(1)
+
+    data = {
+        'room': room,
+        'reviews': paged_review,
+    }
+    return render(request, 'normal_user_room_read.html', {'reviews': paged_review})
+
+
+# 리뷰 열람 페이지
+# 해당 리뷰 정보를 받는다.
+# 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
+# 리뷰 정보와 리뷰 리스트를 context로 반환
+
+
+# 관련 리뷰 반환
+# 입력 받은 원룸 주소를 기준으로 리뷰들을 구한다.
+# 구한 리뷰들을 반환한다.
+
+
+# 원룸 열람 페이지
+# 해당 원룸 정보를 받는다.
+# 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
+# 원룸 정보와 리뷰 리스트를 context로 반환
+
 def write_review_page(request):
     return render(request, 'write_review_page.html')
