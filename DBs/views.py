@@ -11,8 +11,8 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ManagerSerializer, ReviewSerializer, ReviewSerializer2, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
-from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
+from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializer2, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
+from DBs.models import User, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 from DBs.services import sentence_spliter
 
 
@@ -52,40 +52,6 @@ class UserViewSets(ModelViewSet):
         return super().destroy(self, request, args, kwargs)
 
 
-class ManagerViewSets(ModelViewSet):
-    queryset = Manager.objects.all()
-    serializer_class = ManagerSerializer
-
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, args, kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
-
-    def update(self, request, *ars, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
-
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
-
-
 class ReviewViewSets(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -93,53 +59,26 @@ class ReviewViewSets(ModelViewSet):
     def create(self, request, *args, **kwargs):
         # 입력값을 data로 저장한다.
         data = copy.deepcopy(request.data)
-        # 입력값에 리뷰 종류가 없다면 에러를 반환한다. 아니라면 리뷰 종류를 저장한다.
-        reviewKind = None
-        if not data.get('reviewKind'):
-            return Response('create_failed')
-        else:
-            reviewKind = int(data.get('reviewKind'))
-            if (reviewKind != 0) and (reviewKind != 1):
-                return Response('create_failed')
+        print('data!', data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
-        data1['reviewKind'] = int(data.get('reviewKind'))
         data1['reviewTitle'] = data.get('reviewTitle')
         data1['roomId'] = int(data.get('roomId'))
-        data1['uId'] = data.get('uId')
+        data1['uId'] = int(data.get('uId'))
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
         # 텍스트 리뷰인 경우
-        if reviewKind == 0:
-            data1['reviewSentence'] = sentence_spliter(data.get('reviewSentence'))
-            # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
-            # 시각화모듈(data['reviewSentence'])
-        # 이미지 리뷰인 경우
-        else:
-            # 리뷰 본문을 입력받을 변수를 선언한다.
-            reviewSentence = ''
-        # 입력 값 중, dictionary타입인 값은 전부 icon이다.
-            for key in data:
-                if type(data[key]) is dict:
-                    icon = data[key]
-                    # 아이콘의 주석들을 합쳐서 본문을 작성한다.
-                    reviewSentence = reviewSentence +icon['iconInformation']
-            # data1에 리뷰 본문을 추가한다.
-            data1['review_sentence'] = reviewSentence
+        data1['reviewSentence'] = sentence_spliter(data.get('reviewSentence'))
+        # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
+        # 시각화모듈(data['reviewSentence'])
         # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
+        print('d:', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
         review = serializer.save()
         headers = self.get_success_headers(serializer.data)
+        print('h:', headers)
         review_id = review.id
-        if reviewKind == 1:
-            for key in data:
-                if type(data[key]) is dict:
-                    icon = data[key]
-                    # 아이콘 정보에 리뷰 번호를 추가한다.
-                    icon['revId'] = review_id
-                    # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
-                    # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def list(self, request, *args, **kwargs):
@@ -170,10 +109,6 @@ class ReviewViewSets(ModelViewSet):
         if data1.get('date'):
             query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
             query.add(query_date, Q.AND)
-        # 리뷰 종류를 받았다면 해당하는 종류의 리뷰만 찾는 쿼리를 만든다.
-        if data1.get('kind'):
-            query_kind = Q(reviewKind=data1['kind'])
-            query.add(query_kind, Q.AND)
         # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
         if data1.get('recommend'):
             query_recommend = Q()
@@ -289,8 +224,7 @@ class ReviewViewSets(ModelViewSet):
         instance = self.get_object()
         # 기존 데이터를 직렬화한다.
         data = self.get_serializer(instance).data
-        # 수정할 리뷰의 종류 및 PK 를 획득한다.
-        review_kind = data['reviewKind']
+        # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
         #for icon in data['icons']:
@@ -299,30 +233,13 @@ class ReviewViewSets(ModelViewSet):
         # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
         data1 = request.data
         # 텍스트 리뷰인 경우
-        if review_kind == 0:
-            # 리뷰 본문 데이터를 가져온다.
-            review_sentence = data1['reviewSentence']
-            # 시각화 모듈을 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장이 이뤄진다.
-            #시각화모듈(reviewSentence)
-            # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
-            # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
-            data['reviewSentence']=sentence_spliter(review_sentence)
-        # 이미지 리뷰인 경우
-        elif review_kind == 1:
-            # 리뷰 본문을 생성하기 위한 변수를 선언한다.
-            review_sentence = ''
-        # 입력받은 데이터들을 확인
-            for key in data1:
-                # 아이콘 데이터만 dictionary로 들어옴
-                if type(data1[key]) is dict:
-                    icon = data1[key]
-                    # 리뷰 본문의 뒤에 해당 아이콘의 주석을 이어붙인다.
-                    review_sentence = review_sentence + icon['iconInformation']
-                    # 입력받은 데이터로 새 아이콘을 생성하는 POST 메소드를 수행한다.
-                    icon['revId'] = review_id
-                    # requests.post('http://127.0.0.1:8000/db/icon/', data=icon)
-            # 생성한 리뷰 본문으로 기존 본문을 변경한다.
-            data['reviewSentence']=review_sentence
+        # 리뷰 본문 데이터를 가져온다.
+        review_sentence = data1['reviewSentence']
+        # 시각화 모듈을 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장이 이뤄진다.
+        #시각화모듈(reviewSentence)
+        # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
+        # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
+        data['reviewSentence']=sentence_spliter(review_sentence)
         # 갱신된 데이터로 새 시리얼라이저를 생성한다.
         serializer = self.get_serializer(instance, data=data)
         # 생성된 시리얼라이저의 유효성을 검사한다.
