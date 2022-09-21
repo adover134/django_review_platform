@@ -91,7 +91,7 @@ def normal_user_review_search(request):
 
 @login_required(login_url='/loginPage/')
 def normal_user_review_write_page(request):
-    form = {'TextForm': reviewWriteForms.TextReviewWriteForm, 'ImageForm': reviewWriteForms.ImageReviewWriteForm}
+    form = {'TextForm': reviewWriteForms.TextReviewWriteForm}
 
     return render(request, 'normal_user_review_write.html', form)
 

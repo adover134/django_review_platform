@@ -11,20 +11,8 @@
 <div onload="unloadevent()" style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
     <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <button type="button" onclick="">텍스트</button>
-        <button type="button" onclick="to_image()">이미지</button>
         <table class="form-contents">
             {{TextForm.as_table}}
-        </table>
-        <br>
-        <input type="submit" value="submit">
-    </form>
-    <form id="image_review" action="#" method="POST" enctype="multipart/form-data" style="display:none;">
-        {% csrf_token %}
-        <button type="button" onclick="to_text()">텍스트</button>
-        <button type="button" onclick="">이미지</button>
-        <table class="form-contents">
-            {{ImageForm.as_table}}
         </table>
         <br>
         <input type="submit" value="submit">

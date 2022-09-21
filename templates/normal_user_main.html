@@ -26,25 +26,27 @@ $(document).ready(function(){
 });
 </script>
 <div class="slider" id="famous">
-{% if popular_reviews %}
-    {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
-        <div> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-            <span>작성자 : {{ popular_review.reviewWriter }}</span>
-            <span>추천 수 : {{ popular_review.recommendedOn|length }}</span>
-            <div>리뷰 제목 : {{ popular_review.reviewTitle }}</div>
-            <div>리뷰 내용 : {{ popular_review.reviewSentence }}</div>
-            <span>대표 사진</span>
-            <img class="left-side-room-img" src="{% static 'images/' %}{{ popular_review.additionalImage|first }}">
-            <span>아이콘 목록 :
-                {% for popular_icon in popular_review.includedIcon %}
-                    <img src="{% static 'images/iconImage/' %}{{ popular_icon }}">
-                {% endfor %}
-            </span>
-        </div>
-    {% endfor %}
+    {% if popular_reviews %}
+        {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
+            <div> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <span>작성자 : {{ popular_review.reviewWriter }}</span>
+                <span>추천 수 : {{ popular_review.recommendedOn|length }}</span>
+                <div>리뷰 제목 : {{ popular_review.reviewTitle }}</div>
+                <div>리뷰 내용 : {{ popular_review.reviewSentence }}</div>
+                <span>대표 사진</span>
+                <img class="left-side-room-img" src="{% static 'images/' %}{{ popular_review.additionalImage|first }}">
+                <span>아이콘 목록 :
+                    {% for popular_icon in popular_review.includedIcon %}
+                        <img src="{% static 'images/iconImage/' %}{{ popular_icon }}">
+                    {% endfor %}
+                </span>
+            </div>
+        {% endfor %}
     {% else %}
-        <div>등록된 리뷰가 없습니다.</div>
-{% endif %}
+        <div> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+
+        </div>
+    {% endif %}
 </div>
 <div class="slider" id="recent">
 {% if latest_reviews %}
