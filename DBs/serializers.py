@@ -34,10 +34,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
-    includedIcon = serializers.HyperlinkedRelatedField(
+    includedIcon = serializers.StringRelatedField(
         many=True,
         read_only=True,
-        view_name='icon-detail'
     )
     recommendedOn = serializers.HyperlinkedRelatedField(
         many=True,

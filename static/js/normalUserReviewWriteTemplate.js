@@ -25,14 +25,14 @@ function review_submit(e) {
     // make POST ajax call
     $.ajax({
         type: 'POST',
-        url: "http://127.0.0.1:8000/test/normal_user_review_write/",
+        url: "/test/normal_user_review_write/",
         async: false,
         data: form,
         processData: false,
         contentType: false,
         success: function (response) {
             // on successfull creating object
-            window.location.replace('http://127.0.0.1:8000/test/normal_user_review_read/?id='+response);
+            window.location.replace('/test/normal_user_review_read/?id='+response);
         },
         error: function (response) {
             // alert the error if any error occured

@@ -76,7 +76,6 @@ def normal_user_review_search(request):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
-        print(review_search_url)
     for i in range(3):
         if data.get('icons'):
             for c in data.get('icons'):
@@ -85,6 +84,7 @@ def normal_user_review_search(request):
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
+    # print('a:', paged_review[2])
     context = {'paged_review': paged_review}
     return render(request, 'normal_user_review_search.html', context)
 
@@ -238,6 +238,7 @@ def check_user_reviews(request):
     else:
         reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 목록
 
+
     #paginator
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
@@ -277,7 +278,6 @@ def room_test(request):
     # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 리뷰 정보와 리뷰 리스트를 context로 반환
 
-
 # 관련 리뷰 반환
     # 입력 받은 원룸 주소를 기준으로 리뷰들을 구한다.
     # 구한 리뷰들을 반환한다.
@@ -287,3 +287,12 @@ def room_test(request):
     # 해당 원룸 정보를 받는다.
     # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 원룸 정보와 리뷰 리스트를 context로 반환
+
+def write(request):
+    return render(request, 'write.html')
+
+def review_search(request):
+    return render(request, 'review_search.html')
+
+def oneroom_search(request):
+    return render(request, 'oneroom_search.html')

@@ -3,17 +3,6 @@
 
 {% block main_contents %}
 <link rel="stylesheet" href="{% static 'css/normalUserSignUpTemplate.css' %}">
-{% if request.path != loginPage %}
-<meta http-equiv="refresh" content="0; url='{{loginPage}}'">
-{% else %}
-<script>
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            document.location.reload();
-        }
-    };
-</script>
-{% endif %}
 <div id="disclaimer">
     <p id="disclaimer_head">
         주의사항
@@ -38,6 +27,6 @@
 </div>
 <div id="sign_up">
     <a type="button" href="{% url 'social:begin' 'kakao' %}?next={{ signup }}">카카오 로그인</a>
-    <button type="button" onclick="location.href = 'http://127.0.0.1:8000/'">돌아가기</button>
+    <button type="button" onclick="location.href = '/'">돌아가기</button>
 </div>
 {% endblock %}

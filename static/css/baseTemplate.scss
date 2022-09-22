@@ -1,6 +1,4 @@
 @import "color.scss";
-
-
 body{
   font-family:'Noto Sans KR', sans-serif !important;
   min-height:600px;
@@ -26,13 +24,13 @@ div#midContent{
   width:100%;
 }
 div#leftSideMenu{
-  min-width:240px;
+  min-width:20vh;
 }
 div#mainDiv{
-  min-width:720px;
+  min-width:60vh;
 }
 div#rightSideMenu{
-  min-width:240px;
+  min-width:20vh;
 }
 div.middle{
   display:inline-block;

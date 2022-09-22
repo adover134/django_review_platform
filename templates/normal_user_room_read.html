@@ -1,0 +1,21 @@
+{% extends 'normal_user_review_list.html' %}
+{% load static %}
+{% block info %}
+    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
+    <div style = "text-align:left; padding: 2.1% 1.7% 2.1% 1.7%; height: 27.1vh; ">
+        <img class="left-side-room-img" style= "float : left; display: block; height: 23.7vh; width :14.8vw; min-height:142.2px; min-width:177.6px" src="{% static 'images/' %}1.png">
+        <div id="room_map" style="height:23.7vh; width: 41.9vw; min-height:142.2px; min-width:502.8px"></div>
+        <div style ="font-size : 25px;">
+            <strong><span><br>주소:</span><span>{{ room.address }}</span></strong>
+        </div>
+        <div>
+            <span><br>건축연도 : </span><span>{{ room.builtYear }}</span>
+        </div>
+        <div>
+            <span> 층수 :</span><span>{{ room.commonInfo }}</span>
+        </div>
+        <div>
+            <span> 옵션 : </span><span> </span>
+        </div>
+    </div>
+{% endblock %}

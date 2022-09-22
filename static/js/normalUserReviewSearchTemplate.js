@@ -1,6 +1,5 @@
 let current_URL = new URLSearchParams(window.location.search);
 current_URL.delete('page');
-console.log(current_URL);
 
 var c = document.createElement("option");
 var d = document.createElement("option");

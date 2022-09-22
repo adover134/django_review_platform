@@ -76,6 +76,7 @@ def normal_user_review_write(request):
             
             '''
             # 원룸 번호를 구한다.
+            print(room)
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
             print(data1['uId'])
@@ -129,4 +130,4 @@ def review_search_page(request):
 
 
 def review_search_test(request):
-    return render(request, 'tt.html')
+    return render(request, 'index.html', {})

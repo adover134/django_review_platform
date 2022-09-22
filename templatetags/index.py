@@ -1,5 +1,7 @@
 from django import template
 import json
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from webPages.config import KAKAO_JAVA_KEY
 
 
@@ -34,3 +36,19 @@ def java_key(value):
 @register.filter
 def page(paginator, value):
     return paginator.get_page(value)
+
+
+@register.filter
+def check_active(user):
+    print(user.penaltyDate)
+    print(type(user.penaltyDate))
+    print(user.penaltyDate+relativedelta(day=3, days=30))
+    if user.uActive == 1:
+        state = str(user.penaltyDate+relativedelta(days=7))+'까지 신고 불가'
+    elif user.uActive == 2:
+        state = str(user.penaltyDate+relativedelta(days=30))+'까지 신고 불가'
+    if user.uActive == 3:
+        state = str(user.penaltyDate+relativedelta(days=30))+'까지 리뷰 작성/수정/삭제 및 신고 불가'
+    else:
+        state = '모든 기능 사용 가능'
+    return state

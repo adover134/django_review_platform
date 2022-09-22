@@ -63,6 +63,7 @@ urlpatterns = [
     # path('manager/', manager_list, name='manager-list'),
     # path('manager/<str:pk>/', manager_detail, name='manager-detail'),
     path('ajaxTest/', views.ajaxTest),
+    path('mainPageReviews/', views.getMainPageReview),
 ]
 
 urlpatterns += router.urls

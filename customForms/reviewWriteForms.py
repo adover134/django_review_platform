@@ -25,6 +25,6 @@ class ImageReviewWriteForm(ReviewWriteForm):
 
 
 class UserInfoForm(forms.Form):
-    user_nickname = forms.CharField()
-    user_email = forms.EmailField()
-    user_warn_count = forms.IntegerField(required=False, disabled=True)
+    성 = forms.CharField()
+    이름 = forms.CharField()
+    이메일 = forms.EmailField()
