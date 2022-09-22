@@ -12,16 +12,8 @@ class ReviewWriteForm(forms.Form):
 class TextReviewWriteForm(ReviewWriteForm):
 
     review_sentence = forms.CharField(widget=customFields.NonStickyTextarea(attrs={'rows': 5, 'cols': 20, 'style': 'resize:none;', 'autocomplete': 'off'}))
-    review_type = forms.CharField(label=False, initial='text', widget=forms.HiddenInput(attrs={'autocomplete': 'off'}))
 
     field_order = ['title', 'address', 'review_sentence', 'images']
-
-
-class ImageReviewWriteForm(ReviewWriteForm):
-    icon_info = forms.CharField(widget=customFields.NonStickyTextarea(attrs={'rows': 5, 'cols': 20, 'style': 'resize:none;'}))
-    review_type = forms.CharField(label=False, initial='image', widget=forms.HiddenInput(attrs={'autocomplete': 'off'}))
-
-    field_order = ['title', 'address', 'icon_info', 'images']
 
 
 class UserInfoForm(forms.Form):

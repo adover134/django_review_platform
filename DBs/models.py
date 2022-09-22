@@ -10,21 +10,13 @@ class User(AbstractUser):
     penaltyDate = models.DateField(default=datetime.date.today)
 
     class Meta:
-        db_table = 'user_info'
-
-
-class Manager(models.Model):
-    uId = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    mTel = models.TextField()
-
-    class Meta:
-        db_table = 'manager'
+        db_table = 'User'
 
 
 class Room(models.Model):
     address = models.TextField()
-    name = models.TextField()
-    builtYear = models.CharField(max_length=5, null=True)
+    name = models.TextField(null=True)
+    builtYear = models.IntegerField(null=True)
     commonInfo = models.JSONField(null=True)
 
     class Meta:
@@ -36,7 +28,6 @@ class Review(models.Model):
     roomId = models.ForeignKey(Room, on_delete=models.PROTECT, related_name='whichRoom')
     reviewTitle = models.CharField(max_length=50)
     reviewDate = models.DateField(default=datetime.date.today)
-    reviewKind = models.IntegerField()
     reviewSentence = models.JSONField()
 
     class Meta:

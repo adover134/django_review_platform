@@ -56,13 +56,8 @@ def normal_user_review_write(request):
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
-        if data.get('review_type')[0] == 'text':
-            form = reviewWriteForms.TextReviewWriteForm(request.POST, request.FILES)
-            data1['reviewKind'] = 0
-            data1['reviewSentence'] = data['review_sentence']
-        else:
-            form = reviewWriteForms.ImageReviewWriteForm(request.POST, request.FILES)
-            data1['reviewKind'] = 1
+        form = reviewWriteForms.TextReviewWriteForm(request.POST, request.FILES)
+        data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
         print(form)
         if form.is_valid():
@@ -79,7 +74,6 @@ def normal_user_review_write(request):
             print(room)
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
-            print(data1['uId'])
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
