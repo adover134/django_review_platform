@@ -1,39 +1,64 @@
-{% extends 'normal_user_review_listsearch.html' %}
+{% extends 'normal_user_review_list.html' %}
 {% load static %}
 {% block left_side_bar %}
-    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
-    <div style="text-align:left;" >
-        <div style ="font-size : 25px;">
-            <strong><span><br>원룸 검색 필터 </span></strong>
+    <link rel="stylesheet" href="{% static 'css/normalUserRoomSearchTemplate.css' %}">
+    <div id='room_search_form' style="text-align:left; width:88.54%; height:66.16%;" >
+        <div style="width:100%; height:6.11%;" id="room_search_filter">
+            <strong><span>원룸 검색 필터 </span></strong>
         </div>
-    <div>
-            <span><br>공유 시설</span><span><br>
-    <label><input type="checkbox" name="color" value="blue"> 주차장 </label>
-      <label><input type="checkbox" name="color" value="red"> 엘레베이터 </label>
-        <label><input type="checkbox" name="color" value="blue"> CCTV </label>
-    </span>
+        <div style="width:94.12%; height:21.37%;" id="common_info_form">
+            <div id="common_info_filter" style="width:100%; height:21.43%;">
+                <strong><span>공유 시설</span></strong>
+            </div>
+            <div id="common_info_selects">
+                <label><input type="checkbox" name="color" value="blue"> 주차장 </label>
+                <label><input type="checkbox" name="color" value="red"> 엘레베이터 </label>
+                <label><input type="checkbox" name="color" value="blue"> CCTV </label>
+            </div>
         </div>
-        <div>
-        <span><br> 리뷰 작성일</span><br>
-        <div style="display: inline-block;">
-            <select name="sort_select_box" onchange="sort()">
-            <option value="1">최소 연도</option>
-        </select>
+            <div>
+            <span><br> 리뷰 작성일</span><br>
+            <div style="display: inline-block;">
+                <select name="sort_select_box" onchange="sort()">
+                <option value="1">최소 연도</option>
+            </select>
+                </div>
+                    ~
+                <div style="display: inline-block;">
+                    <select name="sort_select_box" onchange="sort()">
+                    <option value="1">최대 연도</option>
+                </select>
+                    </div>
             </div>
-            ~
-        <div style="display: inline-block;">
-            <select name="sort_select_box" onchange="sort()">
-            <option value="1">최대 연도</option>
-        </select>
-            </div>
+            <div>
+                <span><br> 검색 테스트</span><br>
+                <form CLASS="nav-item col-3" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
+                    <div class="nav-item col-9">
+                    <input style="width : 200px;"class="form-control" type="search" placeholder="기타 검색 텍스트" aria-label="Search" id="address" name="address">
+                </div>
+        </form>
+        </div>
     </div>
-    <div>
-        <span><br> 검색 테스트</span><br>
-        <form CLASS="nav-item col-3" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
-            <div class="nav-item col-9">
-            <input style="width : 200px;"class="form-control" type="search" placeholder="기타 검색 텍스트" aria-label="Search" id="address" name="address">
+{% endblock %}
+{% block info %}
+    <div style="word-spacing:15px; float:right; padding : 2vh; height: 8vh;">
+        <div style="display: inline-block;">
+            <select id="sort_select_box" name="sort_select_box" onchange="sort()">
+                <option value="1">최신 순</option>
+                {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
+                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
+                <option value="2">추천 순</option>
+                {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
+                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
+                <option value="3">정확도 순</option>
+                {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
+                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
+            </select>
         </div>
-    </form>
+        <div style="display: inline-block;">
+            <form action='#'>
+                <input style = " cursor : pointer;  background-color : white;" type='button' value = '리뷰 작성'>
+            </form>
         </div>
     </div>
 {% endblock %}
