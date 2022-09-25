@@ -1,65 +1,111 @@
-{% extends 'normal_user_review_list.html' %}
+{% extends 'normal_user_base.html' %}
 {% load static %}
 {% block left_side_bar %}
     <link rel="stylesheet" href="{% static 'css/normalUserRoomSearchTemplate.css' %}">
+
     <div id='room_search_form' style="text-align:left; width:88.54%; height:66.16%;" >
-        <div style="width:100%; height:6.11%;" id="room_search_filter">
-            <strong><span>원룸 검색 필터 </span></strong>
-        </div>
-        <div style="width:94.12%; height:21.37%;" id="common_info_form">
-            <div id="common_info_filter" style="width:100%; height:21.43%;">
-                <strong><span>공유 시설</span></strong>
+        <form id="search_filter" action="{{normalUserRoomSearchTest}}" method="get">
+            <div style="width:100%; height:6.11%;" id="room_search_filter">
+                <span style="display:block; line-height:1; height:100%; font-weight:bolder;">원룸 검색 필터 </span>
             </div>
-            <div id="common_info_selects">
-                <label><input type="checkbox" name="color" value="blue"> 주차장 </label>
-                <label><input type="checkbox" name="color" value="red"> 엘레베이터 </label>
-                <label><input type="checkbox" name="color" value="blue"> CCTV </label>
-            </div>
-        </div>
-            <div>
-            <span><br> 리뷰 작성일</span><br>
-            <div style="display: inline-block;">
-                <select name="sort_select_box" onchange="sort()">
-                <option value="1">최소 연도</option>
-            </select>
+            <script>
+                let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'em';
+                document.getElementById('room_search_filter').style.fontSize=a;
+            </script>
+            <div style="width:94.12%; height:21.37%;" id="common_info_form">
+                <div id="common_info_filter" style="width:100%; height:21.429%;">
+                    <span style="display:block; height:100%; line-height:1;">공유 시설</span>
                 </div>
-                    ~
-                <div style="display: inline-block;">
-                    <select name="sort_select_box" onchange="sort()">
-                    <option value="1">최대 연도</option>
-                </select>
+                <script>
+                    a = (document.getElementById('common_info_filter').offsetHeight/16).toString()+'em';
+                    document.getElementById('common_info_filter').style.fontSize=a;
+                </script>
+                <div id="common_info_selects">
+                    <label><input type="checkbox" name="color" value="blue">주차장</label>
+                    <label><input type="checkbox" name="color" value="red">엘레베이터</label>
+                    <label><input type="checkbox" name="color" value="blue">CCTV</label>
+                    <label></label>
+                </div>
+                <script>
+                    let b = Array.from(document.getElementById('common_info_selects').children);
+                    b.forEach(function(o){
+                        a=(o.offsetHeight/16).toString()+'em';
+                        o.style.fontSize=a;
+                    });
+                </script>
+            </div>
+            <div id="built_year_form">
+                <div id="built_year_filter">
+                    <span style="display:block; line-height:1;">건축 연도</span>
+                </div>
+                <script>
+                    a=(document.getElementById('built_year_filter').offsetHeight/16).toString()+'em';
+                    document.getElementById('built_year_filter').style.fontSize=a;
+                </script>
+                <div id="built_year_selects">
+                    <div id="built_year_selects_div">
+                        <select id="builtFrom" name="builtFrom"></select>
+                            ~
+                        <select id="builtTo" name="builtTo"></select>
                     </div>
-            </div>
-            <div>
-                <span><br> 검색 테스트</span><br>
-                <form CLASS="nav-item col-3" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
-                    <div class="nav-item col-9">
-                    <input style="width : 200px;"class="form-control" type="search" placeholder="기타 검색 텍스트" aria-label="Search" id="address" name="address">
+                    <script>
+                        a=((document.getElementById('builtFrom').offsetHeight-6)/16).toString()+'em';
+                        document.getElementById('builtFrom').style.fontSize=a;
+                        b=((document.getElementById('builtTo').offsetHeight-6)/16).toString()+'em';
+                        document.getElementById('builtTo').style.fontSize=b;
+                    </script>
                 </div>
+            </div>
+            <div id="text_form">
+                <div id="search_address">검색할 주소</div>
+                <script>
+                    a=(document.getElementById('search_address').offsetHeight/16).toString()+'em';
+                    document.getElementById('search_address').style.fontSize=a;
+                </script>
+                <div id="address_filter">
+                    <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address">
+                </div>
+            </div>
+            <div id="submit-div">
+                <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">적용</a>
+            </div>
+            <script>
+                a=(document.getElementById('submit-div').offsetHeight/16).toString()+'em';
+                document.getElementById('submit').style.fontSize=a;
+            </script>
         </form>
-        </div>
-    </div>
-{% endblock %}
-{% block info %}
-    <div style="word-spacing:15px; float:right; padding : 2vh; height: 8vh;">
-        <div style="display: inline-block;">
-            <select id="sort_select_box" name="sort_select_box" onchange="sort()">
-                <option value="1">최신 순</option>
-                {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-                <option value="2">추천 순</option>
-                {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-                <option value="3">정확도 순</option>
-                {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
-            </select>
-        </div>
-        <div style="display: inline-block;">
-            <form action='#'>
-                <input style = " cursor : pointer;  background-color : white;" type='button' value = '리뷰 작성'>
-            </form>
-        </div>
     </div>
 {% endblock %}
 
+{% block main_contents %}
+    <div id="rooms">
+        {% for room in rooms %}
+            <div class="room">
+                <div class="image">
+                    <img src="{% static 'images/1.png' %}">
+                </div>
+                <div class="info">
+                    <div class="room_address">
+                        sdfwerwe
+                    </div>
+                    <div class="room_common_info">
+                        werwerwe
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        b = Array.from(document.getElementsByClassName('room_address'));
+        b.forEach(function(o){
+            a=(o.offsetHeight/16).toString()+'em';
+            o.style.fontSize=a;
+        });
+        b = Array.from(document.getElementsByClassName('room_common_info'));
+        b.forEach(function(o){
+            a=(o.offsetHeight/16).toString()+'em';
+            o.style.fontSize=a;
+        });
+    </script>
+    <script src="{% static 'js/normalUserRoomSearchTemplate.js' %}"></script>
+{% endblock %}
