@@ -50,10 +50,9 @@
         </select>
             </div>
         <div style="display: inline-block;">
-        <form action='//'>
-            <input style = " cursor : pointer;  background-color : white;" type='button' value = '리뷰 작성'>
-        </form>
-            </div>
+            <button onclick="location.href='/normal_user_review_write_page'"
+                    style="cursor: pointer;  background-color: white;">리뷰 작성</button>
+        </div>
     </div>
 <div style="margin : 15vh;" id="reviews">
     {% for review in reviews %}
