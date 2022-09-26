@@ -295,11 +295,5 @@ def room_search_test(request):
     # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 원룸 정보와 리뷰 리스트를 context로 반환
 
-def write(request):
-    return render(request, 'write.html')
-
 def review_search(request):
     return render(request, 'review_search.html')
-
-def oneroom_search(request):
-    return render(request, 'oneroom_search.html')
