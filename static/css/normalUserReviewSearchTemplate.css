@@ -68,4 +68,7 @@ button#searchFormOpen {
   margin-bottom: 10px;
 }
 
+#commom_info_selects > label {
+    font-size:40px;
+}
 /*# sourceMappingURL=normalUserReviewSearchTemplate.css.map */
