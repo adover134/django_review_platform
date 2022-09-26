@@ -3,63 +3,44 @@
 {% block main_contents %}
     {% block info %}
     {% endblock %}
-<link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
-<div style="margin-top : 8vh; height:30vh" id="reviews">
-    {% for review in reviews %}
-        <div style="border: 3px; padding: 2.8vh 1.56vw 2.8vh 1.56vw; line-height: 2.8vh;height: 20vh; text-align:center;" >
-            <div style= "height: 12vh; width :6.8vw; display:inline-block; float:left;">
-                {% if review.additionalImage %}
-                    <img style= "height: 12vh; width :6.8vw;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
-                {% endif %}
-            </div>
-            <strong><a class="link-secondary" href="{{normalUserReviewRead}}?id={{review.id}}" style="font-size: 23px;">&ensp;
-            {#                리뷰 제목 #}
-                    최신 리뷰 제목 -> {{ review.reviewTitle }}
-                </a>
-            </strong>
-            <span style = "float : right;">
-    {#            추천 수 데이터 #}
-                추천 수 {{ review.recommendedOn|length }}</span>
-            <div style = "color: #ECECEC;">&ensp;
-    {#            리뷰 내용 데이터 #}
-                리뷰내용 -> {{ review.reviewSentence }}</div>
-            <span style = "color : #A23355 ;font-size: 1.88vw; letter-spacing :1vw; ">&ensp;
-    {#            리뷰별 아이콘 데이터 목록 #}
-                {% if review.includedIcon %}
-                    {% for icon in review.includedIcon %}
-                        <img src="{% static 'images/iconImage/' %}{{ icon }}">
-                    {% endfor %}
-                {% endif %}
-            </span>
-        </div>
-    {% endfor %}
-</div>
-<script>
-    function sort(){
-        let selected = document.getElementById('sort_select_box');
-        let a = window.location.href;
-        let b = a.indexOf('sorted');
-        window.location.href = a.slice(0, b)+'sorted='+document.getElementById('sort_select_box').value;
-    }
-    window.onload=function() {
-        let a = new URLSearchParams(window.location.search).get('sorted');
-        var b = document.createElement("option");
-        switch (a) {
-            case '2':
-                b.innerText = '추천 순';
-                break;
-            case '3':
-                b.innerText = '정확도 순';
-                break;
-            case '1':
-            default:
-                b.innerText = '최신 순';
-                break;
-        }
-        b.selected = true;
-        b.style.display = 'none';
-        document.getElementById('sort_select_box').appendChild(b);
-    }
-</script>
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
+    <div id="reviews_div">
+        <div id="reviews">
+            {% for review in reviews %}
+                <div class="review">
+                    <div class="review_image">
+                        {{review.representiveImage}}
+                        <img src="{% static 'images/' %}{{review.representiveImage}}" style="width:100%; height:100%;">
+                    </div>
+                    <div class="review_info">
+                        <div class="review_title">
+                            {{review.reviewTitle}}
+                        </div>
+                        <div class="review_preview">
+                            {{review.reviewSentence|first}}
+                        </div>
+                        <div class="review_icons">
+                            {% for icon in review.includedIcon %}
+                                <div class="icon">
 
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+            a=Array.from(document.getElementsByClassName('review_title'));
+            a.forEach(function(o){
+                b=(o.offsetHeight/16).toString()+'rem';
+                o.style.fontSize=b;
+            });
+            a=Array.from(document.getElementsByClassName('review_preview'));
+            a.forEach(function(o){
+                b=(o.offsetHeight/16).toString()+'rem';
+                o.style.fontSize=b;
+            });
+        </script>
+    </div>
 {% endblock %}
