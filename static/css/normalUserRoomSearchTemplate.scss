@@ -1,0 +1,166 @@
+#search_filter{
+  width:100%;
+  height:100%;
+}
+div#room_search_form{
+  position:relative;
+  width:88.54%;
+  height:66.16%;
+  left:5.73%;
+  top:5.05%;
+}
+div#common_info_form{
+  position:relative;
+  margin-top:6.11%;
+  margin-left:2.94%;
+}
+div#common_info_selects{
+  height:72.57%;
+  padding: 3.125% 0.78125%;
+  text-align:center;
+  overflow-y:scroll;
+}
+div#common_info_selects>label{
+  position:relative;
+  display:inline-block;
+  margin: 3.125% 0.78125%;
+  width:46.875%;
+  height:22.73%;
+  line-height:1;
+}
+div#built_year_form{
+  margin-top:6.11%;
+  width:94.12%;
+  height:16.79%;
+  margin-left:2.94%;
+}
+div#built_year_filter{
+  height:27.27%;
+}
+div#built_year_selects{
+  height:72.73%;
+  line-height:1;
+}
+div#built_year_selects_div{
+  display:block;
+  text-align:center;
+  height:37.5%;
+  margin: 7.8125% 3.75%;
+}
+#builtFrom{
+  display:inline-block;
+  width:42.23%;
+  height:100%;
+}
+#builtFrom>*{
+  display:block;
+}
+#builtTo{
+  display:inline-block;
+  width:42.23%;
+  height:100%;
+}
+#builtTo>*{
+  display:block;
+}
+#text_form{
+  margin-top:6.11%;
+  width:94.12%;
+  height:18.32%;
+}
+#search_address{
+  width:100%;
+  height:25%;
+  line-height:1;
+}
+#address_filter{
+  height:75%;
+  padding-left:3.125%;
+}
+#address2{
+  padding:0;
+  margin-top:7.8125%;
+  margin-bottom:7.8125%;
+  width:93.75%;
+  height:44.44%;
+}
+#submit-div{
+  width:22.06%;
+  height:4.58%;
+  margin-top:27.94%;
+  margin-left:77.94%;
+}
+#submit{
+  width:100%;
+  height:100%;
+  padding:0;
+  margin:0;
+  line-height:1;
+  text-decoration:none;
+  color:#A23355;
+}
+#rooms_title{
+  height:7.572%;
+  margin-top:3.038%;
+  font-weight:bolder;
+  line-height:1;
+  text-align:center;
+}
+#rooms::-webkit-scrollbar{
+  width:18px;
+}
+#rooms::-webkit-scrollbar-thumb{
+  background-color:black;
+}
+#rooms::-webkit-scrollbar-track{
+  background-color:gray;
+}
+#rooms{
+  overflow-y:scroll;
+}
+#rooms{
+  width:93.51%;
+  height:100%;
+  margin-left:6.25%;
+}
+.room{
+  position:relative;
+  width:75.35%;
+  height:19.19%;
+  padding-top:3.37%;
+  padding-bottom:3.37%;
+  font-size:0;
+}
+.image{
+  display:inline-block;
+  position:relative;
+  float:left;
+  width:15.15%;
+  height:100%;
+}
+.image>img{
+  width:100%;
+  height:100%;
+}
+.info{
+  display:inline-block;
+  position:relative;
+  float:right;
+  margin-top:1.745%;
+  margin-left:3.73%;
+  width:81%;
+  height:52.63%;
+  font-size:16px;
+  line-height:1;
+}
+.room_address{
+  width:100%;
+  height:45%;
+  line-height:1;
+}
+.room_common_info{
+  width:100%;
+  margin-top:1.44%;
+  height:45%;
+  color:#888888;
+}
