@@ -118,6 +118,10 @@ div#built_year_selects_div {
   color: #A23355;
 }
 
+#mainDiv {
+  padding-left: 3.75%;
+}
+
 #rooms_title {
   height: 7.572%;
   margin-top: 3.038%;
@@ -126,31 +130,33 @@ div#built_year_selects_div {
   text-align: center;
 }
 
-#rooms::-webkit-scrollbar {
+#rooms_div {
+  margin-right: 21.47%;
+  height: 89.39%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#rooms_div::-webkit-scrollbar {
   width: 18px;
 }
 
-#rooms::-webkit-scrollbar-thumb {
-  background-color: black;
+#rooms_div::-webkit-scrollbar-thumb {
+  background-color: #C6C6C6;
 }
 
-#rooms::-webkit-scrollbar-track {
-  background-color: gray;
-}
-
-#rooms {
-  overflow-y: scroll;
+#rooms_div::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
 }
 
 #rooms {
+  margin-right: 21.47%;
   width: 93.51%;
   height: 100%;
-  margin-left: 6.25%;
 }
 
 .room {
   position: relative;
-  width: 75.35%;
   height: 19.19%;
   padding-top: 3.37%;
   padding-bottom: 3.37%;
