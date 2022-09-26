@@ -216,22 +216,11 @@ def change_user_info(request):
 
 
 @login_required(login_url='/loginPage/')
-def change_user_layout(request):
-    user = request.user
-    if request.method == 'POST':
-        data = dict(request.POST)
-        print(data)
-        data1 = {'layout': data.get('레이아웃')}
-        requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
-
-    return render(request, 'normal_user_info_check.html')
-
 def check_user_reviews(request):
     # 정렬 파라미터 존재 조건
     user = request.user
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
-        print('sorted = ', sorted)
         reviews = json.loads(requests.get(
             'http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
     else:
@@ -242,6 +231,7 @@ def check_user_reviews(request):
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
+    print(paged_review[0])
     return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
 
 
@@ -274,12 +264,12 @@ def room_test(request):
     return render(request, 'normal_user_room_read.html', {'reviews': paged_review})
 
 
-def room_search_test(request):
+def room_search(request):
     a = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
     print(type(a))
     a=a+a+a+a+a+a
     print(a)
-    return render(request, 'one_room_search.html', {'rooms': a})
+    return render(request, 'normal_user_room_search.html', {'rooms': a})
 # 리뷰 열람 페이지
     # 해당 리뷰 정보를 받는다.
     # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)

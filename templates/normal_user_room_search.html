@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{% static 'css/normalUserRoomSearchTemplate.css' %}">
 
     <div id='room_search_form' style="text-align:left; width:88.54%; height:66.16%;" >
-        <form id="search_filter" action="{{normalUserRoomSearchTest}}" method="get">
+        <form id="search_filter" action="{{normalUserRoomSearch}}" method="get">
             <div style="width:100%; height:6.11%;" id="room_search_filter">
                 <span style="display:block; line-height:1; height:100%; font-weight:bolder;">원룸 검색 필터 </span>
             </div>
@@ -83,22 +83,24 @@
         a=(document.getElementById('rooms_title').offsetHeight/24).toString()+'em';
         document.getElementById('rooms_title').style.fontSize=a;
     </script>
-    <div id="rooms">
-        {% for room in rooms %}
-            <div class="room">
-                <div class="image">
-                    <img src="{% static 'images/1.png' %}">
-                </div>
-                <div class="info">
-                    <div class="room_address">
-                        sdfwerwe
+    <div id="rooms_div">
+        <div id="rooms">
+            {% for room in rooms %}
+                <div class="room">
+                    <div class="image">
+                        <img src="{% static 'images/1.png' %}">
                     </div>
-                    <div class="room_common_info">
-                        werwerwe
+                    <div class="info">
+                        <div class="room_address">
+                            sdfwerwe
+                        </div>
+                        <div class="room_common_info">
+                            werwerwe
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
     <script>
         b = Array.from(document.getElementsByClassName('room_address'));
