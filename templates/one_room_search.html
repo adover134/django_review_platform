@@ -78,6 +78,11 @@
 {% endblock %}
 
 {% block main_contents %}
+    <div id="rooms_title">검색 결과와 유사한 원룸</div>
+    <script>
+        a=(document.getElementById('rooms_title').offsetHeight/24).toString()+'em';
+        document.getElementById('rooms_title').style.fontSize=a;
+    </script>
     <div id="rooms">
         {% for room in rooms %}
             <div class="room">
