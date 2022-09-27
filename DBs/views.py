@@ -209,6 +209,7 @@ class ReviewViewSets(ModelViewSet):
             searched = None
         else:
             searched = Review.objects.filter(query)
+
         # 검색된 값을 반환한다.
         print(searched)
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     <div id="reviews_div">
         <div id="reviews">
-            {% for review in reviews %}
+            {% for review in paged_review %}
                 <div class="review">
                     <div class="review_image">
                         {{review.representiveImage}}
@@ -14,7 +14,7 @@
                     </div>
                     <div class="review_info">
                         <div class="review_title">
-                            {{review.reviewTitle}}
+                            <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">{{review.reviewTitle}}</a>
                         </div>
                         <div class="review_preview">
                             {{review.reviewSentence|first}}

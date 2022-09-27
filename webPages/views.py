@@ -80,13 +80,17 @@ def normal_user_review_search(request):
         if data.get('icons'):
             for c in data.get('icons'):
                 review_search_url = review_search_url+'&'+'commonInfo='+c
+    if data.get('sorted'):
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url+'&'
+        review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     # print('a:', paged_review[2])
     context = {'paged_review': paged_review}
-    return render(request, 'normal_user_review_search.html', context)
+    return render(request, 'review_search.html', context)
 
 
 @login_required(login_url='/loginPage/')
@@ -178,7 +182,6 @@ def room_with_reviews_display(request):
     # 정렬 파라미터 존재 조건
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
-        print('sorted = ', sorted)
         reviews = json.loads(requests.get(
             'http://127.0.0.1:8000/db/review/?roomId=' + roomId + '&' + 'sorted=' + sorted + '/').text)  # 원룸 ID를 가진 리뷰 데이터 정렬한 목록
 
