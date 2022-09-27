@@ -105,76 +105,44 @@ class ReviewViewSets(ModelViewSet):
             print(u)
             query_user = Q(uId=u)
             query.add(query_user, Q.AND)
-        # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
-        if data1.get('date'):
-            query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
-            query.add(query_date, Q.AND)
-        # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
-        if data1.get('recommend'):
-            query_recommend = Q()
-            # 추천들을 리뷰 단위로 묶어서 리뷰 번호와 개수를 구한다.
-            recommends = Recommend.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
-            # 각 그룹에 대해서 추천 수가 일정 이상인 경우만 구하는 쿼리를 만든다.
-            if recommends[0]['total'] >= data1['recommend']:
-                for rec in recommends:
-                    if rec['total'] >= data1['recommend']:
-                        query_recommend.add(Q(revId=rec['revId']), Q.OR)
-                    else:
-                        break
-                query.add(query_recommend, Q.AND)
-        # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
-        if data1.get('report'):
-            query_report = Q()
-            reports = Report.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
-            if reports[0]['total'] >= data1['report']:
-                for rep in reports:
-                    if rep['total'] >= data1['report']:
-                        query_report.add(Q(revId=rep['revId']), Q.OR)
-                    else:
-                        break
-                query.add(query_report, Q.AND)
-        # 아이콘 정보로 조회하는 쿼리를 만들어 추가한다.
-        if data1.get('icon'):
-            query_icon = Q()
-            query.add(query_icon, Q.AND)
-        ###############################################################
-        # 원룸 ID를 받았다면 해당 원룸 ID와 동일한 리뷰 쿼리(검색과 별개로 조회시. 3-1안)
-        if data1.get('roomId'):
+        elif data1.get('roomId'):
             rId = data1.get('roomId')[0]
             rId = rId.replace('/', '')
             query_roomId = Q(roomId_id=rId)
-
             query.add(query_roomId, Q.AND)
-            searched = Review.objects.filter(query)
-
-            # 정렬조건
-            if data1.get('sorted'):
-                sort_value = data1.get('sorted')[0]
-                sort_value = sort_value.replace('/', '')
-
-                match sort_value:
-                    # 최신순
-                    case '1':
-                        searched = searched.order_by('reviewDate')
-                    # 추천순
-                    case '2':
-                        searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
-                    # 정확도순(아이콘 많은 순)
-                    case '3':
-                        searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
-
-            # pagination
-            page = self.paginate_queryset(searched)
-            if page is not None:
-                serializer = ReviewSerializerString(page, context={'request': request}, many=True)
-                return self.get_paginated_response(serializer.data)
-
-            #Serializer 설정
-            serializer = ReviewSerializerString(searched, context={'request': request}, many=True)
-            return Response(serializer.data)
-        ###############################################################
-        #검색 관련 로직
         else:
+            # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
+            if data1.get('date'):
+                query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
+                query.add(query_date, Q.AND)
+            # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
+            if data1.get('recommend'):
+                query_recommend = Q()
+                # 추천들을 리뷰 단위로 묶어서 리뷰 번호와 개수를 구한다.
+                recommends = Recommend.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
+                # 각 그룹에 대해서 추천 수가 일정 이상인 경우만 구하는 쿼리를 만든다.
+                if recommends[0]['total'] >= data1['recommend']:
+                    for rec in recommends:
+                        if rec['total'] >= data1['recommend']:
+                            query_recommend.add(Q(revId=rec['revId']), Q.OR)
+                        else:
+                            break
+                    query.add(query_recommend, Q.AND)
+            # 최소 신고 수를 받았다면 그 이상의 신고를 받은 리뷰만 찾는 쿼리를 만든다. 방법은 추천과 같다.
+            if data1.get('report'):
+                query_report = Q()
+                reports = Report.objects.all().values('revId').annotate(total=Count('revId')).order_by('total')
+                if reports[0]['total'] >= data1['report']:
+                    for rep in reports:
+                        if rep['total'] >= data1['report']:
+                            query_report.add(Q(revId=rep['revId']), Q.OR)
+                        else:
+                            break
+                    query.add(query_report, Q.AND)
+            # 아이콘 정보로 조회하는 쿼리를 만들어 추가한다.
+            if data1.get('icon'):
+                query_icon = Q()
+                query.add(query_icon, Q.AND)
             # 원룸에 대한 정보를 검색하기 위한 URL
             roomRetrieveURL = 'http://127.0.0.1:8000/db/room/?'
             # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
@@ -205,10 +173,26 @@ class ReviewViewSets(ModelViewSet):
                         query_room.add(Q(roomId=r['id']), Q.OR)
                     query.add(query_room, Q.AND)
             # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
+
         if query == Q():
             searched = None
         else:
             searched = Review.objects.filter(query)
+        # 정렬조건
+        if data1.get('sorted'):
+            sort_value = data1.get('sorted')[0]
+            sort_value = sort_value.replace('/', '')
+
+            match sort_value:
+                # 최신순
+                case '1':
+                    searched = searched.order_by('reviewDate')
+                # 추천순
+                case '2':
+                    searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
+                # 정확도순(아이콘 많은 순)
+                case '3':
+                    searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
         # 검색된 값을 반환한다.
         print(searched)
@@ -294,7 +278,7 @@ class RoomViewSets(ModelViewSet):
                 query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
             query.add(query_common_info, Q.AND)
 
-        #최종 검색을 한다.
+        #최종 검색을 한다. 
         searched = Room.objects.filter(query)
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
