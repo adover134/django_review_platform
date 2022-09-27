@@ -3,62 +3,88 @@
   height: 100%;
 }
 
-div#room_search_form {
+#room_search_form {
   position: relative;
   width: 88.54%;
-  height: 66.16%;
-  left: 5.73%;
-  top: 5.05%;
+  height: 68.687%;
+  margin-left: 5.73%;
+  margin-top: 13.02%;
 }
 
-div#common_info_form {
+#room_search_filter {
+  height: 5.88%;
+  width: 100%;
+}
+
+#common_info_form {
   position: relative;
-  margin-top: 6.11%;
+  margin-top: 13.235%;
   margin-left: 2.94%;
+  width: 98.12%;
+  height: 20.588%;
 }
 
-div#common_info_selects {
-  height: 72.57%;
-  padding: 3.125% 0.78125%;
-  text-align: center;
+#common_info_selects {
+  height: 78.57%;
+  padding-top: 3.125%;
+  padding-bottom: 3.125%;
+  padding-left: 3.125%;
   overflow-y: scroll;
 }
 
-div#common_info_selects > label {
+#common_info_selects > label {
   position: relative;
   display: inline-block;
-  margin: 3.125% 0.78125%;
-  width: 46.875%;
-  height: 22.73%;
+  float: left;
+  margin-top: 1.5625%;
+  margin-bottom: 1.5625%;
+  width: 43.75%;
+  height: 32%;
   line-height: 1;
 }
 
-div#built_year_form {
-  margin-top: 6.11%;
+#common_info_selects::-webkit-scrollbar {
+  width: 15px;
+}
+
+#common_info_selects::-webkit-scrollbar-thumb {
+  width: 15px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 1px solid transparent;
+  border-radius: 11px;
+}
+
+#common_info_selects::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+#built_year_form {
+  margin-top: 14.71%;
   width: 94.12%;
-  height: 16.79%;
+  height: 16.18%;
   margin-left: 2.94%;
 }
 
-div#built_year_filter {
+#built_year_filter {
   height: 27.27%;
 }
 
-div#built_year_selects {
+#built_year_selects {
   height: 72.73%;
   line-height: 1;
 }
 
-div#built_year_selects_div {
+#built_year_selects_div {
   display: block;
   text-align: center;
-  height: 37.5%;
-  margin: 7.8125% 3.75%;
+  height: 50%;
+  margin: 6.25% 3.125%;
 }
 
 #builtFrom {
   display: inline-block;
-  width: 42.23%;
+  width: 43.33%;
   height: 100%;
 }
 
@@ -79,7 +105,7 @@ div#built_year_selects_div {
 #text_form {
   margin-top: 6.11%;
   width: 94.12%;
-  height: 18.32%;
+  height: 17.65%;
 }
 
 #search_address {
@@ -103,9 +129,9 @@ div#built_year_selects_div {
 
 #submit-div {
   width: 22.06%;
-  height: 4.58%;
+  height: 4.41%;
   margin-top: 27.94%;
-  margin-left: 77.94%;
+  margin-left: 74.12%;
 }
 
 #submit {
@@ -118,31 +144,33 @@ div#built_year_selects_div {
   color: #A23355;
 }
 
-#mainDiv {
-  padding-left: 3.75%;
-}
-
 #rooms_title {
-  height: 7.572%;
-  margin-top: 3.038%;
+  height: 10.606%;
+  padding-top: 1.06%;
+  padding-bottom: 1.06%;
+  border-bottom: 2px solid #C6C6C6;
   font-weight: bolder;
   line-height: 1;
   text-align: center;
 }
 
 #rooms_div {
-  margin-right: 21.47%;
-  height: 89.39%;
+  padding-left: 3.75%;
+  height: 89.394%;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
 #rooms_div::-webkit-scrollbar {
-  width: 18px;
+  width: 32px;
 }
 
 #rooms_div::-webkit-scrollbar-thumb {
+  width: 18px;
   background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 7px solid transparent;
+  border-radius: 22px;
 }
 
 #rooms_div::-webkit-scrollbar-track {
@@ -150,8 +178,9 @@ div#built_year_selects_div {
 }
 
 #rooms {
-  margin-right: 21.47%;
-  width: 93.51%;
+  margin-left: 6.25%;
+  margin-right: 16.493%;
+  width: 74.48%;
   height: 100%;
 }
 
@@ -180,24 +209,24 @@ div#built_year_selects_div {
   display: inline-block;
   position: relative;
   float: right;
-  margin-top: 1.745%;
+  padding-top: 1.1655%;
+  padding-bottom: 1.1655%;
   margin-left: 3.73%;
-  width: 81%;
-  height: 52.63%;
-  font-size: 16px;
+  width: 81.12%;
+  height: 100%;
   line-height: 1;
 }
 
 .room_address {
   width: 100%;
-  height: 45%;
+  height: 50%;
   line-height: 1;
 }
 
 .room_common_info {
   width: 100%;
-  margin-top: 1.44%;
-  height: 45%;
+  margin-top: 0.72%;
+  height: 45.45%;
   color: #888888;
 }
 
