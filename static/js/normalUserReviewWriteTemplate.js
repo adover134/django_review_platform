@@ -22,20 +22,24 @@ function review_submit(e) {
 
     for (let key of form.keys()) { console.log(key); }
     for (let value of form.values()) { console.log(value);}
+    alert("ajax 호출 전")
+    console.log(form)
     // make POST ajax call
     $.ajax({
         type: 'POST',
-        url: "/test/normal_user_review_write/",
+        url: '/db/normal_user_review_write/',
         async: false,
         data: form,
         processData: false,
         contentType: false,
         success: function (response) {
             // on successfull creating object
+            alert("success")
             window.location.replace('/test/normal_user_review_read/?id='+response);
         },
         error: function (response) {
             // alert the error if any error occured
+            alert("error")
             alert(response["responseJSON"]["error"]);
         }
     })
