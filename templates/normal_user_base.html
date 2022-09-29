@@ -52,14 +52,17 @@
         document.getElementById('review_sub').style.display='none';
     });
 </script>
-<div class="nav-item col-2" style="display:inline-block; float:left; height:100%;"></div>
-<form CLASS="nav-item col-2" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px; height:100%;">
-    <div class="nav-item col-9">
-        <input class="form-control" type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
-    </div>
-</form>
-<div class="col-2" id="userInfo">
-    {% if user and not user.is_anonymous %}
+<div class="nav-item col-1" style="display:inline-block; float:left; height:100%;"></div>
+<div id="search-form-div" class="nav-item col-2">
+    <form action="{{normalUserReviewSearch}}" id="search-form">
+        <div class="nav-item" id="search-addr">
+            <input type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
+        </div>
+    </form>
+</div>
+
+{% if user and not user.is_anonymous %}
+    <div class="col-3" id="userInfo">
         <div class="nav-item dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
               {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
@@ -70,8 +73,14 @@
             <li><a class="dropdown-item" href = '{{logout}}'>log out</a></li>
           </ul>
         </div>
-    {% else %}
-        <a type="button" id="login" href="{{ loginPage }}">login</a>
-    {% endif %}
-</div>
+    </div>
+{% else %}
+    <div class="col-1" style="position:relative;">
+        <div id="login" class="drpd">
+            <div onclick="window.location.replace('{{ loginPage }}')">
+                login
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}
