@@ -1,58 +1,101 @@
-@import "color.scss";
-div#searchConditionForm{
-    margin-left:10px;
+#search_filter{
+  width:100%;
+  height:100%;
 }
-div#reviewSearchResult{
-    position:relative;
-    height:100%;
-    border:2px solid skyblue;
-    overflow-y:scroll;
-    overflow-x:hidden;
+#review_search_form{
+  position:relative;
+  width:88.54%;
+  height:66.16%;
+  left:5.73%;
+  top:5.05%;
 }
-fieldset#common_info{
-    display:block;
+#review_icon_form{
+  position:relative;
+  margin-top:6.11%;
+  margin-left:2.94%;
 }
-fieldset#common_info > label{
-    color:#A23355;
+#review_icon_selects{
+  height:72.57%;
+  padding: 3.125% 0.78125%;
+  text-align:center;
+  overflow-y:scroll;
 }
-fieldset#built_year{
-    display:block;
+div#review_icon_selects>label{
+  position:relative;
+  display:inline-block;
+  margin: 3.125% 0.78125%;
+  width:46.875%;
+  height:22.73%;
+  line-height:1;
 }
-fieldset#address{
-    display:block;
+div#written_date_form{
+  margin-top:6.11%;
+  width:94.12%;
+  height:16.79%;
+  margin-left:2.94%;
 }
-fieldset#address>input{
+div#written_date_filter{
+  height:27.27%;
 }
-button#searchFormOpen{
-    position:absolute;
-    z-index:1;
+div#written_date_selects{
+  height:72.73%;
+  line-height:1;
 }
-.review_writer{
-    border:1px solid $blue-600;
-    font-size:13px;
+div#written_date_selects_div{
+  display:block;
+  text-align:center;
+  height:37.5%;
+  margin: 7.8125% 3.75%;
 }
-.review_title{
-    border:1px solid $blue-600;
-    font-size:20px;
+#writtenStart{
+  display:inline-block;
+  width:42.23%;
+  height:100%;
 }
-.review_icon{
-    border:1px solid $blue-600;
-    height:35px;
+#writtenStart>*{
+  display:block;
 }
-#search_filter>fieldset>legend{
-    font-size:1rem;
+#writtenEnd{
+  display:inline-block;
+  width:42.23%;
+  height:100%;
 }
-#searchConditionForm{
-    padding-left:5px;
-    padding-right:10px;
+#writtenEnd>*{
+  display:block;
 }
-#searchConditionForm>p{
-    margin-top:20px;
-    font-size:30px;
+#text_form{
+  margin-top:6.11%;
+  width:94.12%;
+  height:18.32%;
 }
-#search_filter>fieldset{
-    margin-bottom:30px;
+#search_address{
+  width:100%;
+  height:25%;
+  line-height:1;
 }
-#search_filter>fieldset>label #search_filter>label{
-    margin-bottom:10px;
+#address_filter{
+  height:75%;
+  padding-left:3.125%;
+}
+#address2{
+  padding:0;
+  margin-top:7.8125%;
+  margin-bottom:7.8125%;
+  width:93.75%;
+  height:44.44%;
+}
+#submit-div{
+  width:22.06%;
+  height:4.58%;
+  margin-top:27.94%;
+  margin-left:77.94%;
+}
+#submit{
+  width:100%;
+  height:100%;
+  padding:0;
+  margin:0;
+  line-height:1;
+  text-decoration:none;
+  color:#A23355;
 }

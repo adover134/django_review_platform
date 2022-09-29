@@ -3,21 +3,21 @@
 {% block left_side_bar %}
     <link rel="stylesheet" href="{% static 'css/normalUserRoomSearchTemplate.css' %}">
 
-    <div id='room_search_form' style="text-align:left; width:88.54%; height:66.16%;" >
+    <div id='room_search_form' style="text-align:left;" >
         <form id="search_filter" action="{{normalUserRoomSearch}}" method="get">
-            <div style="width:100%; height:6.11%;" id="room_search_filter">
+            <div id="room_search_filter">
                 <span style="display:block; line-height:1; height:100%; font-weight:bolder;">원룸 검색 필터 </span>
             </div>
             <script>
-                let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'em';
+                let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';
                 document.getElementById('room_search_filter').style.fontSize=a;
             </script>
-            <div style="width:94.12%; height:21.37%;" id="common_info_form">
+            <div id="common_info_form">
                 <div id="common_info_filter" style="width:100%; height:21.429%;">
                     <span style="display:block; height:100%; line-height:1;">공유 시설</span>
                 </div>
                 <script>
-                    a = (document.getElementById('common_info_filter').offsetHeight/16).toString()+'em';
+                    a = (document.getElementById('common_info_filter').offsetHeight/16).toString()+'rem';
                     document.getElementById('common_info_filter').style.fontSize=a;
                 </script>
                 <div id="common_info_selects">
@@ -29,8 +29,14 @@
                 <script>
                     let b = Array.from(document.getElementById('common_info_selects').children);
                     b.forEach(function(o){
-                        a=(o.offsetHeight/16).toString()+'em';
-                        o.style.fontSize=a;
+                        a=o.offsetHeight/16;
+                        b=o.offsetWidth-o.offsetHeight;
+                        let c = o.innerText;
+                        b = (b/c.length)/16;
+                        if (a>b)
+                            o.style.fontSize=b.toString()+'rem';
+                        else
+                            o.style.fontSize=a.toString()+'rem';
                     });
                 </script>
             </div>
@@ -39,7 +45,7 @@
                     <span style="display:block; line-height:1;">건축 연도</span>
                 </div>
                 <script>
-                    a=(document.getElementById('built_year_filter').offsetHeight/16).toString()+'em';
+                    a=(document.getElementById('built_year_filter').offsetHeight/16).toString()+'rem';
                     document.getElementById('built_year_filter').style.fontSize=a;
                 </script>
                 <div id="built_year_selects">
@@ -49,9 +55,9 @@
                         <select id="builtTo" name="builtTo"></select>
                     </div>
                     <script>
-                        a=((document.getElementById('builtFrom').offsetHeight-6)/16).toString()+'em';
+                        a=((document.getElementById('builtFrom').offsetHeight-10)/16).toString()+'rem';
                         document.getElementById('builtFrom').style.fontSize=a;
-                        b=((document.getElementById('builtTo').offsetHeight-6)/16).toString()+'em';
+                        b=((document.getElementById('builtTo').offsetHeight-10)/16).toString()+'rem';
                         document.getElementById('builtTo').style.fontSize=b;
                     </script>
                 </div>
@@ -59,7 +65,7 @@
             <div id="text_form">
                 <div id="search_address">검색할 주소</div>
                 <script>
-                    a=(document.getElementById('search_address').offsetHeight/16).toString()+'em';
+                    a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
                     document.getElementById('search_address').style.fontSize=a;
                 </script>
                 <div id="address_filter">
@@ -70,7 +76,7 @@
                 <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">적용</a>
             </div>
             <script>
-                a=(document.getElementById('submit-div').offsetHeight/16).toString()+'em';
+                a=(document.getElementById('submit-div').offsetHeight/16).toString()+'rem';
                 document.getElementById('submit').style.fontSize=a;
             </script>
         </form>
@@ -78,10 +84,13 @@
 {% endblock %}
 
 {% block main_contents %}
-    <div id="rooms_title">검색 결과와 유사한 원룸</div>
+    <div id="rooms_title">
+        <div id="rooms_search_title">검색 결과와 유사한 원룸</div>
+    </div>
     <script>
-        a=(document.getElementById('rooms_title').offsetHeight/24).toString()+'em';
-        document.getElementById('rooms_title').style.fontSize=a;
+        a=(document.getElementById('rooms_search_title').offsetHeight/24).toString()+'rem';
+        console.log(a);
+        document.getElementById('rooms_search_title').style.fontSize=a;
     </script>
     <div id="rooms_div">
         <div id="rooms">
@@ -105,12 +114,12 @@
     <script>
         b = Array.from(document.getElementsByClassName('room_address'));
         b.forEach(function(o){
-            a=(o.offsetHeight/16).toString()+'em';
+            a=(o.offsetHeight/16).toString()+'rem';
             o.style.fontSize=a;
         });
         b = Array.from(document.getElementsByClassName('room_common_info'));
         b.forEach(function(o){
-            a=(o.offsetHeight/16).toString()+'em';
+            a=(o.offsetHeight/16).toString()+'rem';
             o.style.fontSize=a;
         });
     </script>
