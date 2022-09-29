@@ -23,31 +23,30 @@
     <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-    <div class="navbar-light" id="headMenu">
-        <div class="nav-item col-1" style="display:inline-block; float:left; height:20px;"></div>
-        <div>
-            <div style="height:0.7vh;"></div>
-            <a href="/" class="navbar-brand col-1 text-center" id="logo" style="display:inline-block; float:left;"><img style="width:6vh; height:6vh;" src="{% static 'images/logo/logo.png' %}" alt="로고 이미지"></a>
+    <div id="headMenu">
+        <div class="col-1" style="height:100%;"></div>
+        <div class="col-1" style="height:100%;">
+            <a href="/" id="logo"><img style="width:100%; height:100%;" src="{% static 'images/logo/logo.png' %}" alt="로고 이미지"></a>
         </div>
         {% block head_menu %}
         {% endblock %}
     </div>
     <div id="midContent">
-        <div class="middle" id="leftSideMenu" style="border:2px solid #B3B3B3; border-left:none; width:20%; ">
+        <div class="middle" id="leftSideMenu" style="border-right:2px solid #B3B3B3; border-left:none; width:20%; ">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle" id="mainDiv" style="border:2px solid #B3B3B3; width:60%;">
+        <div class="middle" id="mainDiv" style="width:60%;">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle" id="rightSideMenu" style="border:2px solid #B3B3B3; border-right:none; width:20%;">
+        <div class="middle" id="rightSideMenu" style="border-left:2px solid #B3B3B3; width:20%;">
             {% block right_side_bar %}
             {% endblock %}
         </div>
 
     </div>
-    <div id="bottomInfoBox" style ="background-color: silver; width:100%; height:10vh;">
+    <div id="bottomInfoBox">
         <!-이 공간은 팀 정보를 저장하기 위한 공간입니다.-->
     </div>
 </body>

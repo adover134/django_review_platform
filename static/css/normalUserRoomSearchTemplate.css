@@ -145,13 +145,22 @@
 }
 
 #rooms_title {
+  display: flex;
   height: 10.606%;
-  padding-top: 1.06%;
-  padding-bottom: 1.06%;
+  padding-top: 1.302%;
+  padding-bottom: 1.302%;
   border-bottom: 2px solid #C6C6C6;
   font-weight: bolder;
   line-height: 1;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+#rooms_search_title {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 #rooms_div {

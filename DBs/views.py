@@ -278,7 +278,7 @@ class RoomViewSets(ModelViewSet):
                 query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
             query.add(query_common_info, Q.AND)
 
-        #최종 검색을 한다. 
+        #최종 검색을 한다.
         searched = Room.objects.filter(query)
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)

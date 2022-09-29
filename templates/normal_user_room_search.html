@@ -84,10 +84,13 @@
 {% endblock %}
 
 {% block main_contents %}
-    <div id="rooms_title">검색 결과와 유사한 원룸</div>
+    <div id="rooms_title">
+        <div id="rooms_search_title">검색 결과와 유사한 원룸</div>
+    </div>
     <script>
-        a=(document.getElementById('rooms_title').offsetHeight/24).toString()+'rem';
-        document.getElementById('rooms_title').style.fontSize=a;
+        a=(document.getElementById('rooms_search_title').offsetHeight/24).toString()+'rem';
+        console.log(a);
+        document.getElementById('rooms_search_title').style.fontSize=a;
     </script>
     <div id="rooms_div">
         <div id="rooms">
