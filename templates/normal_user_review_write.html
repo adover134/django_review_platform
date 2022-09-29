@@ -2,22 +2,91 @@
 {% load static %}
 {% url 'user-detail' pk=u_id as singleUser %}
 
-{%block main_contents %}
-<link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;">
+{% block main_contents %}
+    <style>
+        li {
+            list-style: none;
+        }
 
-</div>
-<div onload="unloadevent()" style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
-    <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <table class="form-contents">
-            {{TextForm.as_table}}
-        </table>
-        <br>
-        <input type="submit" value="submit">
-    </form>
+        img {
+            width: 6.2vw;
+            height: 10vh;
+            list-style: none;
+        }
 
-</div>
-<script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
+        .image-preview {
+            padding-left: 0;
+            width: 500px;
+            height: 200px;
+            background-color: aquamarine;
+            display: flex;
+            gap: 1.6vw;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;"></div>
+    <div style="width: 51.5vw; margin: 0 auto">
+        <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="height: 8.8vh; width: 100%; padding-top: 1.9vh; display: flex">
+                <div style="background-color: #A23355; color: white; width: 5.5vw; height: 5vh;
+                        text-align: center; margin: 0 auto">주소</div>
+                <input id="id_address" style="float: right; height: 5vh; border-color: #A23355;
+                        flex:1" required>
+            </div>
+            <div style="height: 7.5vh; width: 100%; padding-top: 2.5vh">
+                <input style="width: 100%; height: 5vh; text-align: left; border-color: #B3B3B3"
+                       placeholder="제목을 입력하세요">
+            </div>
+            <div style="padding-top: 2.5vh">
+                <input style="height: 43.3vh; width: 100%; border-color: #B3B3B3"
+                       placeholder="리뷰 본문을 입력하세요">
+            </div>
+            <div style="padding-top: 3vh">
+                <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
+
+                <div style="float: right">
+                    <input type="file" class="real-upload" accept="image/*" required multiple>
+                    <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                    color: white">
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        // 이미지 업로드
+        function getImageFiles(e){
+            const uploadFiles = [];
+            const files = e.currentTarget.files;
+            const imagePreview = document.querySelector('.image-preview');
+
+            [...files].forEach(file => {
+                uploadFiles.push(file);
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = createElement(e, file);
+                    imagePreview.appendChild(preview);
+                };
+
+              reader.readAsDataURL(file);
+            });
+        }
+
+        function createElement(e, file) {
+          const li = document.createElement('li');
+          const img = document.createElement('img');
+          img.setAttribute('src', e.target.result);
+          img.setAttribute('data-file', file.name);
+          li.appendChild(img);
+
+          return li;
+        }
+
+        const realUpload = document.querySelector('.real-upload');
+        realUpload.addEventListener('change', getImageFiles);
+
+    </script>
+    <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
 {% endblock %}
