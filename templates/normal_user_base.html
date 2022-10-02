@@ -52,7 +52,7 @@
         document.getElementById('review_sub').style.display='none';
     });
 </script>
-<div class="nav-item col-1" style="display:inline-block; float:left; height:100%;"></div>
+<div class="nav-item col-2" style="display:inline-block; float:left; height:100%;"></div>
 <div id="search-form-div" class="nav-item col-2">
     <form action="{{normalUserReviewSearch}}" id="search-form">
         <div class="nav-item" id="search-addr">
@@ -62,16 +62,17 @@
 </div>
 
 {% if user and not user.is_anonymous %}
-    <div class="col-3" id="userInfo">
-        <div class="nav-item dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href = '{{wroteReviews}}'>내 리뷰 확인</a></li>
-            <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>마이페이지</a></li>
-            <li><a class="dropdown-item" href = '{{logout}}'>log out</a></li>
-          </ul>
+    <div class="col-2" style="display:flex; align-items:center; justify-content:center;">
+        <div id="userInfo">
+            <div class="nav-item dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>마이페이지</a></li>
+                <li><a class="dropdown-item" href = '{{logout}}'>log out</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% else %}

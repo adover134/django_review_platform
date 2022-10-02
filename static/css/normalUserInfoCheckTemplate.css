@@ -1,9 +1,18 @@
-div#others {
+#others {
   border: 2px solid #842029;
 }
 
-input#id_user_warn_count {
+#infoCheckAndUpdate {
+  height: 89.8%;
+}
+
+#id_user_warn_count {
   width: 40px;
+}
+
+#reviews_div {
+  height: 70.2%;
+  overflow-y: scroll;
 }
 
 /*# sourceMappingURL=normalUserInfoCheckTemplate.css.map */
