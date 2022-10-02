@@ -32,8 +32,8 @@
                         a=o.offsetHeight/16;
                         b=o.offsetWidth-o.offsetHeight;
                         let c = o.innerText;
-                        b = (b/c.length)/16;
-                        if (a>b)
+                        b = (b / c.length)/16;
+                        if (a > b)
                             o.style.fontSize=b.toString()+'rem';
                         else
                             o.style.fontSize=a.toString()+'rem';
@@ -89,7 +89,6 @@
     </div>
     <script>
         a=(document.getElementById('rooms_search_title').offsetHeight/24).toString()+'rem';
-        console.log(a);
         document.getElementById('rooms_search_title').style.fontSize=a;
     </script>
     <div id="rooms_div">
