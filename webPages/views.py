@@ -290,3 +290,9 @@ def room_search(request):
 
 def review_search(request):
     return render(request, 'review_search.html')
+
+def testing(request):
+    return render(request, 'room_test3-1.html')
+
+def review_write(request):
+    return render(request, 'review_write.html')
