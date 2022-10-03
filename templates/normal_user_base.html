@@ -40,7 +40,7 @@
         </div>
         <div id="review_sub" class="drpd-content">
             <div id="review_search" class="drpd-sub" onclick="window.location.replace('{{normalUserReviewSearch}}')"><span>리뷰 검색</span></div>
-            <div id="review_write" class="drpd-sub"><span>리뷰 작성</span></div>
+            <div id="review_write" class="drpd-sub" onclick="window.location.replace('{{normalUserReviewWrite}}')"><span>리뷰 작성</span></div>
         </div>
     </div>
 </div>
@@ -53,25 +53,35 @@
     });
 </script>
 <div class="nav-item col-2" style="display:inline-block; float:left; height:100%;"></div>
-<form CLASS="nav-item col-2" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px; height:100%;">
-    <div class="nav-item col-9">
-        <input class="form-control" type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
-    </div>
-</form>
-<div class="col-2" id="userInfo">
-    {% if user and not user.is_anonymous %}
-        <div class="nav-item dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href = '{{wroteReviews}}'>내 리뷰 확인</a></li>
-            <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>마이페이지</a></li>
-            <li><a class="dropdown-item" href = '{{logout}}'>log out</a></li>
-          </ul>
+<div id="search-form-div" class="nav-item col-2">
+    <form action="{{normalUserReviewSearch}}" id="search-form">
+        <div class="nav-item" id="search-addr">
+            <input type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
         </div>
-    {% else %}
-        <a type="button" id="login" href="{{ loginPage }}">login</a>
-    {% endif %}
+    </form>
 </div>
+
+{% if user and not user.is_anonymous %}
+    <div class="col-2" style="display:flex; align-items:center; justify-content:center;">
+        <div id="userInfo">
+            <div class="nav-item dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>마이페이지</a></li>
+                <li><a class="dropdown-item" href = '{{logout}}'>log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="col-1" style="position:relative;">
+        <div id="login" class="drpd">
+            <div onclick="window.location.replace('{{ loginPage }}')">
+                login
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

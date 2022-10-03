@@ -1,8 +1,16 @@
 @import "color.scss";
-div#others{
+#others{
     border:2px solid $red-700;
 }
-
-input#id_user_warn_count{
+#infoCheckAndUpdate{
+    height:89.8%;
+}
+#id_user_warn_count{
     width:40px;
+}
+#reviews{
+}
+#reviews_div{
+    height:70.2%;
+    overflow-y:scroll;
 }

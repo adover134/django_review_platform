@@ -6,60 +6,67 @@
     <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;"></div>
-{#<div onload="unloadevent()" style="position:relative; display:inline-block; height:500px; width:500px; float:left;">#}
-{#    <form id="text_review" action="#" method="POST" enctype="multipart/form-data">#}
-{#        {% csrf_token %}#}
-{#        <table class="form-contents">#}
-{#            {{TextForm.as_table}}#}
-{#        </table>#}
-{#        <br>#}
-{#        <input type="submit" value="submit">#}
-{#    </form>#}
-{#</div>#}
     <div style="width: 51.5vw; margin: 0 auto">
         <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div style="height: 8.8vh; width: 100%; padding-top: 1.9vh; display: flex">
                 <div style="background-color: #A23355; color: white; width: 5.5vw; height: 5vh;
-                        text-align: center">주소</div>
+                        text-align: center; margin: 0 auto">주소</div>
                 <input id="id_address" style="float: right; height: 5vh; border-color: #A23355;
-                        flex:1" required>
+                        flex:1" name="address" required>
             </div>
             <div style="height: 7.5vh; width: 100%; padding-top: 2.5vh">
-                <input style="width: 100%; height: 5vh; text-align: left; border-color: #B3B3B3"
+                <input style="width: 100%; height: 5vh; text-align: left; border-color: #B3B3B3" name="title"
                        placeholder="제목을 입력하세요">
             </div>
             <div style="padding-top: 2.5vh">
-                <input style="height: 43.3vh; width: 100%; border-color: #B3B3B3"
+                <input style="height: 43.3vh; width: 100%; border-color: #B3B3B3" name="review_sentence"
                        placeholder="리뷰 본문을 입력하세요">
             </div>
-            <div style="padding-top: 3vh; float: right">
-{#                {{ TextForm.images }}#}
-                <div id="image_preview" style="float: left">
-                    <img src="/img.png" alt="사진영역" style="width:126px; height:165px;">
+            <div style="padding-top: 3vh">
+                <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
+
+                <div style="float: right">
+                    <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
+                    <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                    color: white">
                 </div>
-                <input type="file" id="img" name="bf_file[]" multiple>
-                <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
-                    color: white; float: right">
             </div>
         </form>
     </div>
+    <script>
+        // 이미지 업로드
+        function getImageFiles(e){
+            const uploadFiles = [];
+            const files = e.currentTarget.files;
+            const imagePreview = document.querySelector('.image-preview');
 
-<script>
-    // 이미지 업로드
-    $('#img').on('change', function() {
-        ext = $(this).val().split('.').pop().toLowerCase(); // 확장자
-        // 배열에 추출한 확장자가 존재하는지 체크
-        if($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) === -1) {
-            window.alert('이미지 파일이 아닙니다! (gif, png, jpg, jpeg 만 업로드 가능)');
-        } else {
-            file = $('#img').prop("files")[0];
-            blobURL = window.URL.createObjectURL(file);
-            $('#image_preview img').attr('src', blobURL);
-            $('#image_preview').slideDown(); // 업로드한 이미지 미리보기
-            $(this).slideUp(); // 파일 양식 감춤
+            [...files].forEach(file => {
+                uploadFiles.push(file);
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = createElement(e, file);
+                    imagePreview.appendChild(preview);
+                };
+
+              reader.readAsDataURL(file);
+            });
         }
-});
-</script>
+
+        function createElement(e, file) {
+          const li = document.createElement('li');
+          const img = document.createElement('img');
+          img.setAttribute('src', e.target.result);
+          img.setAttribute('data-file', file.name);
+          li.appendChild(img);
+
+          return li;
+        }
+
+        const realUpload = document.querySelector('.real-upload');
+        realUpload.addEventListener('change', getImageFiles);
+
+    </script>
     <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
 {% endblock %}

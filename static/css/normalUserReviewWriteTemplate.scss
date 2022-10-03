@@ -1,3 +1,23 @@
 @import "color.scss";
-form>table>tbody>tr>td>input{
+#mainDiv{
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+li{
+    list-style: none;
+}
+
+img{
+    width: 6.2vw;
+    height: 10vh;
+    list-style: none;
+}
+
+.image-preview{
+    padding-left: 0;
+    width: 500px;
+    height: 200px;
+    background-color: aquamarine;
+    display: flex;
+    gap: 1.6vw;
 }
