@@ -7,7 +7,7 @@
     <div id='review_search_form' style="text-align:left; width:88.54%; height:66.16%;" >
         <form id="search_filter" action="{{normalUserReviewSearch}}" method="get">
             <div style="width:100%; height:6.11%;" id="review_search_filter">
-                <span style="font-size:30px;display:block; line-height:1; width: 88.5%; height:4%;padding-left:5.7%; padding-right:5.7%">리뷰 검색 필터 </span>
+                <span style="display:block; line-height:1; font-weight: bolder;">리뷰 검색 필터 </span>
             </div>
             <script>
                 let a = (document.getElementById('review_search_filter').offsetHeight/16).toString()+'em';
@@ -15,14 +15,14 @@
             </script>
             <div style="width:98.32%; height:21.37%;" id="review_icon_form">
                 <div id="review_icon_filter" style="width:100%; height:21.429%;">
-                    <span style="display:block; height:100%;line-height:1; padding: 10% 5.7% 1.5625% 5.7%;">포함된 아이콘</span>
+                    <span style="display:block; height:100%;line-height:1;">포함된 아이콘</span>
                 </div>
                 <script>
                     a = (document.getElementById('review_icon_filter').offsetHeight/16).toString()+'em';
                     document.getElementById('review_icon_filter').style.fontSize=a;
                 </script>
 
-                <div id="review_icon_selects" style=" height:100% ; padding-right: 40%; margin-top:12%">
+                <div id="review_icon_selects">
                     <label><input type="checkbox" name="color" value="blue">
                     <i  class="fa fa-home fa-fw"></i>
                     </label>
@@ -58,14 +58,14 @@
             </div>
             <div id="written_date_form">
                 <div id="written_date_filter">
-                    <span style="display:block; line-height:1; padding: 20% 5.7% 4% 5.7%;">리뷰 작성일</span>
+                    <span style="display:block; line-height:1;">리뷰 작성일</span>
                 </div>
                 <script>
                     a=(document.getElementById('written_date_filter').offsetHeight/16).toString()+'em';
                     document.getElementById('written_date_filter').style.fontSize=a;
                 </script>
                 <div id="written_date_selects" >
-                    <div id="written_date_selects_div"style="margin:28.6% 8.3% 5% 5.7%;">
+                    <div id="written_date_selects_div">
                         <select id="writtenStart" name="writtenStart"></select>
                             ~
                         <select id="writtenEnd" name="writtenEnd"></select>
@@ -79,12 +79,12 @@
                 </div>
             </div>
             <div id="text_form">
-                <div id="search_address" style="padding: 3% 8.3% 4.5% 8.3%; margin-top:27.6%;">검색할 주소</div>
+                <div id="search_address" >검색할 주소</div>
                 <script>
                     a=(document.getElementById('search_address').offsetHeight/16).toString()+'em';
                     document.getElementById('search_address').style.fontSize=a;
                 </script>
-                <div id="address_filter" style="margin:10.4% 2.7% 9.6% 5.3%; ">
+                <div id="address_filter ">
                     <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address">
                 </div>
             </div>
