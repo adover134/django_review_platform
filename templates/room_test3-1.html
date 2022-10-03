@@ -1,22 +1,28 @@
 {% extends 'normal_user_review_list.html' %}
 {% load static %}
-{% block left_side_bar %}
-
-    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
-    <div style="height: 100% ;text-align:center" >
-        <img class="left-side-room-img" style= "display: block; margin: 2.8vh auto 2.8vh auto;
-            height: 13vw; width :23vh;" src="{% static 'images/roomImage/' %}{{room.roomImage|first}}">
-        <div style ="font-size : 20px;">
-            <strong><span>주소:</span><span>{{ room.address }}</span></strong>
-        </div>
+{% block main_contents %}
+    {% block info %}
+<link rel="stylesheet" href="{% static 'css/roomTest31Template.css' %}">
+<div style ="background-color: lightgreen; width:100%; height: 105px;">
     <div>
-            <span><br>건축연도 : </span><span>{{ room.builtYear }}</span>
-        </div>
-    <div>
-            <span> 층수 :</span><span>{{ room.commonInfo }}</span>
-        </div>
-    <div>
-            <span> 옵션 : </span><span> </span>
-        </div>
+	    <input type="text" placeholder="검색어 입력">
+	    <button>검색</button>
     </div>
+    <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
+        <div style="display: inline-block;">
+        <select id="sort_select_box" name="sort_select_box" onchange="sort()">
+            <option value="1">최신 순</option>
+            {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
+            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
+            <option value="2">추천 순</option>
+            {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
+            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
+            <option value="3">정확도 순</option>
+            {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
+            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
+        </select>
+            </div>
+        </div>
+</div>
+    {% endblock %}
 {% endblock %}
