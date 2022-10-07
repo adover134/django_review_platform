@@ -10,7 +10,12 @@
                 <div class="review">
                     <div class="review_image">
                         {{review.representiveImage}}
-                        <img src="{% static 'images/' %}{{review.representiveImage}}" style="width:100%; height:100%;">
+                        {% if review.representiveImage == 'None' %}
+                            <img src="{% static 'images/' %}{{review.representiveImage}}.png">
+                        {% else %}
+                            {# 리뷰 대표 이미지 없을 경우 다른 이미지 출력 #}
+                            <img src="{% static 'images/' %}no-photo.png" style="width:100%; height:100%;">
+                        {% endif %}
                     </div>
                     <div class="review_info">
                         <div class="review_title">
@@ -29,6 +34,18 @@
                     </div>
                 </div>
             {% endfor %}
+            {% if paged_review.has_previous %}
+                <a id="prev_page">이전으로</a>
+                <script>
+                    document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.previous_page_number}}"
+                </script>
+            {% endif %}
+            {% if paged_review.has_next %}
+                <a id="next_page">다음으로</a>
+                <script>
+                    document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.next_page_number}}"
+                </script>
+            {% endif %}
         </div>
         <script>
             a=Array.from(document.getElementsByClassName('review_title'));
