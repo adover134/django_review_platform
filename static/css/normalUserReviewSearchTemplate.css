@@ -21,6 +21,23 @@
   height: 72.57%;
   padding: 1.5625% 2.5%;
   text-align: center;
+  overflow-y: scroll;
+}
+
+#review_icon_selects::-webkit-scrollbar {
+  width: 9px;
+}
+
+#review_icon_selects::-webkit-scrollbar-thumb {
+  width: 3px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 12px;
+}
+
+#review_icon_selects::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
 }
 
 div#review_icon_selects > label {

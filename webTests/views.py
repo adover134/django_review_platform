@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from webPages import views
 import requests
 import json
-from customForms import reviewWriteForms
+from customForms import customForms
 
 
 def is_ajax(request):

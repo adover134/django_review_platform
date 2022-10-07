@@ -11,7 +11,7 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializer2, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
+from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
 from DBs.models import User, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
 from DBs.services import sentence_spliter
 
@@ -527,6 +527,7 @@ def ajaxTest(request):
     manager = json.loads(requests.get('http://127.0.0.1:8000/db/manager/').text)
     print(manager)
     return render(request, 'test.html', {"manager": manager})
+
 
 @api_view(['GET'])
 def getMainPageReview(request):

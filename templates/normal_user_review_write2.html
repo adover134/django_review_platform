@@ -1,0 +1,52 @@
+{% extends 'normal_user_base.html' %}
+{% load static %}
+{% url 'user-detail' pk=u_id as singleUser %}
+
+{% block main_contents %}
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;"></div>
+    <div style="width: 51.5vw; margin: 0 auto">
+        <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{a}}
+            <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                    color: white">
+        </form>
+    </div>
+    <script>
+        // 이미지 업로드
+        function getImageFiles(e){
+            const uploadFiles = [];
+            const files = e.currentTarget.files;
+            const imagePreview = document.querySelector('.image-preview');
+
+            [...files].forEach(file => {
+                uploadFiles.push(file);
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = createElement(e, file);
+                    imagePreview.appendChild(preview);
+                };
+
+              reader.readAsDataURL(file);
+            });
+        }
+
+        function createElement(e, file) {
+          const li = document.createElement('li');
+          const img = document.createElement('img');
+          img.setAttribute('src', e.target.result);
+          img.setAttribute('data-file', file.name);
+          li.appendChild(img);
+
+          return li;
+        }
+
+        const realUpload = document.querySelector('.real-upload');
+        realUpload.addEventListener('change', getImageFiles);
+
+    </script>
+    <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
+{% endblock %}

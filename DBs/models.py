@@ -18,6 +18,7 @@ class Room(models.Model):
     name = models.TextField(null=True)
     builtYear = models.IntegerField(null=True)
     commonInfo = models.JSONField(null=True)
+    ownerPhone = models.TextField(null=True)
 
     class Meta:
         db_table = 'Room'
@@ -29,6 +30,10 @@ class Review(models.Model):
     reviewTitle = models.CharField(max_length=50)
     reviewDate = models.DateField(default=datetime.date.today)
     reviewSentence = models.JSONField()
+    feeKind = models.IntegerField() # 요금 종류 (거주 구분) 1은 월세, 2는 전세
+    fee = models.IntegerField()
+    guarantee = models.IntegerField(null=True) # 보증금 필드
+    roomSize = models.FloatField() # 제곱미터로 저장 / 값을 입력받은 후 저장할 때 평 수 기준이었다면 변환해서 저장
 
     class Meta:
         db_table = 'Review'
