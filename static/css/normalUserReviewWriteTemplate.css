@@ -1,3 +1,22 @@
+#text_review {
+  height: 100%;
+  width: 100%;
+}
+
+#tr1 {
+  outline: solid 2px #B3B3B3;
+  height: 10.6%;
+  width: 100%;
+  display: flex;
+  padding: 1.5% 6.25% 1.5% 6.25%;
+}
+
+#tr2 {
+  height: 89.39%;
+  width: 100%;
+  padding: 3.03% 6.25% 3.03% 6.25%;
+}
+
 #mainDiv {
   overflow-y: scroll;
   overflow-x: hidden;
@@ -8,18 +27,19 @@ li {
 }
 
 img {
-  width: 6.2vw;
-  height: 10vh;
+  width: 100%;
+  height: 100%;
   list-style: none;
+  float: left;
+  padding-right: 20%;
 }
 
 .image-preview {
-  padding-left: 0;
-  width: 500px;
-  height: 200px;
+  width: 50%;
+  height: 100%;
   background-color: aquamarine;
   display: flex;
-  gap: 1.6vw;
+  float: left;
 }
 
 /*# sourceMappingURL=normalUserReviewWriteTemplate.css.map */
