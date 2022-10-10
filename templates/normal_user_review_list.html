@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     <div id="reviews_div">
         <div id="reviews">
+        {% if paged_review %}
             {% for review in paged_review %}
                 <div class="review">
                     <div class="review_image">
-                        {{review.representiveImage}}
                         {% if review.representiveImage == 'None' %}
                             <img src="{% static 'images/' %}{{review.representiveImage}}.png">
                         {% else %}
@@ -27,7 +27,8 @@
                         <div class="review_icons">
                             {% for icon in review.includedIcon %}
                                 <div class="icon">
-                                    <a style="width:3.47%;height:4.04%;"
+                                    <img src="{% static 'images/iconImage/' %}{{ icon }}">
+{#                                    <a style="width:3.47%;height:4.04%;"></a>#}
                                 </div>
                             {% endfor %}
                         </div>
@@ -46,6 +47,9 @@
                     document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.next_page_number}}"
                 </script>
             {% endif %}
+            {% else %}
+                <div style="text-align: center">검색 결과가 없습니다.</div>
+        {% endif %}
         </div>
         <script>
             a=Array.from(document.getElementsByClassName('review_title'));
