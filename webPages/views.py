@@ -111,6 +111,7 @@ def normal_user_review_read(request):
     review['address'] = address
     icon_urls = review.get('includedIcon')
     print('icon_urls: ', icon_urls)
+    print('review: ', review)
     icons = []
 
     # 아이콘 url 임시 보류 Start
