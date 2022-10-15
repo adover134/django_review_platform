@@ -319,3 +319,6 @@ def testing(request):
 
 def review_write(request):
     return render(request, 'review_write.html')
+
+def room_write(request):
+    return render(request, 'room_write.html')
