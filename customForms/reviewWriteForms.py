@@ -20,3 +20,11 @@ class UserInfoForm(forms.Form):
     성 = forms.CharField()
     이름 = forms.CharField()
     이메일 = forms.EmailField()
+
+
+class RoomWriteForm(forms.Form):
+    우편번호 = forms.IntegerField()
+    주소 = forms.CharField()
+    건물명 = forms.CharField()
+    건축년도 = forms.IntegerField()
+

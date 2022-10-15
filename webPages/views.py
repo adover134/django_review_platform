@@ -46,7 +46,13 @@ def signup(request):
 @login_required(login_url='/loginPage/')
 def infoCheck(request):
     user = request.user
-    userForm = reviewWriteForms.UserInfoForm(initial={'성': user.last_name, '이름': user.first_name, '이메일': user.email, '경고횟수': user.uWarnCount})
+    initial = {
+        '성': user.last_name,
+        '이름': user.first_name,
+        '이메일': user.email
+    }
+    userForm = reviewWriteForms.UserInfoForm(initial=initial)
+
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
         print('sorted = ', sorted)
@@ -313,3 +319,6 @@ def testing(request):
 
 def review_write(request):
     return render(request, 'review_write.html')
+
+def room_write(request):
+    return render(request, 'room_write.html')
