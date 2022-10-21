@@ -35,13 +35,10 @@ urlpatterns = [
     path('room_write', views.room_write, name='roomWrite'),
     path('change_user_info/', views.change_user_info),
     path('normal_user_review_list/', views.check_user_reviews, name='wroteReviews'),
-    path('normal_user_room_test/', views.room_test, name='roomTest'),
+    path('normal_user_room_read/', views.room_read, name='roomTest'),
     path('normal_user_room_search/', views.room_search, name='normalUserRoomSearch'),
     path('db/', include('DBs.urls')),
     path('test/', include('webTests.urls')),
     path('review_search/', views.review_search, name='reviewTest'),
-    path('room_test3-1/', views.testing, name='TESTING'),
-    path('review_write/', views.review_write, name='review_write'),
-    path('review_search/', views.review_search, name='reviewTest'),
-    path('introduction/', views.introduction, name='introduction')
+    path('room_test3-1/', views.testing, name='TESTING')
 ]

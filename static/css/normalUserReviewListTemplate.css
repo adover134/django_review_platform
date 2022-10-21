@@ -4,11 +4,11 @@ a.link-secondary {
   text-decoration: none;
 }
 
-#reviews_div {
+div#reviews_div {
   height: 100%;
 }
 
-#reviews {
+div#reviews {
   margin-right: 5px;
   margin-left: 6.25%;
   height: 100%;

@@ -1,4 +1,4 @@
-{% extends 'normal_user_base.html' %}
+{% extends 'normal_user_review_list.html' %}
 {% load static %}
 {% block left_side_bar %}
     <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
@@ -19,9 +19,20 @@
         </div>
     </div>
 {% endblock %}
-{% block main_contents %}
 
-    <div style="word-spacing:15px; float:right; margin : 2.98vh; ">
+{% block main_contents %}
+    {% block info %}
+<div style ="width: 100%; height:43.9%;">
+    <div style = "width: 100%; height:74.7%;">
+
+    </div>
+    <div style = "width: 100%; height:22.9%;">
+
+    </div>
+</div>
+    {% endblock %}
+<div style = "width:100%; height:56.1%;">
+    <div style="word-spacing:15px; float:right; margin: ">
         <div style="display: inline-block;">
         <select id="sort_select_box" name="sort_select_box" onchange="sort()">
             <option value="1">최신 순</option>
@@ -41,7 +52,7 @@
         </form>
             </div>
     </div>
-<div style="margin : 15vh;" id="reviews">
+<div style="padding-right: 10vh;" id="reviews">
     {{data.reviews}}
     {% for review in reviews %}
         <div style="border: 3px; margin: auto 0 auto; line-height: 2.8vh;height: 20vh;" >
@@ -69,6 +80,7 @@
             </span>
         </div>
     {% endfor %}
+</div>
 </div>
 <script>
     function sort(){
