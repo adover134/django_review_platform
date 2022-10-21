@@ -1,15 +1,13 @@
 @import "color.scss";
-div#reviewInfo{
-    height:200px;
+#reviewInfo{
+    height:32.8%;
+    width:100%;
 }
-div#reviewContent{
-    height:300px;
-    border:1px solid grey;
+#mid{
+    outline:2px solid #B3B3B3;width:100%;
+    height:11.1%
 }
-div#reviews{
-    overflow-y:scroll;
-    overflow-x:hidden;
-}
-div#icon{
-    height:228px;
-}
+    div#reviews_div{
+        overflow-y:scroll;
+        overflow-x:hidden;
+    }

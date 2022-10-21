@@ -31,10 +31,10 @@ class Review(models.Model):
     reviewTitle = models.CharField(max_length=50)
     reviewDate = models.DateField(default=datetime.date.today)
     reviewSentence = models.JSONField()
-    rent = models.IntegerField()                #전세: 0 / 월세: 1 (구분)
-    deposit = models.IntegerField()             #보증금(전세/월세)
-    monthlyRent = models.IntegerField()         #월세
-    roomSize = models.FloatField()              #제곱미터
+    rent = models.IntegerField(null=True)                #전세: 0 / 월세: 1 (구분)
+    deposit = models.IntegerField(null=True)             #보증금(전세/월세)
+    monthlyRent = models.IntegerField(null=True)         #월세
+    roomSize = models.FloatField(null=True)              #제곱미터
     humidity = models.IntegerField(             #습도
         default=3,
         validators=[MaxValueValidator(5), MinValueValidator(1)])
