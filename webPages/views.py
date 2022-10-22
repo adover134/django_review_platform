@@ -261,7 +261,7 @@ def check_user_reviews(request):
     return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
 
 
-def room_test(request):
+def room_read(request):
     roomId = request.GET['roomId'] #파라미터로 넘어오는 원룸 아이디 데이터
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
     sorted = ''
@@ -280,11 +280,11 @@ def room_test(request):
     else:
         paged_review = paginator.get_page(1)
 
-    data = {
+    context = {
         'room': room,
         'reviews': paged_review,
     }
-    return render(request, 'normal_user_room_read.html', {'reviews': paged_review})
+    return render(request, 'normal_user_room_read.html', context)
 
 
 def room_search(request):
