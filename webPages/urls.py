@@ -43,5 +43,6 @@ urlpatterns = [
     path('room_test3-1/', views.testing, name='TESTING'),
     path('review_write/', views.review_write, name='review_write'),
     path('review_search/', views.review_search, name='reviewTest'),
-    path('introduction/', views.introduction, name='introduction')
+    path('introduction/', views.introduction, name='introduction'),
+    path('user_inactivated/', views.user_inactivated),
 ]
