@@ -108,6 +108,7 @@ def normal_user_review_read(request):
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
     icon_urls = review.get('includedIcon')
+    print(icon_urls[0])
     icons = []
     if icon_urls:
         for icon in icon_urls:

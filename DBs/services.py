@@ -1,39 +1,70 @@
-import sys
+import json
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.text import tokenizer_from_json
+import pandas as pd
+import numpy as np
+from konlpy.tag import Komoran
 from kiwipiepy import Kiwi
+from hanspell import spell_checker
 
 
-def review_to_icon(sentence):
-    lines = sentence_spliter(sentence)
-    print(lines)
-    lines = sentence_encoder(lines)
-
-
-def sentence_spliter(sentence):
-    kiwi = Kiwi()
-    lines = []
-    tmp = kiwi.split_into_sents(sentence)
-    for line in tmp:
-        lines.append(line.text)
-    return lines
-
-
-def sentence_encoder(lines):
-    return 2
-
-
-sentences = """
-안녕하세요.
-냉장고가 없지만 에어컨은 있네요
-방이 많이 습해요
-건물 입구에 가까워요
-"""
-'''
-sentences = sentence_spliter(sentences)
 kiwi = Kiwi()
-for sentence in sentences:
-    sentence = kiwi.tokenize(sentence)
-    for token in sentence:
-        if token.tag == 'JKS' or token.tag == 'JKC' or token.tag == 'JKG' or token.tag == 'JKO' or token.tag == 'JKB' or token.tag == 'JKV' or token.tag == 'JKQ' or token.tag == 'JX' or token.tag == 'JC':
-            sentence.remove(token)
-    print(sentence)
-'''
+komoran = Komoran()
+
+
+with open('tokenizer.json') as f:
+    data = json.load(f)
+    tokenizer = tokenizer_from_json(data)
+
+
+loaded_model = load_model('best_model.h5')
+
+
+with open('raw_test_data.json') as f:
+    data = json.load(f)
+    tedf = pd.read_json(data)
+    # testReviewSet, testReviewDesc
+
+
+def sentence_split(text):
+    return kiwi.split_into_sents(text)
+
+
+def icon_predict(encoded_sentence):
+    result = loaded_model.predict(np.asarray(encoded_sentence).reshape(1, len(encoded_sentence)))
+    print(result)
+    print(pd.DataFrame(result))
+    return np.argmax(result)
+
+
+def review_to_icons(review):
+    split_review = sentence_split(spell_checker.check(review.replace('&', '&amp;').replace('\u0001', '')).checked.replace('&', '&amp;').replace('\u0001', ''))
+    for sentence in split_review:
+        tagged_sentence = komoran.pos(sentence.text)
+        tag_word_set = []
+        for tag_word in tagged_sentence:
+            if tag_word[1][0] == 'J' or tag_word[1][0] == 'I' or tag_word[1][0] == 'S' or tag_word[1][0] == 'E' or tag_word[1][0:2] == 'XS' or tag_word[1][0:2] == 'NA' or tag_word[1][0:2] == 'NV' or tag_word[1][0:2] == 'NF':
+                pass
+            else:
+                tag_word_set.append(tag_word[0]+tag_word[1])
+        encoded_review = np.asarray(tokenizer.texts_to_sequences(tag_word_set)).tolist()
+        cleaned_review = []
+        for r in encoded_review:
+            if r != []:
+                cleaned_review.append(r)
+        match icon_predict(cleaned_review):
+            case 0:
+                print('교통 정보')
+                break
+            case 1:
+                print('주변 정보')
+                break
+            case 2:
+                print('치안 정보')
+                break
+            case 3:
+                print('주거 정보')
+                break
+
+
+review_to_icons(tedf.testReviewSet[1])
