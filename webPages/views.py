@@ -288,11 +288,14 @@ def room_read(request):
 
 
 def room_search(request):
-    a = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
-    print(type(a))
-    a=a+a+a+a+a+a
-    print(a)
-    return render(request, 'normal_user_room_search.html', {'rooms': a})
+    rooms = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
+    print(rooms)
+
+    data = {
+        'rooms': rooms
+    }
+
+    return render(request, 'normal_user_room_search.html', data)
 # 리뷰 열람 페이지
     # 해당 리뷰 정보를 받는다.
     # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
