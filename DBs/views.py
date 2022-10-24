@@ -57,7 +57,6 @@ class ReviewViewSets(ModelViewSet):
     def create(self, request, *args, **kwargs):
         # 입력값을 data로 저장한다.
         data = copy.deepcopy(request.data)
-        print('data!', data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
         data1['reviewTitle'] = data.get('reviewTitle')
@@ -66,22 +65,21 @@ class ReviewViewSets(ModelViewSet):
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
         # 텍스트 리뷰인 경우
         s = review_to_icons(data.get('reviewSentence'))
-        print('ss::', s['reviews'])
+
         data1['reviewSentence'] = s['reviews']
-        for icon in s['kind']:
+        for i in range(len(s['kind'])):
             iconData = {}
-            iconData['kind'] = icon
+            iconData['review'] = s['reviews'][i]
+            iconData['kind'] = s['kind'][i]
             requests.post('http://127.0.0.1:8000/db/icon/', data=iconData)
         # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
         # 시각화모듈(data['reviewSentence'])
         # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
-        print('d:', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
         review = serializer.save()
         headers = self.get_success_headers(serializer.data)
-        print('h:', headers)
         review_id = review.id
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

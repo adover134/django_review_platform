@@ -362,7 +362,7 @@ def handle_uploaded_file(f, name):
 
 def room_write(request):
     user = request.user
-    return render(request, 'review_write.html')
+    return render(request, 'room_write.html')
 
 
 # 회원 탈퇴
