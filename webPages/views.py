@@ -346,3 +346,17 @@ def handle_uploaded_file(f, name):
         for chunk in f.chunks():
             destination.write(chunk)
     return name + '.png'
+
+
+# 회원 탈퇴
+# is_active 필드값 1 -> 0으로 변경
+@api_view(['PUT'])
+def user_inactivated(request):
+    user = request.user
+    user_data = json.loads(requests.get('http://127.0.0.1:8000/db/user/' + str(user.id) + '/').text)
+    user_data['is_active'] = False # 상태 비활성화
+    print("put_user_data: ", user_data)
+
+    response = requests.put('http://127.0.0.1:8000/db/user/' + str(user.id) + '/', data=user_data)
+
+    return Response('success')
