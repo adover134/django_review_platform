@@ -227,7 +227,7 @@ def room_with_reviews_display(request):
         'reviews': paged_review,
     }
 
-    return render(request, 'room_test.html', data)
+    return render(request, 'normal_user_room_read.html', data)
 
 
 @login_required(login_url='/loginPage/')
