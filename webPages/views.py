@@ -354,6 +354,10 @@ def handle_uploaded_file(f, name):
     return name + '.png'
 
 
+def room_write(request):
+    return user.id
+
+
 # 회원 탈퇴
 # is_active 필드값 1 -> 0으로 변경
 @api_view(['PUT'])
