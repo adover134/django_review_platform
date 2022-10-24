@@ -226,7 +226,7 @@ def room_with_reviews_display(request):
         'reviews': paged_review,
     }
 
-    return render(request, 'room_test.html', data)
+    return render(request, 'normal_user_room_read.html', data)
 
 
 @login_required(login_url='/loginPage/')
@@ -281,7 +281,7 @@ def room_read(request):
 
     context = {
         'room': room,
-        'reviews': paged_review,
+        'paged_review': paged_review,
     }
     return render(request, 'normal_user_room_read.html', context)
 
@@ -314,7 +314,7 @@ def introduction(request):
     return render(request, 'introduction.html')
 
 def testing(request):
-    return render(request, 'room_test3-1.html')
+    return render(request, 'room_test.html')
 
 
 @api_view(['POST'])
@@ -354,7 +354,7 @@ def review_write(request):
 
 
 def handle_uploaded_file(f, name):
-    with open('static/images/' + name + '.png', 'wb+') as destination:
+    with open('static/images/reviewImage' + name + '.png', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     return name + '.png'

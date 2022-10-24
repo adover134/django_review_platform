@@ -1,4 +1,4 @@
-{% extends 'normal_user_base.html' %}
+{% extends 'normal_user_review_list.html' %}
 {% load index static %}
 
 {% block main_contents %}
@@ -134,9 +134,9 @@
         alert("아이콘 클릭 이벤트 발생")
     }
 
-        document.getElementById('mapDiv').style.width = '80%';
-        document.getElementById('mapDiv').style.height = '500px';
-        document.getElementById('mapDiv').style.minWidth = '960px';
+        document.getElementById('mapDiv').style.width = '805px';
+        document.getElementById('mapDiv').style.height = '285px';
+        document.getElementById('mapDiv').style.minWidth = '805px';
         var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
             mapOption = {
                 center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
