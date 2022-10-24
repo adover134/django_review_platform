@@ -317,6 +317,7 @@ def testing(request):
     return render(request, 'room_test3-1.html')
 
 def review_write(request):
+    user = request.user
     review_id = None
     if request.method == 'POST':
         data = dict(request.POST)
