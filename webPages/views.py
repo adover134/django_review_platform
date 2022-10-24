@@ -317,10 +317,6 @@ def testing(request):
     return render(request, 'room_test3-1.html')
 
 def review_write(request):
-    return render(request, 'review_write.html')
-
-def room_write(request):
-        user = request.user
     review_id = None
     if request.method == 'POST':
         data = dict(request.POST)
@@ -359,6 +355,12 @@ def handle_uploaded_file(f, name):
         for chunk in f.chunks():
             destination.write(chunk)
     return name + '.png'
+
+
+
+def room_write(request):
+    user = request.user
+    return render(request, 'review_write.html')
 
 # 회원 탈퇴
 # is_active 필드값 1 -> 0으로 변경
