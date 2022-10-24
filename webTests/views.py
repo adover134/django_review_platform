@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from webPages import views
 import requests
 import json
-from customForms import customForms
+from customForms import reviewWriteForms
 
 
 def is_ajax(request):
@@ -102,10 +102,9 @@ def normal_user_review_read(request):
     icon_urls = review.get('includedIcon')
     icons = []
     if icon_urls:
-        print('dd :', len(icon_urls))
+        print(icon_urls)
         for icon in icon_urls:
-            icon_info = json.loads(requests.get('http://127.0.0.1:8000/db/icon/?id='+icon).text)[0]
-            print(icon_info)
+            icon_info = json.loads(requests.get(icon).text)
             icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
             icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
             icons.append(icon_info)

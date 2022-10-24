@@ -94,16 +94,23 @@
     <div id="rooms_div">
         <div id="rooms">
             {% for room in rooms %}
-                <div class="room">
+                <div class="room" onclick="window.location.replace('{{roomRead}}?roomId={{room.id}}')"
+                     style="cursor: pointer">
                     <div class="image">
-                        <img src="{% static 'images/1.png' %}">
+                        {% if room.roomImage %}
+                            {% for roomImg in room.roomImage %}
+                                <img src="{% static 'images/' %}{{ roomImg }}">
+                            {% endfor %}
+                            {% else %}
+                                <img src="{% static 'images/no-photo.png' %}">
+                        {% endif %}
                     </div>
                     <div class="info">
                         <div class="room_address">
-                            sdfwerwe
+                            {{ room.address }}
                         </div>
                         <div class="room_common_info">
-                            werwerwe
+                            건축연도:{{ room.builtYear }}
                         </div>
                     </div>
                 </div>
