@@ -42,6 +42,7 @@ def review_to_icons(review):
     split_review = sentence_split(spell_checker.check(review.replace('&', '&amp;').replace('\u0001', '')).checked.replace('&', '&amp;').replace('\u0001', ''))
     for sentence in split_review:
         reviews.append(sentence.text)
+        print('문장 :', sentence.text)
         tagged_sentence = komoran.pos(sentence.text)
         tag_word_set = []
         for tag_word in tagged_sentence:
@@ -51,20 +52,25 @@ def review_to_icons(review):
                 tag_word_set.append(tag_word[0]+tag_word[1])
         encoded_review = np.asarray(tokenizer.texts_to_sequences(tag_word_set)).tolist()
         cleaned_review = []
-        print(encoded_review)
+        # encoded_review : 정수 인코딩 결과
         if len(encoded_review) > 0:
             for r in encoded_review:
                 if r != []:
                     cleaned_review.append(r)
-            match icon_predict(cleaned_review):
-                case 0:
-                    kind.append(0)  # 교통
-                case 1:
-                    kind.append(1)  # 주변
-                case 2:
-                    kind.append(2)  # 치안
-                case 3:
-                    kind.append(3)  # 주거
+            # cleaned_review : 토크나이저에 없던 단어들을 배제한 후의 시퀀스
+            print(cleaned_review)
+            if len(cleaned_review) > 0:
+                match icon_predict(cleaned_review):
+                    case 0:
+                        kind.append(0)  # 교통
+                    case 1:
+                        kind.append(1)  # 주변
+                    case 2:
+                        kind.append(2)  # 치안
+                    case 3:
+                        kind.append(3)  # 주거
+            else:
+                kind.append(4)  # 분석 불가 - 아무것도 아님
         else:
             kind.append(4)  # 분석 불가 - 아무것도 아님
     return {'reviews': reviews, 'kind': kind}
