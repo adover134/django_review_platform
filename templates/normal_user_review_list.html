@@ -18,8 +18,8 @@
                         {% endif %}
                     </div>
                     <div class="review_info">
-                        <div class="review_title">
-                            <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">{{review.reviewTitle}}</a>
+                        <div class="review_title" style="color:black;">
+                            제목 : <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">{{review.reviewTitle}}</a>
                         </div>
                         <div class="review_preview">
                             {{review.reviewSentence|first}}
