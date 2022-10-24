@@ -103,7 +103,7 @@ def normal_user_review_search(request):
 
 @login_required(login_url='/loginPage/')
 def normal_user_review_write_page(request):
-    form = {'TextForm': reviewWriteForms.TextReviewWriteForm}
+    form = {'TextForm': customForms.TextReviewWriteForm}
 
     return render(request, 'normal_user_review_write.html', form)
 
@@ -316,6 +316,8 @@ def introduction(request):
 def testing(request):
     return render(request, 'room_test3-1.html')
 
+
+@api_view(['POST'])
 def review_write(request):
     user = request.user
     review_id = None

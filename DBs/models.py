@@ -20,6 +20,7 @@ class Room(models.Model):
     name = models.TextField(null=True)
     builtYear = models.IntegerField(null=True)
     commonInfo = models.JSONField(null=True)
+    ownerPhone = models.TextField(null=True)
 
     class Meta:
         db_table = 'Room'

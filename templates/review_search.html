@@ -10,7 +10,7 @@
                 <span style="display:block; line-height:1; font-weight: bolder;">리뷰 검색 필터 </span>
             </div>
             <script>
-                let a = (document.getElementById('review_search_filter').offsetHeight/16).toString()+'em';
+                let a = (document.getElementById('review_search_filter').offsetHeight/16).toString()+'rem';
                 document.getElementById('review_search_filter').style.fontSize=a;
             </script>
             <div style="width:98.32%; height:21.37%;" id="review_icon_form">
@@ -18,7 +18,7 @@
                     <span style="display:block; height:100%;line-height:1;">포함된 아이콘</span>
                 </div>
                 <script>
-                    a = (document.getElementById('review_icon_filter').offsetHeight/16).toString()+'em';
+                    a = (document.getElementById('review_icon_filter').offsetHeight/16).toString()+'rem';
                     document.getElementById('review_icon_filter').style.fontSize=a;
                 </script>
 
@@ -47,11 +47,15 @@
                     <label><input type="checkbox" name="color" value="blue">
                     <span style="color:red"><i class="fa fa-refresh fa-fw"></i></span>
                     </label>
+                    <label></label>
+                    <label></label>
+                    <label></label>
+                    <label></label>
                 </div>
                 <script>
                     let b = Array.from(document.getElementById('review_icon_selects').children);
                     b.forEach(function(o){
-                        a=(o.offsetHeight/16).toString()+'em';
+                        a=(o.offsetHeight/16).toString()+'rem';
                         o.style.fontSize=a;
                     });
                 </script>
@@ -61,7 +65,7 @@
                     <span style="display:block; line-height:1;">리뷰 작성일</span>
                 </div>
                 <script>
-                    a=(document.getElementById('written_date_filter').offsetHeight/16).toString()+'em';
+                    a=(document.getElementById('written_date_filter').offsetHeight/16).toString()+'rem';
                     document.getElementById('written_date_filter').style.fontSize=a;
                 </script>
                 <div id="written_date_selects" >
@@ -71,9 +75,9 @@
                         <select id="writtenEnd" name="writtenEnd"></select>
                     </div>
                     <script>
-                        a=((document.getElementById('writtenStart').offsetHeight-6)/16).toString()+'em';
+                        a=((document.getElementById('writtenStart').offsetHeight-6)/16).toString()+'rem';
                         document.getElementById('writtenStart').style.fontSize=a;
-                        b=((document.getElementById('writtenEnd').offsetHeight-6)/16).toString()+'em';
+                        b=((document.getElementById('writtenEnd').offsetHeight-6)/16).toString()+'rem';
                         document.getElementById('writtenEnd').style.fontSize=b;
                     </script>
                 </div>
@@ -81,7 +85,7 @@
             <div id="text_form">
                 <div id="search_address" >검색할 주소</div>
                 <script>
-                    a=(document.getElementById('search_address').offsetHeight/16).toString()+'em';
+                    a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
                     document.getElementById('search_address').style.fontSize=a;
                 </script>
                 <div id="address_filter ">
@@ -92,7 +96,7 @@
                 <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">적용</a>
             </div>
             <script>
-                a=(document.getElementById('submit-div').offsetHeight/16).toString()+'em';
+                a=(document.getElementById('submit-div').offsetHeight/16).toString()+'rem';
                 document.getElementById('submit').style.fontSize=a;
             </script>
         </form>

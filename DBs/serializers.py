@@ -60,26 +60,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReviewSerializer2(serializers.ModelSerializer):
-
-    reviewWriter = serializers.SerializerMethodField()
-    uEmail = serializers.EmailField(source='uId.email', read_only=True)
-    rAddress = serializers.CharField(source='rId.address', read_only=True)
-    includedIcon = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
-
-
-    # 리뷰 작성자의 이름을 합쳐서 출력
-    def get_reviewWriter(self, obj):
-        return f'{obj.uId.last_name} {obj.uId.first_name}'
-
-    class Meta:
-        model = Review
-        fields = '__all__'
-
-
 class ReviewSerializerString(serializers.ModelSerializer):
 
     reviewWriter = serializers.SerializerMethodField()
