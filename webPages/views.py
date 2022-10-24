@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
-from customForms import reviewWriteForms
+from customForms import customForms
 from webPages.config import KAKAO_JAVA_KEY
 
 
@@ -51,7 +51,7 @@ def infoCheck(request):
         '이름': user.first_name,
         '이메일': user.email
     }
-    userForm = reviewWriteForms.UserInfoForm(initial=initial)
+    userForm = customForms.UserInfoForm(initial=initial)
 
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
@@ -110,7 +110,7 @@ def normal_user_review_search(request):
 
 @login_required(login_url='/loginPage/')
 def normal_user_review_write_page(request):
-    form = {'TextForm': reviewWriteForms.TextReviewWriteForm}
+    form = {'TextForm': customForms.TextReviewWriteForm}
 
     return render(request, 'normal_user_review_write.html', form)
 
