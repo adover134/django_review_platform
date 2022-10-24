@@ -16,15 +16,17 @@
 <link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
 <div id="infoCheckAndUpdate" style="height:29.7%; outline: darkred 2px solid">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
-    <div style="float: right">
-        <button id="withdrawal" value="{{ user.id }}">회원탈퇴</button>
-    </div>
-
-    <h1>회원 정보</h1>
-{#    처음 보여지는 div #}
-    <div id="infoData">
-        <div id="user_name"> {# 닉네임은 성,이름으로 대체 #}
-            <div id="user_name_data">{{ user.last_name }} {{ user.first_name }} 님</div>
+    <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
+        {% csrf_token %}
+        <div style ="overflow:hidden; font-weight:600;font-size:50px;width:80%; display: inline-block;">{# 닉네임은 성,이름으로 대체 #}
+            <input name="last_name"  type="text" value="{{ user.last_name }}" style="border:none;font-weight:600;font-size:50px;width:10%;"> <input name="first_name" type="text" value="{{ user.first_name }}" style="border:none;font-weight:1000;font-size:50px;width:20%;">   님
+        </div>
+        <div style="position:relative;display:inline-block; top:2vh; right:3.7%;float:right;">
+            <button type="button">회원 탈퇴</button>
+        </div>
+        <div id ="info">
+        <div style = "display: inline-block;">
+            {{ user.email }}
         </div>
         <div> {# 이메일 #}
             <span id="user_email_data">{{ user.email }}</span>
