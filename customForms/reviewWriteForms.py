@@ -27,3 +27,4 @@ class RoomWriteForm(forms.Form):
     주소 = forms.CharField()
     건물명 = forms.CharField()
     건축년도 = forms.IntegerField()
+
