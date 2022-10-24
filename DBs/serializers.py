@@ -60,20 +60,45 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReviewSerializer2(serializers.ModelSerializer):
+class ReviewSerializerLink(serializers.ModelSerializer):
 
     reviewWriter = serializers.SerializerMethodField()
+    representiveImage = serializers.SerializerMethodField()
     uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
-    includedIcon = serializers.StringRelatedField(
+
+    additionalImage = serializers.StringRelatedField(
         many=True,
         read_only=True,
+    )
+    includedIcon = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='icon-detail'
+    )
+    recommendedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='recommend-detail'
+    )
+    reportedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='report-detail'
     )
 
 
     # 리뷰 작성자의 이름을 합쳐서 출력
     def get_reviewWriter(self, obj):
         return f'{obj.uId.last_name} {obj.uId.first_name}'
+
+
+    def get_representiveImage(self, obj):
+        a = [image.image for image in obj.additionalImage.all()]
+        if len(a) > 0:
+            return a[0]
+        else:
+            return None
 
     class Meta:
         model = Review
