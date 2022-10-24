@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
-from customForms import customForms
+from customForms import reviewWriteForms
 from webPages.config import KAKAO_JAVA_KEY
 
 
@@ -51,7 +51,7 @@ def infoCheck(request):
         '이름': user.first_name,
         '이메일': user.email
     }
-    userForm = customForms.UserInfoForm(initial=initial)
+    userForm = reviewWriteForms.UserInfoForm(initial=initial)
 
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
@@ -69,19 +69,24 @@ def infoCheck(request):
 
 
 def normal_user_review_search(request):
+    context = {}
+
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
     if data.get('builtFrom'):
         review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
+        context['builtFrom'] = data.get('builtFrom')[0]
     if data.get('builtTo'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'builtTo='+data.get('builtTo')[0]
+        context['builtTo'] = data.get('builtTo')[0]
     if data.get('address'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
+        context['address'] = data.get('address')[0]
     for i in range(3):
         if data.get('icons'):
             for c in data.get('icons'):
@@ -90,12 +95,14 @@ def normal_user_review_search(request):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
+        context['sorted'] = data.get('sorted')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     # print('a:', paged_review[2])
-    context = {'paged_review': paged_review}
+    context['paged_review'] = paged_review
+
     print(review_list)
 
     return render(request, 'review_search.html', context)
@@ -103,7 +110,7 @@ def normal_user_review_search(request):
 
 @login_required(login_url='/loginPage/')
 def normal_user_review_write_page(request):
-    form = {'TextForm': customForms.TextReviewWriteForm}
+    form = {'TextForm': reviewWriteForms.TextReviewWriteForm}
 
     return render(request, 'normal_user_review_write.html', form)
 
@@ -117,6 +124,7 @@ def normal_user_review_read(request):
     review['address'] = address
     icon_urls = review.get('includedIcon')
     print('icon_urls: ', icon_urls)
+    print('review: ', review)
     icons = []
 
     # 아이콘 url 임시 보류 Start
@@ -287,11 +295,14 @@ def room_read(request):
 
 
 def room_search(request):
-    a = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
-    print(type(a))
-    a=a+a+a+a+a+a
-    print(a)
-    return render(request, 'normal_user_room_search.html', {'rooms': a})
+    rooms = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
+    print(rooms)
+
+    data = {
+        'rooms': rooms
+    }
+
+    return render(request, 'normal_user_room_search.html', data)
 # 리뷰 열람 페이지
     # 해당 리뷰 정보를 받는다.
     # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
@@ -363,7 +374,6 @@ def handle_uploaded_file(f, name):
 def room_write(request):
     user = request.user
     return render(request, 'room_write.html')
-
 
 # 회원 탈퇴
 # is_active 필드값 1 -> 0으로 변경

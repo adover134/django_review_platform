@@ -89,7 +89,10 @@
     </div>
     <div id ="mid"style = "text-align:center;outline:2px solid #B3B3B3;width:100%; height:11.1%;">
         <strong><span>주소:</span><span>{{ room.address }}</span></strong>
-        <br>{{ room.builtYear }} {{ room.commonInfo }}
+        <br>{{ room.builtYear }}
+        {% if room.commonInfo %}
+            {{ room.commonInfo }}
+        {% endif %}
     </div>
     <div style="width:100%; height:56%;">
         <div style="width:100%; height:56%;"></div><div id="reviews_div">
@@ -124,13 +127,13 @@
                 </div>
                 <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
         {#                리뷰 제목 #}
-                        최신 리뷰 제목 -> {{ review.reviewTitle }}</span>
+                        {{ review.reviewTitle }}</span>
                 <span style = "float : right; padding-top: 1%;">
         {#            추천 수 데이터 #}
                     추천 수 {{ review.recommendedOn|length }}</span>
                 <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
         {#            리뷰 내용 데이터 #}
-                      리뷰내용 -> {{ review.reviewSentence }}</div>
+                      {{ review.reviewSentence }}</div>
                 <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
         {#            리뷰별 아이콘 데이터 목록 #}
                     {% if review.includedIcon %}
