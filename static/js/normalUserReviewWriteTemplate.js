@@ -17,6 +17,8 @@ function review_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
     console.log(e)
+    document.getElementById('review_sentence1').value = document.getElementById('review_sentence').innerText
+    console.log(document.getElementById('review_sentence').innerText)
     // serialize the data for sending the form data.
     var form = new FormData(e.currentTarget);
 
@@ -25,7 +27,7 @@ function review_submit(e) {
     // make POST ajax call
     $.ajax({
         type: 'POST',
-        url: "/test/normal_user_review_write/",
+        url: "/normal_user_review_write/",
         async: false,
         data: form,
         processData: false,
