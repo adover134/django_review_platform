@@ -69,19 +69,24 @@ def infoCheck(request):
 
 
 def normal_user_review_search(request):
+    context = {}
+
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
     if data.get('builtFrom'):
         review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
+        context['builtFrom'] = data.get('builtFrom')[0]
     if data.get('builtTo'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'builtTo='+data.get('builtTo')[0]
+        context['builtTo'] = data.get('builtTo')[0]
     if data.get('address'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
+        context['address'] = data.get('address')[0]
     for i in range(3):
         if data.get('icons'):
             for c in data.get('icons'):
@@ -90,12 +95,14 @@ def normal_user_review_search(request):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
+        context['sorted'] = data.get('sorted')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     # print('a:', paged_review[2])
-    context = {'paged_review': paged_review}
+    context['paged_review'] = paged_review
+
     print(review_list)
 
     return render(request, 'review_search.html', context)

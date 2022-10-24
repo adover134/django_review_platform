@@ -85,7 +85,8 @@
                     document.getElementById('search_address').style.fontSize=a;
                 </script>
                 <div id="address_filter ">
-                    <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address">
+                    <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search"
+                           id="address2" name="address" value="{{ address }}">
                 </div>
             </div>
             <div id="submit-div">
@@ -105,49 +106,27 @@
 
     <div style="word-spacing:15px; float:right; ">
         <div style="display: inline-block;">
-            <select id="sort_select_box" name="sort_select_box" onchange="sort(this)">
-                <option value="1">최신 순</option>
-                {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-                <option value="2">추천 순</option>
-                {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-                <option value="3">정확도 순</option>
-                {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-                {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
+            <select id="sort_select_box" name="sort_select_box">
+                <option value=''>-- 선택 --</option>
+                <option value="1" {% if sorted == '1' %}selected{% endif %}>최신 순</option>
+                <option value="2" {% if sorted == '2' %}selected{% endif %}>추천 순</option>
+                <option value="3" {% if sorted == '3' %}selected{% endif %}>정확도 순</option>
             </select>
         </div>
     </div>
 </div>
     <script>
     $("select[name=sort_select_box]").change(function(){
-        console.log($(this).val()); //value값 가져오기
-        console.log($("select[name=sort_select_box] option:selected").text()); //text값 가져오기
-        var sorted_value = $("select[name=sort_select_box] option:selected").text()
-        const URLSearch = new URLSearchParams(location.search);
-        if (URLSearch.has('sorted')) {
-            console.log("if문")
-            URLSearch.set('sorted', sorted_value)
-        }
-        else{
-            console.log("else문")
-            URLSearch.append('sorted', sorted_value)
-        }
-        console.log(URLSearch.keys())
+        const currentUrl = location.pathname
 
+        console.log(currentUrl)
+        console.log($(this).val()); //value값 가져오기 => (1,2,3)
+        console.log($("select[name=sort_select_box] option:selected").text()); //text값 가져오기 => (최신순, 추천순, )
+
+        var sorted_value = $(this).val()
+        const urlSearch = new URLSearchParams(location.search);
+        urlSearch.set('sorted', sorted_value)
+        window.open(location.pathname + '?' + urlSearch, '_self');
     });
-    function sort(data) {
-        console.log(data)
-        // 현재 url 가져오기
-        var link = window.location.href //
-        var search = window.location.search
-        const URLSearch = new URLSearchParams(location.search);
-        if (URLSearch.has('sorted')) {
-            URLSearch.set('sorted', data.option.value)
-        }
-        else{
-
-        }
-    }
     </script>
 {% endblock %}
