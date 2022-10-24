@@ -125,5 +125,50 @@
         document.getElementById('sort_select_box').appendChild(b);
     }
 </script>
+<script>
+    document.getElementById("changeMyInfo")
+        .addEventListener("click", () => {
+            document.getElementById("input_form").hidden = false
+            document.getElementById("infoData").hidden = true
+    }, false);
+    document.getElementById("cancel")
+        .addEventListener("click", () => {
+            document.getElementById("input_form").hidden = true
+            document.getElementById("infoData").hidden = false
+    }, false);
+
+    document.getElementById("withdrawal")
+        .addEventListener("click", () => {
+            if (!confirm("회원 탈퇴시, 모든 데이터가 삭제됩니다.\n탈퇴하시겠습니까?")) {
+                alert(document.getElementById("withdrawal").value)
+                alert("취소되었습니다.");
+            } else {
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": '{{csrf_token}}' }
+                });
+                $.ajax({
+                    url: '../user_inactivated/',
+                    method: "PUT",
+                    dataType: "json",
+                    data: document.getElementById("withdrawal").value,
+                    success: function (response) {
+                        alert("탈퇴되었습니다.");
+                        // 로그아웃 후 메인 페이지로 이동하기
+                        $.ajax({
+                            url: '../logout/',
+                            method: "GET",
+                            success: function (res){
+                                window.location.replace("http://127.0.0.1:8000/")
+                            }
+                        })
+                    },
+                    error: function (e) {
+                        alert("회원 탈퇴에 실패하였습니다.")
+                    }
+                })
+            }
+        })
+
+</script>
 <script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
 {% endblock %}
