@@ -153,9 +153,9 @@ def normal_user_review_read(request):
                 if json.loads(requests.get(report).text).get('uId') == user.id:
                     reported = True
                     break
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user, 'recommended': recommended, 'reported': reported})
+        return render(request, 'normal_user_review_read.html', {'paged_review': review, 'icons': icons, 'alive': 'true', 'user': user, 'recommended': recommended, 'reported': reported})
     else:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
+        return render(request, 'normal_user_review_read.html', {'paged_review': review, 'icons': icons, 'alive': 'false'})
 
 
 @api_view(['POST'])
@@ -234,7 +234,7 @@ def room_with_reviews_display(request):
         'reviews': paged_review,
     }
 
-    return render(request, 'room_test.html', data)
+    return render(request, 'normal_user_room_read.html', data)
 
 
 @login_required(login_url='/loginPage/')
@@ -289,7 +289,7 @@ def room_read(request):
 
     context = {
         'room': room,
-        'reviews': paged_review,
+        'paged_review': paged_review,
     }
     return render(request, 'normal_user_room_read.html', context)
 
@@ -325,12 +325,54 @@ def introduction(request):
     return render(request, 'introduction.html')
 
 def testing(request):
-    return render(request, 'room_test3-1.html')
+    return render(request, 'room_test.html')
 
+
+@api_view(['POST'])
 def review_write(request):
-    return render(request, 'review_write.html')
+    user = request.user
+    review_id = None
+    if request.method == 'POST':
+        data = dict(request.POST)
+        data1 = {}
+        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
+        data1['reviewSentence'] = data['review_sentence']
+        images = request.FILES.getlist('images')
+        print(form)
+        if form.is_valid():
+            print(request.POST)
+            print(request.FILES)
+            data1['reviewTitle'] = data['title']
+            # 주소로 원룸을 검색한다.
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
+            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
+            '''
+
+            '''
+            # 원룸 번호를 구한다.
+            print(room)
+            data1['roomId'] = room[0].get('id')
+            data1['uId'] = user.id
+            review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
+            review_id = json.loads(review.text).get('id')
+            for image in images:
+                img = json.loads(
+                    requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
+                img_name = handle_uploaded_file(image, str(img.get('id')))
+                requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
+                             data={'reviewId': review_id, 'image': img_name})
+        return Response(str(review_id))
+
+
+def handle_uploaded_file(f, name):
+    with open('static/images/reviewImage' + name + '.png', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return name + '.png'
+
 
 def room_write(request):
+    user = request.user
     return render(request, 'room_write.html')
 
 # 회원 탈퇴
