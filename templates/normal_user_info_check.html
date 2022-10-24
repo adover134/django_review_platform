@@ -63,62 +63,39 @@
                     이메일 : <input value="{{ user.email }}" placeholder="이메일을 입력하세요">
                 </div>
             </div>
-            <div style="float:right;">
-                <input id="changeBtn" type="submit" value="변경하기">
-                <button id="cancel">취소하기</button>
+            <div>
+                <button onclick="location.href='/normal_user_review_write_page'"
+                        style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
             </div>
-        </form>
-    </div>
-
-</div>
-
-<div style="word-spacing:15px; float:right; margin : 2.98vh; height:50.6%">
-    <div style="display: inline-block;">
-        <select id="sort_select_box" name="sort_select_box" onchange="sort(this)">
-            <option value="1">최신 순</option>
-            {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-            <option value="2">추천 순</option>
-            {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-            <option value="3">정확도 순</option>
-            {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
-        </select>
-    </div>
-    <div style="display: inline-block;">
-        <button onclick="location.href='/normal_user_review_write_page'"
-                style="cursor: pointer;  background-color: white;">리뷰 작성</button>
-    </div>
-    <div id="reviews_div">
-        <div style="margin : 15vh;" id="reviews">
-            {% for review in reviews %}
-                <div style="border: 3px; margin: auto 0 auto; line-height: 2.8vh;height: 20vh;" >
-                    <div style= "height: 12vh; width :6.8vw; display:inline-block; float:left;">
-                        {% if review.additionalImage %}
-                            <img style= "height: 12vh; width :6.8vw;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
-                        {% endif %}
-                    </div>
-                    <strong><span style="font-size: 23px; line-height: 2.5vw;">&ensp;
-            {#                리뷰 제목 #}
-                            최신 리뷰 제목 -> {{ review.reviewTitle }}</span></strong>
-                    <span style = "float : right;">
-            {#            추천 수 데이터 #}
-                        추천 수 {{ review.recommendedOn|length }}</span>
-                    <div style = "color: #ECECEC;">&ensp;
-            {#            리뷰 내용 데이터 #}
-                        리뷰내용 -> {{ review.reviewSentence }}</div>
-                    <span style = "color : #A23355 ;font-size: 1.88vw; letter-spacing :1vw; ">&ensp;
-            {#            리뷰별 아이콘 데이터 목록 #}
-                        {% if review.includedIcon %}
-                            {% for icon in review.includedIcon %}
-                                <img src="{% static 'images/iconImage/' %}{{ icon }}">
-                            {% endfor %}
-                        {% endif %}
-                    </span>
-                </div>
-            {% endfor %}
         </div>
+    </div>
+    <div id="reviews" style="display:block;">
+        {% for review in reviews %}
+            <div style="border: 3px; margin: 1.86% 6.25% 1.86% 6.25%; line-height: 2.8vh;height: 20vh;" >
+                <div style= "background-color:#0dcaf0;height: 68.4%; width :15.2%; display:inline-block; float:left;">
+                    {% if review.additionalImage %}
+                        <img style= "height:100%; width :100%;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
+                    {% endif %}
+                </div>
+                <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
+        {#                리뷰 제목 #}
+                        최신 리뷰 제목 -> {{ review.reviewTitle }}</span>
+                <span style = "float : right; padding-top: 1%;">
+        {#            추천 수 데이터 #}
+                    추천 수 {{ review.recommendedOn|length }}</span>
+                <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
+        {#            리뷰 내용 데이터 #}
+                      리뷰내용 -> {{ review.reviewSentence }}</div>
+                <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
+        {#            리뷰별 아이콘 데이터 목록 #}
+                    {% if review.includedIcon %}
+                        {% for icon in review.includedIcon %}
+                            <img src="{% static 'images/iconImage/' %}{{ icon }}">
+                        {% endfor %}
+                    {% endif %}
+                </span>
+            </div>
+        {% endfor %}
     </div>
 </div>
 <script>
