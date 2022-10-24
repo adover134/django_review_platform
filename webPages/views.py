@@ -108,7 +108,7 @@ def normal_user_review_read(request):
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
     icon_urls = review.get('includedIcon')
-    print(icon_urls[0])
+    print(icon_urls)
     icons = []
     if icon_urls:
         for icon in icon_urls:
@@ -304,5 +304,45 @@ def introduction(request):
 def testing(request):
     return render(request, 'room_test3-1.html')
 
+
+@api_view(['POST'])
 def review_write(request):
-    return render(request, 'review_write.html')
+    user = request.user
+    review_id = None
+    if request.method == 'POST':
+        data = dict(request.POST)
+        data1 = {}
+        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
+        data1['reviewSentence'] = data['review_sentence']
+        images = request.FILES.getlist('images')
+        print(form)
+        if form.is_valid():
+            print(request.POST)
+            print(request.FILES)
+            data1['reviewTitle'] = data['title']
+            # 주소로 원룸을 검색한다.
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
+            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
+            '''
+
+            '''
+            # 원룸 번호를 구한다.
+            print(room)
+            data1['roomId'] = room[0].get('id')
+            data1['uId'] = user.id
+            review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
+            review_id = json.loads(review.text).get('id')
+            for image in images:
+                img = json.loads(
+                    requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
+                img_name = handle_uploaded_file(image, str(img.get('id')))
+                requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
+                             data={'reviewId': review_id, 'image': img_name})
+        return Response(str(review_id))
+
+
+def handle_uploaded_file(f, name):
+    with open('static/images/' + name + '.png', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return name + '.png'

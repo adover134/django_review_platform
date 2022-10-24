@@ -25,7 +25,7 @@ function review_submit(e) {
     // make POST ajax call
     $.ajax({
         type: 'POST',
-        url: "/test/normal_user_review_write/",
+        url: "/normal_user_review_write/",
         async: false,
         data: form,
         processData: false,

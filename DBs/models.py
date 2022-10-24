@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -30,10 +31,22 @@ class Review(models.Model):
     reviewTitle = models.CharField(max_length=50)
     reviewDate = models.DateField(default=datetime.date.today)
     reviewSentence = models.JSONField()
-    feeKind = models.IntegerField() # 요금 종류 (거주 구분) 1은 월세, 2는 전세
-    fee = models.IntegerField()
-    guarantee = models.IntegerField(null=True) # 보증금 필드
-    roomSize = models.FloatField() # 제곱미터로 저장 / 값을 입력받은 후 저장할 때 평 수 기준이었다면 변환해서 저장
+    rent = models.IntegerField(null=True)                #전세: 0 / 월세: 1 (구분)
+    deposit = models.IntegerField(null=True)             #보증금(전세/월세)
+    monthlyRent = models.IntegerField(null=True)         #월세
+    roomSize = models.FloatField(null=True)              #제곱미터
+    humidity = models.IntegerField(             #습도
+        default=3,
+        validators=[MaxValueValidator(5), MinValueValidator(1)])
+    noiseness = models.IntegerField(            #방음
+        default=3,
+        validators=[MaxValueValidator(5), MinValueValidator(1)])
+    lighting = models.IntegerField(             #채광
+        default=3,
+        validators=[MaxValueValidator(5), MinValueValidator(1)])
+    cleanliness = models.IntegerField(          #청결도
+        default=3,
+        validators=[MaxValueValidator(5), MinValueValidator(1)])
 
     class Meta:
         db_table = 'Review'

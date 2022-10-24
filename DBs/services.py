@@ -12,18 +12,19 @@ kiwi = Kiwi()
 komoran = Komoran()
 
 
-with open('tokenizer.json') as f:
+with open('DBs/tokenizer.json') as f:
     data = json.load(f)
     tokenizer = tokenizer_from_json(data)
 
 
-loaded_model = load_model('best_model.h5')
+loaded_model = load_model('DBs/best_model.h5')
 
-
+'''
 with open('raw_test_data.json') as f:
     data = json.load(f)
     tedf = pd.read_json(data)
     # testReviewSet, testReviewDesc
+'''
 
 
 def sentence_split(text):
@@ -32,14 +33,15 @@ def sentence_split(text):
 
 def icon_predict(encoded_sentence):
     result = loaded_model.predict(np.asarray(encoded_sentence).reshape(1, len(encoded_sentence)))
-    print(result)
-    print(pd.DataFrame(result))
     return np.argmax(result)
 
 
 def review_to_icons(review):
+    reviews = []
+    kind = []
     split_review = sentence_split(spell_checker.check(review.replace('&', '&amp;').replace('\u0001', '')).checked.replace('&', '&amp;').replace('\u0001', ''))
     for sentence in split_review:
+        reviews.append(sentence.text)
         tagged_sentence = komoran.pos(sentence.text)
         tag_word_set = []
         for tag_word in tagged_sentence:
@@ -49,22 +51,25 @@ def review_to_icons(review):
                 tag_word_set.append(tag_word[0]+tag_word[1])
         encoded_review = np.asarray(tokenizer.texts_to_sequences(tag_word_set)).tolist()
         cleaned_review = []
-        for r in encoded_review:
-            if r != []:
-                cleaned_review.append(r)
-        match icon_predict(cleaned_review):
-            case 0:
-                print('교통 정보')
-                break
-            case 1:
-                print('주변 정보')
-                break
-            case 2:
-                print('치안 정보')
-                break
-            case 3:
-                print('주거 정보')
-                break
+        print(encoded_review)
+        if len(encoded_review) > 0:
+            for r in encoded_review:
+                if r != []:
+                    cleaned_review.append(r)
+            match icon_predict(cleaned_review):
+                case 0:
+                    kind.append(0)  # 교통
+                case 1:
+                    kind.append(1)  # 주변
+                case 2:
+                    kind.append(2)  # 치안
+                case 3:
+                    kind.append(3)  # 주거
+        else:
+            kind.append(4)  # 분석 불가 - 아무것도 아님
+    return {'reviews': reviews, 'kind': kind}
 
 
-review_to_icons(tedf.testReviewSet[1])
+# d = review_to_icons('집 앞에 강서 초등학교 있고 현대백화점 롯데 아웃렛 다 접근성이 좋음. 고속버스 터미널도 가까우며 앞에 하나병원 뒤에 현대병원 프라임병원 각종 종합병원이 위치해 있어 살기 너무 좋음')
+# d = review_to_icons(tedf.testReviewSet[1])
+# print(d)

@@ -13,7 +13,7 @@ import json
 import copy
 from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer
 from DBs.models import User, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
-from DBs.services import sentence_spliter
+from DBs.services import sentence_split, review_to_icons
 
 
 class UserViewSets(ModelViewSet):
@@ -33,12 +33,10 @@ class UserViewSets(ModelViewSet):
         data1 = self.get_serializer(instance).data
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
-        print(data2)
         # data1에서, 입력받은 값들만 변환한다.
         for key in data1:
             if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
                 data1[key] = data2[key][0]
-        print(data1)
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -67,7 +65,13 @@ class ReviewViewSets(ModelViewSet):
         data1['uId'] = int(data.get('uId'))
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
         # 텍스트 리뷰인 경우
-        data1['reviewSentence'] = sentence_spliter(data.get('reviewSentence'))
+        s = review_to_icons(data.get('reviewSentence'))
+        print('ss::', s['reviews'])
+        data1['reviewSentence'] = s['reviews']
+        for icon in s['kind']:
+            iconData = {}
+            iconData['kind'] = icon
+            requests.post('http://127.0.0.1:8000/db/icon/', data=iconData)
         # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
         # 시각화모듈(data['reviewSentence'])
         # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
@@ -224,7 +228,7 @@ class ReviewViewSets(ModelViewSet):
         #시각화모듈(reviewSentence)
         # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
         # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
-        data['reviewSentence']=sentence_spliter(review_sentence)
+        data['reviewSentence']=sentence_split(review_sentence)
         # 갱신된 데이터로 새 시리얼라이저를 생성한다.
         serializer = self.get_serializer(instance, data=data)
         # 생성된 시리얼라이저의 유효성을 검사한다.

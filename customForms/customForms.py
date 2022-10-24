@@ -27,7 +27,7 @@ class ReviewWriteForm2(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ["reviewTitle", "reviewSentence", "fee_kind", "fee", "guarantee", "room_size"]
+        fields = ["reviewTitle", "reviewSentence", "rent", "monthlyRent", "deposit", "roomSize"]
 
     def clean(self):
 
@@ -35,11 +35,11 @@ class ReviewWriteForm2(forms.ModelForm):
         super(ReviewWriteForm2, self).clean()
 
         # extract the username and text field from the data
-        fee_kind = self.cleaned_data.get('fee_kind')
-        fee = self.cleaned_data.get('fee')
+        rent = self.cleaned_data.get('rent')
+        monthlyRent = self.cleaned_data.get('monthlyRent')
 
-        if fee_kind == 1 and fee is None:
-            self._errors['fee'] = self.error_class(['월세일 시 월세 금액을 반드시 입력하셔야 합니다.'])
+        if rent == 1 and monthlyRent is None:
+            self._errors['monthlyRent'] = self.error_class(['월세일 시 월세 금액을 반드시 입력하셔야 합니다.'])
 
 
         # return any errors if found
