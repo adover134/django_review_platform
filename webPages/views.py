@@ -145,9 +145,9 @@ def normal_user_review_read(request):
                 if json.loads(requests.get(report).text).get('uId') == user.id:
                     reported = True
                     break
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'true', 'user': user, 'recommended': recommended, 'reported': reported})
+        return render(request, 'normal_user_review_read.html', {'paged_review': review, 'icons': icons, 'alive': 'true', 'user': user, 'recommended': recommended, 'reported': reported})
     else:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'alive': 'false'})
+        return render(request, 'normal_user_review_read.html', {'paged_review': review, 'icons': icons, 'alive': 'false'})
 
 
 @api_view(['POST'])
