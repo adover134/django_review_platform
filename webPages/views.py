@@ -355,7 +355,7 @@ def handle_uploaded_file(f, name):
 
 
 def room_write(request):
-    return user.id
+    return request.user
 
 
 # 회원 탈퇴
