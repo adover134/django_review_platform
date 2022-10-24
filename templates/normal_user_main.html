@@ -31,9 +31,9 @@ $(document).ready(function(){
 <div class="slider" id="famous" onclick="">
     {% if popular_reviews %}
         {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
-            <div onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <span>작성자 : {{ popular_review.reviewWriter }}</span><br>
-                <span>추천 수 : {{ popular_review.recommendedOn|length }}</span><br>
+            <div style = "margin:10px; font-size:2px;"onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <strong><span>{{ popular_review.reviewWriter }}</span></strong>
+                <span style = "padding-left:40%;">추천 수 : {{ popular_review.recommendedOn|length }}</span><br>
                 <div>리뷰 제목 : {{ popular_review.reviewTitle }}</div>
                 <div>리뷰 내용 : {{ popular_review.reviewSentence }}</div>
                 <span>대표 사진</span>
