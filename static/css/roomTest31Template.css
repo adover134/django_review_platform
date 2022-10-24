@@ -24,6 +24,11 @@ button {
   color: #ffffff;
 }
 
+div#reviews {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 input:-ms-input-placeholder {
   color: #a8a8a8;
 }

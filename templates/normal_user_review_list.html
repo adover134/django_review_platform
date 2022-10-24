@@ -5,7 +5,7 @@
     {% endblock %}
     <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     <div id="reviews_div">
-        <div id="reviews">
+        <div id="reviews" >
         {% if paged_review %}
             {% for review in paged_review %}
                 <div class="review">
@@ -27,7 +27,7 @@
                         <div class="review_icons">
                             {% for icon in review.includedIcon %}
                                 <div class="icon">
-                                    <img src="{% static 'images/iconImage/' %}{{ icon }}">
+                                    <img src="{% static 'images/iconImage/' %}{{ icon }}" style="width:100%; height:100%;">
 {#                                    <a style="width:3.47%;height:4.04%;"></a>#}
                                 </div>
                             {% endfor %}
