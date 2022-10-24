@@ -1,5 +1,6 @@
 from django import forms
 from customForms import customFields
+from DBs.models import Review
 
 
 #리뷰 작성 시 사용될 폼입니다.
@@ -22,9 +23,24 @@ class UserInfoForm(forms.Form):
     이메일 = forms.EmailField()
 
 
-class RoomWriteForm(forms.Form):
-    우편번호 = forms.IntegerField()
-    주소 = forms.CharField()
-    건물명 = forms.CharField()
-    건축년도 = forms.IntegerField()
+class ReviewWriteForm2(forms.ModelForm):
 
+    class Meta:
+        model = Review
+        fields = ["reviewTitle", "reviewSentence", "rent", "monthlyRent", "deposit", "roomSize"]
+
+    def clean(self):
+
+        # data from the form is fetched using super function
+        super(ReviewWriteForm2, self).clean()
+
+        # extract the username and text field from the data
+        rent = self.cleaned_data.get('rent')
+        monthlyRent = self.cleaned_data.get('monthlyRent')
+
+        if rent == 1 and monthlyRent is None:
+            self._errors['monthlyRent'] = self.error_class(['월세일 시 월세 금액을 반드시 입력하셔야 합니다.'])
+
+
+        # return any errors if found
+        return self.cleaned_data
