@@ -96,6 +96,8 @@ def normal_user_review_search(request):
     paged_review = paginator.get_page(page)
     # print('a:', paged_review[2])
     context = {'paged_review': paged_review}
+    print(review_list)
+
     return render(request, 'review_search.html', context)
 
 
@@ -116,12 +118,16 @@ def normal_user_review_read(request):
     icon_urls = review.get('includedIcon')
     print('icon_urls: ', icon_urls)
     icons = []
-    if icon_urls:
-        for icon in icon_urls:
-            icon_info = json.loads(requests.get(icon).text)
-            icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
-            icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
-            icons.append(icon_info)
+
+    # 아이콘 url 임시 보류 Start
+    # if icon_urls:
+    #     for icon in icon_urls:
+    #         icon_info = json.loads(requests.get(icon).text)
+    #         icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
+    #         icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
+    #         icons.append(icon_info)
+    # 아이콘 url 임시 보류 End
+
     if user.id:
         # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
         recommended = None
@@ -184,7 +190,7 @@ def normal_user_review_report(request):
 # 파라미터로 받은 원룸 ID를 가진 리뷰 목록 반환(opt. 정렬조건)
 def get_reviews_by_roomId(roomId, sorted): # 파라미터: 원룸 아이디
     reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text)
-
+    print("반환 리뷰: ", reviews)
     # 파라미터 정렬조건 값 존재시
     if sorted != '':
         reviews = json.loads(requests.get(
@@ -219,7 +225,6 @@ def room_with_reviews_display(request):
         'room': room,
         'reviews': paged_review,
     }
-    print(data['reviews'][0])
 
     return render(request, 'room_test.html', data)
 
@@ -255,7 +260,7 @@ def check_user_reviews(request):
     return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
 
 
-def room_test(request):
+def room_read(request):
     roomId = request.GET['roomId'] #파라미터로 넘어오는 원룸 아이디 데이터
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
     sorted = ''
@@ -264,6 +269,7 @@ def room_test(request):
         sorted = request.GET['sorted']
 
     reviews = get_reviews_by_roomId(roomId, sorted)
+    print("room_test -- reviews : ", reviews)
 
     #paginator
     paginator = Paginator(reviews, 5)
@@ -273,11 +279,11 @@ def room_test(request):
     else:
         paged_review = paginator.get_page(1)
 
-    data = {
+    context = {
         'room': room,
         'reviews': paged_review,
     }
-    return render(request, 'normal_user_room_read.html', {'reviews': paged_review})
+    return render(request, 'normal_user_room_read.html', context)
 
 
 def room_search(request):

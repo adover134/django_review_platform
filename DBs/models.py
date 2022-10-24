@@ -16,6 +16,7 @@ class User(AbstractUser):
 
 class Room(models.Model):
     address = models.TextField()
+    postcode = models.IntegerField()
     name = models.TextField(null=True)
     builtYear = models.IntegerField(null=True)
     commonInfo = models.JSONField(null=True)

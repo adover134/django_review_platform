@@ -16,28 +16,63 @@
 <link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
 <div id="infoCheckAndUpdate" style="height:29.7%; outline: darkred 2px solid">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
-    <h1>회원 정보 설정</h1>
-    <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
-        {% csrf_token %}
-        <table>
-            {{userForm.as_table}}
-        </table>
-        <div style="float:right;">
-            <input type="submit" value="변경하기">
-            <button type="button">탈퇴하기</button>
+    <div style="float: right">
+        <button id="withdrawal" value="{{ user.id }}">회원탈퇴</button>
+    </div>
+
+    <h1>회원 정보</h1>
+{#    처음 보여지는 div #}
+    <div id="infoData">
+        <div id="user_name"> {# 닉네임은 성,이름으로 대체 #}
+            <div id="user_name_data">{{ user.last_name }} {{ user.first_name }} 님</div>
         </div>
-    </form>
-    <p>
-        활동 상태 : <span>{{user|check_active}}</span>
-    </p>
-    <p>
-        경고 횟수 : <span>{{user.uWarnCount}}</span>회
-    </p>
+        <div> {# 이메일 #}
+            <span id="user_email_data">{{ user.email }}</span>
+            <span id="changeMyInfo" style="cursor: pointer; color: #A23355">수정</span>
+        </div>
+        <div>
+            마지막 로그인 일시 {{ user.last_login }}
+        </div>
+        <div>
+            가입일 {{ user.date_joined }}
+        </div>
+        <div>
+            활동 상태 {{ user|check_active }}
+        </div>
+        <div>
+            경고 횟수 {{ user.uWarnCount }}회
+        </div>
+    </div>
+
+{#    회원정보 입력 폼 div (hidden된 상태) #}
+    <div id="input_form" hidden>
+        <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
+            {% csrf_token %}
+            <div id="user_name"> {# 닉네임은 성,이름으로 대체 #}
+                <div id="input_user_lname">
+                    성 : <input value="{{ user.last_name }}" placeholder="성을 입력하세요">
+                </div>
+                <div id="input_user_fname">
+                    이름 : <input value="{{ user.first_name }}" placeholder="이름을 입력하세요">
+                </div>
+            </div>
+            <div> {# 이메일 #}
+                <div id="input_user_email">
+                    이메일 : <input value="{{ user.email }}" placeholder="이메일을 입력하세요">
+                </div>
+            </div>
+            <div style="float:right;">
+                <input id="changeBtn" type="submit" value="변경하기">
+                <button id="cancel">취소하기</button>
+            </div>
+        </form>
+    </div>
+
 </div>
 
 <div style="word-spacing:15px; float:right; margin : 2.98vh; height:50.6%">
     <div style="display: inline-block;">
-        <select id="sort_select_box" name="sort_select_box" onchange="sort()">
+        <select id="sort_select_box" name="sort_select_box" onchange="sort(this)">
             <option value="1">최신 순</option>
             {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
             {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
@@ -85,7 +120,17 @@
     </div>
 </div>
 <script>
-    function sort(){
+    function sort(data){
+        console.log(data)
+        // 현재 url 가져오기
+        var link = window.location.href //
+        var search = window.location.search
+        const URLSearch = new URLSearchParams(location.search);
+        if(URLSearch.has('sorted')){
+            URLSearch.set('sorted', data.value)
+        }
+
+
         let selected = document.getElementById('sort_select_box');
         let a = window.location.href;
         let b = a.indexOf('sorted');
@@ -110,6 +155,51 @@
         b.style.display = 'none';
         document.getElementById('sort_select_box').appendChild(b);
     }
+</script>
+<script>
+    document.getElementById("changeMyInfo")
+        .addEventListener("click", () => {
+            document.getElementById("input_form").hidden = false
+            document.getElementById("infoData").hidden = true
+    }, false);
+    document.getElementById("cancel")
+        .addEventListener("click", () => {
+            document.getElementById("input_form").hidden = true
+            document.getElementById("infoData").hidden = false
+    }, false);
+
+    document.getElementById("withdrawal")
+        .addEventListener("click", () => {
+            if (!confirm("회원 탈퇴시, 모든 데이터가 삭제됩니다.\n탈퇴하시겠습니까?")) {
+                alert(document.getElementById("withdrawal").value)
+                alert("취소되었습니다.");
+            } else {
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": '{{csrf_token}}' }
+                });
+                $.ajax({
+                    url: '../user_inactivated/',
+                    method: "PUT",
+                    dataType: "json",
+                    data: document.getElementById("withdrawal").value,
+                    success: function (response) {
+                        alert("탈퇴되었습니다.");
+                        // 로그아웃 후 메인 페이지로 이동하기
+                        $.ajax({
+                            url: '../logout/',
+                            method: "GET",
+                            success: function (res){
+                                window.location.replace("http://127.0.0.1:8000/")
+                            }
+                        })
+                    },
+                    error: function (e) {
+                        alert("회원 탈퇴에 실패하였습니다.")
+                    }
+                })
+            }
+        })
+
 </script>
 <script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
 {% endblock %}
