@@ -358,7 +358,6 @@ def handle_uploaded_file(f, name):
     return name + '.png'
 
 
-
 def room_write(request):
     user = request.user
     return render(request, 'review_write.html')
