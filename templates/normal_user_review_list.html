@@ -46,24 +46,6 @@
                     </div>
                 </div>
             {% endfor %}
-            <script>
-                let k = document.getElementsByClassName('review_preview');
-                for (let i=0;i<k.length;i++){
-                    let o = k[i];
-                    console.log(o);
-                    a=o.offsetHeight/16;
-                    let l=o.offsetWidth-o.offsetHeight;
-                    let m = o.innerText;
-                    let n = (l / m.length)/16;
-                    console.log(n)
-                    if (a > n) {
-                        o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
-                        console.log((Math.ceil(n*100)/100).toString() + 'rem');
-                    }
-                    else
-                        o.style.fontSize=a.toString()+'rem';
-                }
-            </script>
             {% if paged_review.has_previous %}
                 <a id="prev_page">이전으로</a>
                 <script>
@@ -81,16 +63,62 @@
         {% endif %}
         </div>
         <script>
-            a=Array.from(document.getElementsByClassName('review_title'));
-            a.forEach(function(o){
-                b=(o.offsetHeight/16).toString()+'rem';
-                o.style.fontSize=b;
-            });
-            a=Array.from(document.getElementsByClassName('review_preview'));
-            a.forEach(function(o){
-                b=(o.offsetHeight/16).toString()+'rem';
-                o.style.fontSize=b;
-            });
+            window.onresize = function(){
+                let k = document.getElementsByClassName('review_preview');
+                for (let i=0;i<k.length;i++){
+                    let o = k[i];
+                    console.log(o);
+                    a=o.offsetHeight/16;
+                    let l=o.offsetWidth-o.offsetHeight;
+                    let m = o.innerText;
+                    let n = (l / m.length)/16;
+                    console.log(n)
+                    if (a > n) {
+                        o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
+                        console.log((Math.ceil(n*100)/100).toString() + 'rem');
+                    }
+                    else
+                        o.style.fontSize=a.toString()+'rem';
+                }
+                a = Array.from(document.getElementsByClassName('review_title'));
+                a.forEach(function(o){
+                    b=(o.offsetHeight/16).toString()+'rem';
+                    o.style.fontSize=b;
+                });
+                a = Array.from(document.getElementsByClassName('review_preview'));
+                a.forEach(function(o){
+                    b=(o.offsetHeight/16).toString()+'rem';
+                    o.style.fontSize=b;
+                });
+            }
+            window.onload = function(){
+                let k = document.getElementsByClassName('review_preview');
+                for (let i=0;i<k.length;i++){
+                    let o = k[i];
+                    console.log(o);
+                    a=o.offsetHeight/16;
+                    let l=o.offsetWidth-o.offsetHeight;
+                    let m = o.innerText;
+                    let n = (l / m.length)/16;
+                    console.log(n)
+                    if (a > n) {
+                        o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
+                        console.log((Math.ceil(n*100)/100).toString() + 'rem');
+                    }
+                    else
+                        o.style.fontSize=a.toString()+'rem';
+                }
+                a = Array.from(document.getElementsByClassName('review_title'));
+                a.forEach(function(o){
+                    b=(o.offsetHeight/16).toString()+'rem';
+                    o.style.fontSize=b;
+                });
+                a = Array.from(document.getElementsByClassName('review_preview'));
+                a.forEach(function(o){
+                    b=(o.offsetHeight/16).toString()+'rem';
+                    o.style.fontSize=b;
+                });
+            }
         </script>
     </div>
 {% endblock %}
