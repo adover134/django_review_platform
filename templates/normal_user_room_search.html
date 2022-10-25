@@ -9,65 +9,32 @@
                 <span style="display:block; line-height:1; height:100%; font-weight:bolder;">원룸 검색 필터 </span>
             </div>
             <script>
-                let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';
-                document.getElementById('room_search_filter').style.fontSize=a;
             </script>
             <div id="common_info_form">
                 <div id="common_info_filter" style="width:100%; height:21.429%;">
                     <span style="display:block; height:100%; line-height:1;">공유 시설</span>
                 </div>
-                <script>
-                    a = (document.getElementById('common_info_filter').offsetHeight/16).toString()+'rem';
-                    document.getElementById('common_info_filter').style.fontSize=a;
-                </script>
                 <div id="common_info_selects">
                     <label><input type="checkbox" name="color" value="blue">주차장</label>
                     <label><input type="checkbox" name="color" value="red">엘레베이터</label>
                     <label><input type="checkbox" name="color" value="blue">CCTV</label>
                     <label></label>
                 </div>
-                <script>
-                    let b = Array.from(document.getElementById('common_info_selects').children);
-                    b.forEach(function(o){
-                        a=o.offsetHeight/16;
-                        b=o.offsetWidth-o.offsetHeight;
-                        let c = o.innerText;
-                        b = (b / c.length)/16;
-                        if (a > b)
-                            o.style.fontSize=b.toString()+'rem';
-                        else
-                            o.style.fontSize=a.toString()+'rem';
-                    });
-                </script>
             </div>
             <div id="built_year_form">
                 <div id="built_year_filter">
                     <span style="display:block; line-height:1;">건축 연도</span>
                 </div>
-                <script>
-                    a=(document.getElementById('built_year_filter').offsetHeight/16).toString()+'rem';
-                    document.getElementById('built_year_filter').style.fontSize=a;
-                </script>
                 <div id="built_year_selects">
                     <div id="built_year_selects_div">
                         <select id="builtFrom" name="builtFrom"></select>
                             ~
                         <select id="builtTo" name="builtTo"></select>
                     </div>
-                    <script>
-                        a=((document.getElementById('builtFrom').offsetHeight-10)/16).toString()+'rem';
-                        document.getElementById('builtFrom').style.fontSize=a;
-                        b=((document.getElementById('builtTo').offsetHeight-10)/16).toString()+'rem';
-                        document.getElementById('builtTo').style.fontSize=b;
-                    </script>
                 </div>
             </div>
             <div id="text_form">
                 <div id="search_address">검색할 주소</div>
-                <script>
-                    a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
-                    document.getElementById('search_address').style.fontSize=a;
-                </script>
                 <div id="address_filter">
                     <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address">
                 </div>
@@ -75,10 +42,6 @@
             <div id="submit-div">
                 <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">적용</a>
             </div>
-            <script>
-                a=(document.getElementById('submit-div').offsetHeight/16).toString()+'rem';
-                document.getElementById('submit').style.fontSize=a;
-            </script>
         </form>
     </div>
 {% endblock %}
@@ -87,10 +50,6 @@
     <div id="rooms_title">
         <div id="rooms_search_title">검색 결과와 유사한 원룸</div>
     </div>
-    <script>
-        a=(document.getElementById('rooms_search_title').offsetHeight/24).toString()+'rem';
-        document.getElementById('rooms_search_title').style.fontSize=a;
-    </script>
     <div id="rooms_div">
         <div id="rooms">
             {% for room in rooms %}
@@ -117,17 +76,87 @@
             {% endfor %}
         </div>
     </div>
-    <script>
-        b = Array.from(document.getElementsByClassName('room_address'));
-        b.forEach(function(o){
-            a=(o.offsetHeight/16).toString()+'rem';
-            o.style.fontSize=a;
-        });
-        b = Array.from(document.getElementsByClassName('room_common_info'));
-        b.forEach(function(o){
-            a=(o.offsetHeight/16).toString()+'rem';
-            o.style.fontSize=a;
-        });
-    </script>
     <script src="{% static 'js/normalUserRoomSearchTemplate.js' %}"></script>
+    <script>
+        window.onresize = function()
+        {
+            let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';
+            document.getElementById('room_search_filter').style.fontSize=a;
+            a = (document.getElementById('common_info_filter').offsetHeight/16).toString()+'rem';
+            document.getElementById('common_info_filter').style.fontSize=a;
+            let b = Array.from(document.getElementById('common_info_selects').children);
+            b.forEach(function(o){
+                a=o.offsetHeight/16;
+                b=o.offsetWidth-o.offsetHeight;
+                let c = o.innerText;
+                b = (b / c.length)/16;
+                if (a > b)
+                    o.style.fontSize=b.toString()+'rem';
+                else
+                    o.style.fontSize=a.toString()+'rem';
+            });
+            a=(document.getElementById('built_year_filter').offsetHeight/16).toString()+'rem';
+            document.getElementById('built_year_filter').style.fontSize=a;
+            a=((document.getElementById('builtFrom').offsetHeight-10)/16).toString()+'rem';
+            document.getElementById('builtFrom').style.fontSize=a;
+            b=((document.getElementById('builtTo').offsetHeight-10)/16).toString()+'rem';
+            document.getElementById('builtTo').style.fontSize=b;
+            a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
+            document.getElementById('search_address').style.fontSize=a;
+            a=(document.getElementById('submit-div').offsetHeight/16).toString()+'rem';
+            document.getElementById('submit').style.fontSize=a;
+            a=(document.getElementById('rooms_search_title').offsetHeight/24).toString()+'rem';
+            document.getElementById('rooms_search_title').style.fontSize=a;
+            b = Array.from(document.getElementsByClassName('room_address'));
+            b.forEach(function(o){
+                a=(o.offsetHeight/16).toString()+'rem';
+                o.style.fontSize=a;
+            });
+            b = Array.from(document.getElementsByClassName('room_common_info'));
+            b.forEach(function(o){
+                a=(o.offsetHeight/16).toString()+'rem';
+                o.style.fontSize=a;
+            });
+        }
+        window.onload = function()
+        {
+            let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';
+            document.getElementById('room_search_filter').style.fontSize=a;
+            a = (document.getElementById('common_info_filter').offsetHeight/16).toString()+'rem';
+            document.getElementById('common_info_filter').style.fontSize=a;
+            let b = Array.from(document.getElementById('common_info_selects').children);
+            b.forEach(function(o){
+                a=o.offsetHeight/16;
+                b=o.offsetWidth-o.offsetHeight;
+                let c = o.innerText;
+                b = (b / c.length)/16;
+                if (a > b)
+                    o.style.fontSize=b.toString()+'rem';
+                else
+                    o.style.fontSize=a.toString()+'rem';
+            });
+            a=(document.getElementById('built_year_filter').offsetHeight/16).toString()+'rem';
+            document.getElementById('built_year_filter').style.fontSize=a;
+            a=((document.getElementById('builtFrom').offsetHeight-10)/16).toString()+'rem';
+            document.getElementById('builtFrom').style.fontSize=a;
+            b=((document.getElementById('builtTo').offsetHeight-10)/16).toString()+'rem';
+            document.getElementById('builtTo').style.fontSize=b;
+            a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
+            document.getElementById('search_address').style.fontSize=a;
+            a=(document.getElementById('submit-div').offsetHeight/16).toString()+'rem';
+            document.getElementById('submit').style.fontSize=a;
+            a=(document.getElementById('rooms_search_title').offsetHeight/24).toString()+'rem';
+            document.getElementById('rooms_search_title').style.fontSize=a;
+            b = Array.from(document.getElementsByClassName('room_address'));
+            b.forEach(function(o){
+                a=(o.offsetHeight/16).toString()+'rem';
+                o.style.fontSize=a;
+            });
+            b = Array.from(document.getElementsByClassName('room_common_info'));
+            b.forEach(function(o){
+                a=(o.offsetHeight/16).toString()+'rem';
+                o.style.fontSize=a;
+            });
+        }
+    </script>
 {% endblock %}
