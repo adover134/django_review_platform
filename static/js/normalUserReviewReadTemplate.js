@@ -7,10 +7,19 @@ function selectIcon(e){
     if (selected_icon != null) {
         selected_icon.src = unselect_icon;
     }
-    selected_icon = e.children[0];
-    unselect_icon = e.children[2].value;
-    selected_icon.src=e.children[3].value;
-    tok(e.children[1].value);
+    if (selected_icon === e.children[0])
+    {
+        selected_icon = null;
+        tok();
+    }
+    else
+    {
+        selected_icon = e.children[0];
+        unselect_icon = e.children[2].value;
+        selected_icon.src=e.children[3].value;
+        tok(e.children[1].value);
+    }
+    console.log(selected_icon);
 }
 
 function tok(a){

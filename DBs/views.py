@@ -208,8 +208,8 @@ class ReviewViewSets(ModelViewSet):
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
-        serializer_class = ReviewSerializerLink
-        return super().retrieve(self, request, args, kwargs)
+        instance = self.get_object()
+        return Response(ReviewSerializerLink(instance, context={'request': request}).data)
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
@@ -331,24 +331,29 @@ class IconViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
+        print('ddd', data)
         data1['iconInformation'] = data['review']
-        data1['reviewId'] = data['reviewId']
-        print('d', data['kind'][0])
-        match(data['kind'][0]):
-            case '0': # 교통 정보 아이콘 이름
-                data1['iconKind'] = '0'
-                data1['changedIconKind'] = '00'
-            case '1': # 주변 정보 아이콘 이름
-                data1['iconKind'] = '1'
-                data1['changedIconKind'] = '11'
-            case '2': # 치안 정보 아이콘 이름
-                data1['iconKind'] = '2'
-                data1['changedIconKind'] = '22'
-            case '3': # 주거 정보 아이콘 이름
-                print('wer')
-                data1['iconKind'] = '3'
-                data1['changedIconKind'] = '33'
-
+        data1['reviewId'] = data['reviewId'][0]
+        if data.get('kind'):
+            print('d', data['kind'][0])
+            match(data['kind'][0]):
+                case '0': # 교통 정보 아이콘 이름
+                    data1['iconKind'] = '0'
+                    data1['changedIconKind'] = '00'
+                case '1': # 주변 정보 아이콘 이름
+                    data1['iconKind'] = '1'
+                    data1['changedIconKind'] = '11'
+                case '2': # 치안 정보 아이콘 이름
+                    data1['iconKind'] = '2'
+                    data1['changedIconKind'] = '22'
+                case '3': # 주거 정보 아이콘 이름
+                    print('wer')
+                    data1['iconKind'] = '3'
+                    data1['changedIconKind'] = '33'
+        else:
+            data1['iconKind'] = data['iconKind'][0]
+            data1['changedIconKind'] = data['changedIconKind'][0]
+        print('datacheck:', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
@@ -584,9 +589,3 @@ def getMainPageReview(request):
     }
 
     return Response(data)
-
-
-
-
-
-

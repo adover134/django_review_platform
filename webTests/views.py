@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from webPages import views
 import requests
 import json
-from customForms import reviewWriteForms
+from customForms import customForms
 
 
 def is_ajax(request):
@@ -56,7 +56,7 @@ def normal_user_review_write(request):
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
-        form = reviewWriteForms.TextReviewWriteForm(request.POST, request.FILES)
+        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
         print(form)
@@ -95,16 +95,16 @@ def normal_user_review_read(request):
     user = request.user
     review = None
     review_num = request.GET.get('id')
-    print(review_num)
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
     icon_urls = review.get('includedIcon')
     icons = []
     if icon_urls:
-        print(icon_urls)
+        print('it ', icon_urls)
         for icon in icon_urls:
             icon_info = json.loads(requests.get(icon).text)
+            print(icon_info)
             icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
             icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
             icons.append(icon_info)
@@ -115,7 +115,6 @@ def normal_user_review_read(request):
 
 
 def image(request):
-    print(request.GET)
     return render(request, 'normal_user_review_search.html')
 
 
