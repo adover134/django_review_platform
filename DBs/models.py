@@ -54,7 +54,7 @@ class Review(models.Model):
 
 
 class Icon(models.Model):
-    reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='includedIcon')
+    reviewId = models.ForeignKey(Review, null=True, on_delete=models.CASCADE, related_name='includedIcon')
     iconKind = models.TextField()
     changedIconKind = models.TextField()
     iconInformation = models.TextField()

@@ -4,6 +4,9 @@
     {% block info %}
     {% endblock %}
     <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
+    <script>
+        let current_URL = new URLSearchParams(window.location.search);
+    </script>
     <div id="reviews_div">
         <div id="reviews" >
         {% if paged_review %}
@@ -19,10 +22,18 @@
                     </div>
                     <div class="review_info">
                         <div class="review_title" style="color:black;">
-                            제목 : <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">{{review.reviewTitle}}</a>
+                            제목 : <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">
+                                    {{review.reviewTitle|slice:":15"}}
+                                    {% if review.reviewTitle|length > 15 %}
+                                        ...
+                                    {% endif %}
+                                </a>
                         </div>
                         <div class="review_preview">
-                            {{review.reviewSentence|first}}
+                            {{review.reviewSentence|first|slice:":25"}}
+                            {% if review.reviewSentence|first|length > 25 %}
+                                ...
+                            {% endif %}
                         </div>
                         <div class="review_icons">
                             {% for icon in review.includedIcon %}
@@ -35,16 +46,34 @@
                     </div>
                 </div>
             {% endfor %}
+            <script>
+                let k = document.getElementsByClassName('review_preview');
+                for (let i=0;i<k.length;i++){
+                    let o = k[i];
+                    console.log(o);
+                    a=o.offsetHeight/16;
+                    let l=o.offsetWidth-o.offsetHeight;
+                    let m = o.innerText;
+                    let n = (l / m.length)/16;
+                    console.log(n)
+                    if (a > n) {
+                        o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
+                        console.log((Math.ceil(n*100)/100).toString() + 'rem');
+                    }
+                    else
+                        o.style.fontSize=a.toString()+'rem';
+                }
+            </script>
             {% if paged_review.has_previous %}
                 <a id="prev_page">이전으로</a>
                 <script>
-                    document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.previous_page_number}}"
+                    document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+"&page={{paged_review.previous_page_number}}"
                 </script>
             {% endif %}
             {% if paged_review.has_next %}
                 <a id="next_page">다음으로</a>
                 <script>
-                    document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+current_URL+"&page={{paged_review.next_page_number}}"
+                    document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+"&page={{paged_review.next_page_number}}"
                 </script>
             {% endif %}
             {% else %}

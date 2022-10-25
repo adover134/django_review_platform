@@ -105,7 +105,7 @@ def normal_user_review_search(request):
 
     print(review_list)
 
-    return render(request, 'review_search.html', context)
+    return render(request, 'normal_user_review_search.html', context)
 
 
 @login_required(login_url='/loginPage/')
@@ -318,11 +318,10 @@ def room_search(request):
     # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 원룸 정보와 리뷰 리스트를 context로 반환
 
-def review_search(request):
-    return render(request, 'review_search.html')
 
 def introduction(request):
     return render(request, 'introduction.html')
+
 
 def testing(request):
     return render(request, 'room_test.html')
