@@ -1,148 +1,194 @@
 {% extends 'normal_user_review_list.html' %}
 {% load index static %}
-{% block info %}
-    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
+
+{% block main_contents %}
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
     <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
-<div id="reviewinfo" >
-    <div style ="margin:20px;">
-        <div style="width:24.7%; height:245px; margin-right:20px; display: inline-block;float:left;">
-                <img src="{% static 'images/' %}no-photo.png" style="width:100%; height:100%;">
-        </div>
-        <div id="mapDiv" style = "display:inline-block;"></div>
-        <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
-        <script>
-            $(document).ready(function () {
-                var a = $('.slider').bxSlider({
-                    {#maxSlides:4,#}
-                    infiniteLoop: false,
-                    touchEnabled: false,
-                });
-            });
-        </script>
-        <script type="text/javascript">
 
-        // icon 이미지 <-> selected icon 이미지 변환 함수
-        // 만들 예정
-        function selectIcon2(e){
-            alert("아이콘 클릭 이벤트 발생")
+    {% if request.path == normalUserReviewRead %}
+        <script>
+            window.onpageshow = function (event) {
+                if (event.persisted) {
+                    document.location.reload();
+                }
+            };
+            var recommended = '{{recommended}}';
+            if (recommended === 'None' || recommended === '')
+                recommended = false;
+            var reported = '{{reported}}';
+            if (reported === 'None' || recommended === '')
+                reported = false;
+            var reviewNum = '{{review.id}}';
+            var recommendImg = "{% static 'images/iconImage/recommend.png' %}";
+            var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
+            var reportImg = "{% static 'images/iconImage/report.png' %}";
+            var reportedImg = "{% static 'images/iconImage/reported.png' %}";
+        </script>
+    {% endif %}
+    {% if user.is_anonymous %}
+        <script>
+            let userloggedin = false;
+        </script>
+    {% else %}
+        <script>
+            let userloggedin = true;
+        </script>
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <div>
+        <div id="reviewInfo">
+            <div id="room_images" class="content col-5"
+                 style="display:inline-block; float:left; height:200px; border:1px solid black;">
+            {% if review.additionalImage %}
+                <div class="slider" id="famous" onclick="">
+                    {% for reviewimg in review.additionalImage %}
+                        <img src="{% static 'images/' %}{{ reviewimg }}" style="height:100% ; width:100%;">
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div>등록된 사진이 없습니다</div>
+            {% endif %}
+
+            </div>
+
+            <div class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+                <h1>{{ review.reviewTitle }}</h1>
+                <p>작성자 닉네임 : {{ review.uNickname }}</p>
+                <p>작성자 email : {{ review.uEmail }}</p>
+                <p>작성일 : {{ review.reviewDate }}</p>
+                <p>원룸 주소 : {{ review.address }}</p>
+            </div>
+            <div class="content col-2" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+                <p>수정/삭제 버튼 놓을 곳</p>
+                <p style="font-size:25px;">
+                    {% if recommended %}
+                        <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec"
+                                                                                       src="{% static 'images/iconImage/recommended.png' %}"></a>
+                    {% else %}
+                        <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec"
+                                                                                       src="{% static 'images/iconImage/recommend.png' %}"></a>
+                    {% endif %}
+                    : <span id="recommend_num">{{ review.recommendedOn|length }}</span>
+                </p>
+                <p style="font-size:25px;">
+                    {% if reported %}
+                        <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep"
+                                                                                    src="{% static 'images/iconImage/reported.png' %}"></a>
+                    {% else %}
+                        <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep"
+                                                                                    src="{% static 'images/iconImage/report.png' %}"></a>
+                    {% endif %}
+                    : <span id="report_num">{{ review.reportedOn|length }}</span>
+                </p>
+            </div>
+        </div>
+        <div id="reviewContent" class="content col">
+            {% for s in review.reviewSentence %}
+                <span>{{ s }}</span>
+                <br>
+            {% endfor %}
+        </div>
+        <div id="icon">
+            <h1>아이콘</h1>
+{#            {% for i in icons %}#}
+{#                <a onclick="selectIcon(this)">#}
+{#                    <img src="{% static i.iconKind %}">#}
+{#                    <input type="text" hidden value="{{ i.iconInformation }}">#}
+{#                    <input type="text" hidden value="{% static i.iconKind %}">#}
+{#                    <input type="text" hidden value="{% static i.changedIconKind %}">#}
+{#                </a>#}
+{#            {% endfor %}#}
+            {% if review.includedIcon %}
+                {% for icon in review.includedIcon %}
+                    <img src="{% static 'images/iconImage/' %}{{ icon }}" onclick="selectIcon2(this)">
+                {% endfor %}
+            {% else %}
+                <div>아이콘이 없습니다.</div>
+            {% endif %}
+        </div>
+        <div id="same_room_reviews">
+            <!-같은 원룸의 리뷰들 목록-->
+            <!-추천 순으로 약 5개만 출력-->
+        </div>
+        <div id="mapDiv"></div>
+    </div>
+    <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            var a = $('.slider').bxSlider({
+                {#maxSlides:4,#}
+                infiniteLoop: false,
+                touchEnabled: false,
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+    // icon 이미지 <-> selected icon 이미지 변환 함수
+    // 만들 예정
+    function selectIcon2(e){
+        alert("아이콘 클릭 이벤트 발생")
+    }
+
+        document.getElementById('mapDiv').style.width = '805px';
+        document.getElementById('mapDiv').style.height = '285px';
+        document.getElementById('mapDiv').style.minWidth = '805px';
+        var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
+            mapOption = {
+                center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
+                level: 5 // 지도의 확대 레벨
+            };
+
+        // 지도 생성
+        function resizeMap() {
+            var mapContainer = document.getElementById('map');
+            mapContainer.style.width = document.getElementById('mainDiv').style.width;
         }
 
-            document.getElementById('mapDiv').style.width = '71%';
-            document.getElementById('mapDiv').style.height = '245px';
-            document.getElementById('mapDiv').style.minWidth = '71%';
-            var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
-                mapOption = {
-                    center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
-                    level: 5 // 지도의 확대 레벨
-                };
+        var map = new kakao.maps.Map(mapContainer, mapOption);
 
-            // 지도 생성
-            function resizeMap() {
-                var mapContainer = document.getElementById('map');
-                mapContainer.style.width = document.getElementById('mainDiv').style.width;
-            }
+        {# 지도에 원룸 위치 표시 #}
+        var geocoder = new kakao.maps.services.Geocoder();
 
-            var map = new kakao.maps.Map(mapContainer, mapOption);
+        $.ajax({
+            url: 'http://127.0.0.1:8000/db/room/',
+            method: "GET",
+            dataType: "json"
+        })
+            .done(function (json) {
+                $.each(json, function (key, value) {
+                    // 주소로 좌표를 검색합니다
+                    geocoder.addressSearch(value.address, function (result, status) {
 
-            {# 지도에 원룸 위치 표시 #}
-            var geocoder = new kakao.maps.services.Geocoder();
+                        // 정상적으로 검색이 완료됐으면
+                        if (status === kakao.maps.services.Status.OK) {
+                            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-            $.ajax({
-                url: 'http://127.0.0.1:8000/db/room/',
-                method: "GET",
-                dataType: "json"
-            })
-                .done(function (json) {
-                    $.each(json, function (key, value) {
-                        // 주소로 좌표를 검색합니다
-                        geocoder.addressSearch(value.address, function (result, status) {
+                            // 결과값으로 받은 위치를 마커로 표시합니다
+                            var marker = new kakao.maps.Marker({
+                                map: map,
+                                position: coords
+                            });
 
-                            // 정상적으로 검색이 완료됐으면
-                            if (status === kakao.maps.services.Status.OK) {
-                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                            var room_info = ''
+                            if (value.name !== null)
+                                room_info = value.name
+                            else
+                                room_info = value.address
 
-                                // 결과값으로 받은 위치를 마커로 표시합니다
-                                var marker = new kakao.maps.Marker({
-                                    map: map,
-                                    position: coords
-                                });
+                            // 인포윈도우로 장소에 대한 설명을 표시합니다
+                            var infowindow = new kakao.maps.InfoWindow({
+                                content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
+                            });
 
-                                var room_info = ''
-                                if (value.name !== null)
-                                    room_info = value.name
-                                else
-                                    room_info = value.address
-
-                                // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                var infowindow = new kakao.maps.InfoWindow({
-                                    content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
-                                });
-
-                                infowindow.open(map, marker);
-                            }
-                        })
+                            infowindow.open(map, marker);
+                        }
                     })
-                });
-        </script>
-    </div>
-    <div id ="mid"style = "text-align:center;outline:2px solid #B3B3B3;width:100%; height:48.9%;">
-        <strong><span>주소:</span><span>{{ room.address }}</span></strong>
-        <br>{{ room.builtYear }} {{ room.commonInfo }}
-    </div>
-    <div style="width:100%; height:56%;">
-        <div style="width:100%; height:56%;"></div><div id="reviews_div">
-    <div id="util" style="display:block;">
-        <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
-            <div style="display: inline-block;padding-right: 2%;">
-                <select id="sort_select_box" name="sort_select_box" onchange="sort()">
-                    <option value="1">최신 순</option>
-                    {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-                    <option value="2">추천 순</option>
-                    {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-                    <option value="3">정확도 순</option>
-                    {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
-                </select>
-            </div>
-            <div>
-                <button onclick="location.href='/normal_user_review_write_page'"
-                        style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
-            </div>
-        </div>
-    </div>
-    <div id="reviews" style="display:block;">
-        {% for review in reviews %}
-            <div style="border: 3px; margin: 1.86% 6.25% 1.86% 6.25%; line-height: 2.8vh;height: 20vh;" >
-                <div style= "background-color:#0dcaf0;height: 68.4%; width :15.2%; display:inline-block; float:left;">
-                    {% if review.additionalImage %}
-                        <img style= "height:100%; width :100%;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
-                    {% endif %}
-                </div>
-                <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
-        {#                리뷰 제목 #}
-                        최신 리뷰 제목 -> {{ review.reviewTitle }}</span>
-                <span style = "float : right; padding-top: 1%;">
-        {#            추천 수 데이터 #}
-                    추천 수 {{ review.recommendedOn|length }}</span>
-                <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
-        {#            리뷰 내용 데이터 #}
-                      리뷰내용 -> {{ review.reviewSentence }}</div>
-                <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
-        {#            리뷰별 아이콘 데이터 목록 #}
-                    {% if review.includedIcon %}
-                        {% for icon in review.includedIcon %}
-                            <img src="{% static 'images/iconImage/' %}{{ icon }}">
-                        {% endfor %}
-                    {% endif %}
-                </span>
-            </div>
-        {% endfor %}
-    </div>
-</div>
-    </div>
-</div>
+                })
+            });
+    </script>
 {% endblock %}

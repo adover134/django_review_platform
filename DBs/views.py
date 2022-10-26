@@ -105,6 +105,7 @@ class ReviewViewSets(ModelViewSet):
         # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
         searched = None
+        room_search_flag = False
 
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uId'):
@@ -173,41 +174,42 @@ class ReviewViewSets(ModelViewSet):
             # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
             if roomRetrieveURL[-1] != '?':
                 room_data = json.loads(requests.get(roomRetrieveURL).text)
+                room_search_flag = True
             # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
                 if len(room_data) > 0:
                     query_room = Q()
                     for r in room_data:
                         query_room.add(Q(roomId=r['id']), Q.OR)
                     query.add(query_room, Q.AND)
-            # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
 
-        if query == Q():
+            # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
+        # 위의 로직에서 원룸 데이터에 대한 검색조건이 query_room에 담긴다.
+        # 그다음에는 해당하는 원룸 ID로 Review.obects.filter()를 써야한다.
+        if query == Q() and room_search_flag == True:
             searched = None
+
         else:
             searched = Review.objects.filter(query)
-        # 정렬조건
-        if data1.get('sorted'):
-            sort_value = data1.get('sorted')[0]
-            sort_value = sort_value.replace('/', '')
+            # 정렬조건
+            if data1.get('sorted'):
+                sort_value = data1.get('sorted')[0]
+                sort_value = sort_value.replace('/', '')
 
-            match sort_value:
-                # 최신순
-                case '1':
-                    searched = searched.order_by('reviewDate')
-                # 추천순
-                case '2':
-                    searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
-                # 정확도순(아이콘 많은 순)
-                case '3':
-                    searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
+                match sort_value:
+                    case '1': # 최신순
+                        searched = searched.order_by('reviewDate')
+                    case '2': # 추천순
+                        searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
+                    case '3': # 정확도순(아이콘 많은 순)
+                        searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
         # 검색된 값을 반환한다.
         print(searched)
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
-        serializer_class = ReviewSerializerLink
-        return super().retrieve(self, request, args, kwargs)
+        instance = self.get_object()
+        return Response(ReviewSerializerLink(instance, context={'request': request}).data)
 
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, args, kwargs)
@@ -329,24 +331,29 @@ class IconViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
+        print('ddd', data)
         data1['iconInformation'] = data['review']
-        data1['reviewId'] = data['reviewId']
-        print('d', data['kind'][0])
-        match(data['kind'][0]):
-            case '0': # 교통 정보 아이콘 이름
-                data1['iconKind'] = '0'
-                data1['changedIconKind'] = '00'
-            case '1': # 주변 정보 아이콘 이름
-                data1['iconKind'] = '1'
-                data1['changedIconKind'] = '11'
-            case '2': # 치안 정보 아이콘 이름
-                data1['iconKind'] = '2'
-                data1['changedIconKind'] = '22'
-            case '3': # 주거 정보 아이콘 이름
-                print('wer')
-                data1['iconKind'] = '3'
-                data1['changedIconKind'] = '33'
-
+        data1['reviewId'] = data['reviewId'][0]
+        if data.get('kind'):
+            print('d', data['kind'][0])
+            match(data['kind'][0]):
+                case '0': # 교통 정보 아이콘 이름
+                    data1['iconKind'] = '0'
+                    data1['changedIconKind'] = '00'
+                case '1': # 주변 정보 아이콘 이름
+                    data1['iconKind'] = '1'
+                    data1['changedIconKind'] = '11'
+                case '2': # 치안 정보 아이콘 이름
+                    data1['iconKind'] = '2'
+                    data1['changedIconKind'] = '22'
+                case '3': # 주거 정보 아이콘 이름
+                    print('wer')
+                    data1['iconKind'] = '3'
+                    data1['changedIconKind'] = '33'
+        else:
+            data1['iconKind'] = data['iconKind'][0]
+            data1['changedIconKind'] = data['changedIconKind'][0]
+        print('datacheck:', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
@@ -582,9 +589,3 @@ def getMainPageReview(request):
     }
 
     return Response(data)
-
-
-
-
-
-
