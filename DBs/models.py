@@ -39,7 +39,7 @@ class Review(models.Model):
     humidity = models.IntegerField(             #습도
         default=3,
         validators=[MaxValueValidator(5), MinValueValidator(1)])
-    noiseness = models.IntegerField(            #방음
+    soundproof = models.IntegerField(            #방음
         default=3,
         validators=[MaxValueValidator(5), MinValueValidator(1)])
     lighting = models.IntegerField(             #채광
