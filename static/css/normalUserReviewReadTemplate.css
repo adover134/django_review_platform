@@ -1,4 +1,4 @@
-div#reviewInfo {
+div#reviewinfo {
   height: 220px;
 }
 
@@ -14,6 +14,10 @@ div#mainDiv {
 
 div#icon {
   height: 228px;
+}
+
+#reviews {
+  height: 18.18%;
 }
 
 /*# sourceMappingURL=normalUserReviewReadTemplate.css.map */

@@ -1,194 +1,104 @@
 {% extends 'normal_user_review_list.html' %}
 {% load index static %}
-
-{% block main_contents %}
-    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+{% block info %}
+    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
     <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
-
-    {% if request.path == normalUserReviewRead %}
+<div id="reviewinfo" style = "height:32.8%; color: #B3B3B3;outline:2px;">
+    <div style ="margin:15px; height:100%">
+        <div style="width:24.7%; height:90.7%; margin-right:20px; display: inline-block;float:left;">
+                <img src="{% static 'images/' %}no-photo.png" style="width:100%; height:100%;">
+        </div>
+        <div id="mapDiv" style = "display:inline-block;"></div>
+        <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
         <script>
-            window.onpageshow = function (event) {
-                if (event.persisted) {
-                    document.location.reload();
-                }
-            };
-            var recommended = '{{recommended}}';
-            if (recommended === 'None' || recommended === '')
-                recommended = false;
-            var reported = '{{reported}}';
-            if (reported === 'None' || recommended === '')
-                reported = false;
-            var reviewNum = '{{review.id}}';
-            var recommendImg = "{% static 'images/iconImage/recommend.png' %}";
-            var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
-            var reportImg = "{% static 'images/iconImage/report.png' %}";
-            var reportedImg = "{% static 'images/iconImage/reported.png' %}";
-        </script>
-    {% endif %}
-    {% if user.is_anonymous %}
-        <script>
-            let userloggedin = false;
-        </script>
-    {% else %}
-        <script>
-            let userloggedin = true;
-        </script>
-    {% endif %}
-    <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    <div>
-        <div id="reviewInfo">
-            <div id="room_images" class="content col-5"
-                 style="display:inline-block; float:left; height:200px; border:1px solid black;">
-            {% if review.additionalImage %}
-                <div class="slider" id="famous" onclick="">
-                    {% for reviewimg in review.additionalImage %}
-                        <img src="{% static 'images/' %}{{ reviewimg }}" style="height:100% ; width:100%;">
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div>등록된 사진이 없습니다</div>
-            {% endif %}
-
-            </div>
-
-            <div class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
-                <h1>{{ review.reviewTitle }}</h1>
-                <p>작성자 닉네임 : {{ review.uNickname }}</p>
-                <p>작성자 email : {{ review.uEmail }}</p>
-                <p>작성일 : {{ review.reviewDate }}</p>
-                <p>원룸 주소 : {{ review.address }}</p>
-            </div>
-            <div class="content col-2" style="display:inline-block; float:left; height:200px; border:1px solid black;">
-                <p>수정/삭제 버튼 놓을 곳</p>
-                <p style="font-size:25px;">
-                    {% if recommended %}
-                        <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec"
-                                                                                       src="{% static 'images/iconImage/recommended.png' %}"></a>
-                    {% else %}
-                        <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec"
-                                                                                       src="{% static 'images/iconImage/recommend.png' %}"></a>
-                    {% endif %}
-                    : <span id="recommend_num">{{ review.recommendedOn|length }}</span>
-                </p>
-                <p style="font-size:25px;">
-                    {% if reported %}
-                        <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep"
-                                                                                    src="{% static 'images/iconImage/reported.png' %}"></a>
-                    {% else %}
-                        <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep"
-                                                                                    src="{% static 'images/iconImage/report.png' %}"></a>
-                    {% endif %}
-                    : <span id="report_num">{{ review.reportedOn|length }}</span>
-                </p>
-            </div>
-        </div>
-        <div id="reviewContent" class="content col">
-            {% for s in review.reviewSentence %}
-                <span>{{ s }}</span>
-                <br>
-            {% endfor %}
-        </div>
-        <div id="icon">
-            <h1>아이콘</h1>
-{#            {% for i in icons %}#}
-{#                <a onclick="selectIcon(this)">#}
-{#                    <img src="{% static i.iconKind %}">#}
-{#                    <input type="text" hidden value="{{ i.iconInformation }}">#}
-{#                    <input type="text" hidden value="{% static i.iconKind %}">#}
-{#                    <input type="text" hidden value="{% static i.changedIconKind %}">#}
-{#                </a>#}
-{#            {% endfor %}#}
-            {% if review.includedIcon %}
-                {% for icon in review.includedIcon %}
-                    <img src="{% static 'images/iconImage/' %}{{ icon }}" onclick="selectIcon2(this)">
-                {% endfor %}
-            {% else %}
-                <div>아이콘이 없습니다.</div>
-            {% endif %}
-        </div>
-        <div id="same_room_reviews">
-            <!-같은 원룸의 리뷰들 목록-->
-            <!-추천 순으로 약 5개만 출력-->
-        </div>
-        <div id="mapDiv"></div>
-    </div>
-    <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
-    <script>
-        $(document).ready(function () {
-            var a = $('.slider').bxSlider({
-                {#maxSlides:4,#}
-                infiniteLoop: false,
-                touchEnabled: false,
+            $(document).ready(function () {
+                var a = $('.slider').bxSlider({
+                    {#maxSlides:4,#}
+                    infiniteLoop: false,
+                    touchEnabled: false,
+                });
             });
-        });
-    </script>
-    <script type="text/javascript">
+        </script>
+        <script type="text/javascript">
 
-    // icon 이미지 <-> selected icon 이미지 변환 함수
-    // 만들 예정
-    function selectIcon2(e){
-        alert("아이콘 클릭 이벤트 발생")
-    }
-
-        document.getElementById('mapDiv').style.width = '805px';
-        document.getElementById('mapDiv').style.height = '285px';
-        document.getElementById('mapDiv').style.minWidth = '805px';
-        var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
-            mapOption = {
-                center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
-                level: 5 // 지도의 확대 레벨
-            };
-
-        // 지도 생성
-        function resizeMap() {
-            var mapContainer = document.getElementById('map');
-            mapContainer.style.width = document.getElementById('mainDiv').style.width;
+        // icon 이미지 <-> selected icon 이미지 변환 함수
+        // 만들 예정
+        function selectIcon2(e){
+            alert("아이콘 클릭 이벤트 발생")
         }
 
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+            document.getElementById('mapDiv').style.width = '71%';
+            document.getElementById('mapDiv').style.height = '90.7%';
+            document.getElementById('mapDiv').style.minWidth = '71%';
+            var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
+                mapOption = {
+                    center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
+                    level: 5 // 지도의 확대 레벨
+                };
 
-        {# 지도에 원룸 위치 표시 #}
-        var geocoder = new kakao.maps.services.Geocoder();
+            // 지도 생성
+            function resizeMap() {
+                var mapContainer = document.getElementById('map');
+                mapContainer.style.width = document.getElementById('mainDiv').style.width;
+            }
 
-        $.ajax({
-            url: 'http://127.0.0.1:8000/db/room/',
-            method: "GET",
-            dataType: "json"
-        })
-            .done(function (json) {
-                $.each(json, function (key, value) {
-                    // 주소로 좌표를 검색합니다
-                    geocoder.addressSearch(value.address, function (result, status) {
+            var map = new kakao.maps.Map(mapContainer, mapOption);
 
-                        // 정상적으로 검색이 완료됐으면
-                        if (status === kakao.maps.services.Status.OK) {
-                            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+            {# 지도에 원룸 위치 표시 #}
+            var geocoder = new kakao.maps.services.Geocoder();
 
-                            // 결과값으로 받은 위치를 마커로 표시합니다
-                            var marker = new kakao.maps.Marker({
-                                map: map,
-                                position: coords
-                            });
+            $.ajax({
+                url: 'http://127.0.0.1:8000/db/room/',
+                method: "GET",
+                dataType: "json"
+            })
+                .done(function (json) {
+                    $.each(json, function (key, value) {
+                        // 주소로 좌표를 검색합니다
+                        geocoder.addressSearch(value.address, function (result, status) {
 
-                            var room_info = ''
-                            if (value.name !== null)
-                                room_info = value.name
-                            else
-                                room_info = value.address
+                            // 정상적으로 검색이 완료됐으면
+                            if (status === kakao.maps.services.Status.OK) {
+                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                            // 인포윈도우로 장소에 대한 설명을 표시합니다
-                            var infowindow = new kakao.maps.InfoWindow({
-                                content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
-                            });
+                                // 결과값으로 받은 위치를 마커로 표시합니다
+                                var marker = new kakao.maps.Marker({
+                                    map: map,
+                                    position: coords
+                                });
 
-                            infowindow.open(map, marker);
-                        }
+                                var room_info = ''
+                                if (value.name !== null)
+                                    room_info = value.name
+                                else
+                                    room_info = value.address
+
+                                // 인포윈도우로 장소에 대한 설명을 표시합니다
+                                var infowindow = new kakao.maps.InfoWindow({
+                                    content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
+                                });
+
+                                infowindow.open(map, marker);
+                            }
+                        })
                     })
-                })
-            });
-    </script>
+                });
+        </script>
+    </div>
+</div>
+    <div id ="mid"style = "text-align:center;width:100%; height:48.9%;color:#B3B3B3">
+        <div style = "display: inline-block;text-align:left;padding: 1.85% 6.07% 1.85% 6.07%">
+            <div style = "">작성자 : </div><div style ="text-align: right;">주소  </div>
+            <div style="float:right;">        <div id = "retouch" >
+            <a style ="text-decoration: none; color:darkred;" href="javascript:(0)" onclick="document.getElementById('search_filter').submit();">수정</a>
+        </div></div>
+            <div>채광 ★5.0 방음 청결 습도</div>
+            <div>리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문리뷰 본문</div>
+            <div>ㅇㅏㅇㅣㅋㅗㄴ</div>
+            <div>추천 수 :</div></ㅁ>
+            <div>신고버튼</div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,7 +1,8 @@
 @import "color.scss";
-div#reviewInfo{
+div#reviewinfo{
     height:220px;
 }
+
 div#reviewContent{
     height:300px;
     border:1px solid grey;
@@ -12,4 +13,7 @@ div#mainDiv{
 }
 div#icon{
     height:228px;
+}
+#reviews{
+    height:18.18%;
 }

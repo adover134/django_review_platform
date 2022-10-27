@@ -324,7 +324,7 @@ def introduction(request):
 
 
 def testing(request):
-    return render(request, 'room_test.html')
+    return render(request, 'test.html')
 
 
 @api_view(['POST'])

@@ -31,18 +31,23 @@ $(document).ready(function(){
 <div class="slider" id="famous" onclick="">
     {% if popular_reviews %}
         {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
-            <div style = "margin:10px; font-size:2px;"onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <strong><span>{{ popular_review.reviewWriter }}</span></strong>
-                <span style = "padding-left:40%;">추천 수 : {{ popular_review.recommendedOn|length }}</span><br>
-                <div>리뷰 제목 : {{ popular_review.reviewTitle }}</div>
-                <div>리뷰 내용 : {{ popular_review.reviewSentence }}</div>
-                <span>대표 사진</span>
-                <img class="left-side-room-img" src="{% static 'images/' %}{{ popular_review.additionalImage|first }}">
-                <span>아이콘 목록 :
+            <div style = "margin:15px;color:#B3B3B3;"onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <div style="float:left;">
+                    <span>작성자 : {{ popular_review.reviewWriter }}</span>
+                </div>
+                    <div style = "padding-left:65%;">추천 수 : {{ popular_review.recommendedOn|length }}</div>
+                <div style="color:black; font-weight: 600; font-size:20px;">{{ popular_review.reviewTitle }}</div>
+                <div class="pop-img">
+                    <img class="left-side-room-img" style="width:100%; height:100%;" src="{% static 'images/' %}{{ popular_review.additionalImage|first }}">
+                </div>
+                <div style = "margin-left: 50px;">
+                 <span>리뷰 내용 : {{ popular_review.reviewSentence }}</span>
+                </div>
+                <br><div style = "display:inline-block;float:left;">
                     {% for popular_icon in popular_review.includedIcon %}
-                        <img src="{% static 'images/iconImage/' %}{{ popular_icon }}">
+                        <img style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}">
                     {% endfor %}
-                </span>
+                </div>
             </div>
         {% endfor %}
     {% else %}
@@ -50,24 +55,29 @@ $(document).ready(function(){
     {% endif %}
 </div>
 <div class="slider" id="recent">
-    {% if latest_reviews %}
+    {% if popular_reviews %}
         {% for latest_review in latest_reviews %} {# 최신순 데이터 최대 4개 출력 #}
             <div onclick="window.location.replace('{{normalUserReviewRead}}?id={{latest_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <span>작성자 : {{ latest_review.reviewWriter }}</span>
-                <span>추천 수 : {{ latest_review.recommendedOn|length }}</span>
-                <div>리뷰 제목 : {{ latest_review.reviewTitle }}</div>
-                <div>리뷰 내용 : {{ latest_review.reviewSentence }}</div>
-                <span>대표 사진</span>
-                <img class="left-side-room-img" src="{% static 'images/' %}{{ latest_review.additionalImage|first }}">
-                <span>아이콘 목록 :
+                <div style="float:left;">
+                    <span>작성자 : {{ latest_review.reviewWriter }}</span>
+                </div>
+                    <div style = "padding-left:65%;">추천 수 : {{ latest_review.recommendedOn|length }}</div>
+                <div style="color:black; font-weight: 600; font-size:20px;">{{ latest_review.reviewTitle }}</div>
+                <div class="pop-img">
+                    <img class="left-side-room-img" style="width:100%; height:100%;" src="{% static 'images/' %}{{ latest_review.additionalImage|first }}">
+                </div>
+                <div style = "margin-left: 50px;">
+                 <span>리뷰 내용 : {{ latest_review.reviewSentence }}</span>
+                </div>
+                <br><div style = "display:inline-block;float:left;">
                     {% for latest_icon in latest_review.includedIcon %}
-                        <img src="{% static 'images/iconImage/' %}{{ latest_icon }}">
+                        <img style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ latest_icon }}">
                     {% endfor %}
-                </span>
+                </div>
             </div>
         {% endfor %}
     {% else %}
-            <div>등록된 리뷰가 없습니다.</div>
+        <div>등록된 리뷰가 없습니다.</div>
     {% endif %}
 </div>
 {% endblock %}
@@ -141,11 +151,7 @@ $(document).ready(function(){
 
                     // 인포윈도우로 장소에 대한 설명을 표시합니다
                     var infowindow = new kakao.maps.InfoWindow({
-                        content: `<div style="width:150px; text-align:center; padding:6px 0; cursor: pointer" ` +
-                            `onclick="window.location.replace(`+
-                            `'{{ roomRead }}?roomId=` +
-                            value.id +
-                            `')" >`+ room_info + `</div>`
+                        content: '<div style="width:150px;text-align:center;padding:6px 0;">'+ room_info + '</div>'
                     });
 
                     infowindow.open(map, marker);
