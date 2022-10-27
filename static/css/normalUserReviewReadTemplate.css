@@ -21,10 +21,11 @@ div#icon {
 }
 
 .chel {
-  width: 14.1%;
   text-align: left;
   display: inline-block;
   border: 2px solid #B3B3B3;
+  border-collapse: collapse;
+  float: left;
 }
 
 #reviews {
