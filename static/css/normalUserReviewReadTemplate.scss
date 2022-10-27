@@ -5,7 +5,7 @@ div#reviewinfo{
 
 div#reviewContent{
     height:300px;
-    border:1px solid grey;
+    border:2px solid #B3B3B3;
 }
 div#mainDiv{
     overflow-y:scroll;
@@ -15,5 +15,18 @@ div#icon{
     height:228px;
 }
 #reviews{
-    height:18.18%;
+    height:100%;
+}
+
+.chel{
+    width:14.1%;
+    text-align:left;
+    display:inline-block;
+    border:2px solid #B3B3B3;
+}
+
+
+#reviews{
+  overflow-y:hidden;
+    padding-left: 5.7%;
 }

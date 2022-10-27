@@ -1,9 +1,9 @@
 {% extends 'normal_user_base.html' %}
 {% load static %}
 {% block main_contents %}
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     {% block info %}
     {% endblock %}
-    <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     <script>
         let current_URL = new URLSearchParams(window.location.search);
     </script>
