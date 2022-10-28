@@ -117,45 +117,57 @@ def normal_user_review_write_page(request):
 
 def normal_user_review_read(request):
     user = request.user
-    review = None
+
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
     icon_urls = review.get('includedIcon')
-    print('icon_urls: ', icon_urls)
-    print('review: ', review)
+
+    # 아이콘 4종류에 대해, 해당하는 리뷰의 번호들을 얻을 수 있다.
     icons = []
+    icons.append([])
+    icons.append([])
+    icons.append([])
+    icons.append([])
+    if icon_urls:
+        print('it ', icon_urls)
+        for i in range(len(icon_urls)):
+            icon = json.loads(requests.get(icon_urls[i]).text)
+            match icon.get('iconKind'):
+                case '0':
+                    icons[0].append(i)
+                case '1':
+                    icons[1].append(i)
+                case '2':
+                    icons[2].append(i)
+                case '3':
+                    icons[3].append(i)
 
-    # 아이콘 url 임시 보류 Start
-    # if icon_urls:
-    #     for icon in icon_urls:
-    #         icon_info = json.loads(requests.get(icon).text)
-    #         icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
-    #         icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
-    #         icons.append(icon_info)
-    # 아이콘 url 임시 보류 End
+    # 출력할 아이콘 목록
+    icon = []
+    for i in range(4):
+        if len(icons[i]) > 0:
+            icon.append(i)
 
-    if user.id:
-        # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
-        recommended = None
-        reported = None
-        recommends = review.get('recommendedOn')
-        if recommends:
-            for recommend in recommends:
-                if json.loads(requests.get(recommend).text).get('uId') == user.id:
-                    recommended = True
-                    break
-        # 해당 리뷰에 대해 신고한 사람 중 사용자가 있는지 확인
-        reports = review.get('reportedOn')
-        if reports:
-            for report in reports:
-                if json.loads(requests.get(report).text).get('uId') == user.id:
-                    reported = True
-                    break
-        return render(request, 'normal_user_review_read.html', {'paged_review': review, 'icons': icons, 'alive': 'true', 'user': user, 'recommended': recommended, 'reported': reported})
-    else:
-        return render(request, 'normal_user_review_read.html', {'paged_review': review, 'icons': icons, 'alive': 'false'})
+    # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
+    recommended = None
+    reported = None
+    recommends = review.get('recommendedOn')
+    if recommends:
+        for recommend in recommends:
+            if json.loads(requests.get(recommend).text).get('uId') == user.id:
+                recommended = True
+                break
+    # 해당 리뷰에 대해 신고한 사람 중 사용자가 있는지 확인
+    reports = review.get('reportedOn')
+    if reports:
+        for report in reports:
+            if json.loads(requests.get(report).text).get('uId') == user.id:
+                reported = True
+                break
+
+    return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
 
 @api_view(['POST'])

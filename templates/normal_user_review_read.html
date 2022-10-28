@@ -25,6 +25,7 @@
             var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
             var reportImg = "{% static 'images/iconImage/report.png' %}";
             var reportedImg = "{% static 'images/iconImage/reported.png' %}";
+            var icons = {{icons}};
         </script>
     {% endif %}
     {% if user.is_anonymous %}
@@ -88,19 +89,18 @@
         </div>
         <div id="reviewContent" class="content col">
             {% for s in review.reviewSentence %}
-                <span>{{ s }}</span>
-                <br>
+                <p>{{ s }}</p>
             {% endfor %}
         </div>
         <div id="icon">
             <h1>아이콘</h1>
-            {% if icons %}
-                {% for i in icons %}
+            {% if icon %}
+                {% for i in icon %}
                     <a onclick="selectIcon(this)">
-                        <img src="{% static i.iconKind %}">
-                        <input type="text" hidden value="{{ i.iconInformation }}">
-                        <input type="text" hidden value="{% static i.iconKind %}">
-                        <input type="text" hidden value="{% static i.changedIconKind %}">
+                        <img src="{% static 'images/iconImage/' %}{{i}}.png"  style="width:5%; height:10%;">
+                        <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}.png">
+                        <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}{{i}}.png">
+                        <input type="text" hidden value="{{i}}">
                     </a>
                 {% endfor %}
             {% else %}

@@ -34,7 +34,7 @@ function review_submit(e) {
         contentType: false,
         success: function (response) {
             // on successfull creating object
-            window.location.replace('/test/normal_user_review_read/?id='+response);
+            window.location.replace('/normal_user_review_read/?id='+response);
         },
         error: function (response) {
             // alert the error if any error occured

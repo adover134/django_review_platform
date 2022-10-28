@@ -1,7 +1,6 @@
 import json
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
-import pandas as pd
 import numpy as np
 from konlpy.tag import Komoran
 from kiwipiepy import Kiwi
@@ -42,7 +41,6 @@ def review_to_icons(review):
     split_review = sentence_split(spell_checker.check(review.replace('&', '&amp;').replace('\u0001', '')).checked.replace('&', '&amp;').replace('\u0001', ''))
     for sentence in split_review:
         reviews.append(sentence.text)
-        print('문장 :', sentence.text)
         tagged_sentence = komoran.pos(sentence.text)
         tag_word_set = []
         for tag_word in tagged_sentence:
@@ -58,7 +56,6 @@ def review_to_icons(review):
                 if r != []:
                     cleaned_review.append(r)
             # cleaned_review : 토크나이저에 없던 단어들을 배제한 후의 시퀀스
-            print(cleaned_review)
             if len(cleaned_review) > 0:
                 match icon_predict(cleaned_review):
                     case 0:
