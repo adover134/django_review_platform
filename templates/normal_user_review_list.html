@@ -1,9 +1,9 @@
 {% extends 'normal_user_base.html' %}
 {% load static %}
 {% block main_contents %}
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     {% block info %}
     {% endblock %}
-    <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
     <script>
         let current_URL = new URLSearchParams(window.location.search);
     </script>
@@ -11,7 +11,7 @@
         <div id="reviews" >
         {% if paged_review %}
             {% for review in paged_review %}
-                <div class="review" style="cursor: pointer">
+                <div class="review" style="cursor: default;">
                     <div class="review_image">
                         {% if review.representiveImage == 'None' %}
                             <img src="{% static 'images/' %}{{review.representiveImage}}.png">
@@ -21,7 +21,7 @@
                         {% endif %}
                     </div>
                     <div class="review_info">
-                        <div class="review_title" style="color:black;">
+                        <div class="review_title" style="color:black; cursor: pointer;">
                             제목 : <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">
                                     {{review.reviewTitle|slice:":15"}}
                                     {% if review.reviewTitle|length > 15 %}
