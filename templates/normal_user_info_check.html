@@ -99,12 +99,17 @@
     </div>
 </div>
 <script>
-    function sort(){
-        let selected = document.getElementById('sort_select_box');
-        let a = window.location.href;
-        let b = a.indexOf('sorted');
-        window.location.href = a.slice(0, b)+'sorted='+document.getElementById('sort_select_box').value;
-    }
+    function sort(data){
+        console.log(data)
+        // 현재 url 가져오기
+        var link = window.location.href
+        var search = window.location.search
+        const URLSearch = new URLSearchParams(location.search);
+        if(URLSearch.has('sorted')){
+            URLSearch.set('sorted', data.value)
+        }
+
+
     window.onload=function() {
         let a = new URLSearchParams(window.location.search).get('sorted');
         var b = document.createElement("option");
