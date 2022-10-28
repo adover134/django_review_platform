@@ -1,75 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'normal_user_review_list.html' %}
+{% load index static %}
 
-//{% for man in manager %}
-//xhr.open("GET", 'http://127.0.0.1:8000/test/manager', true);
-//{% endfor %}
-{% load index %}
-<p>{{manager|index:0}}</p>
+{% block main_contents %}
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+    <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
 
-    <p id="hey"></p>
-    <script type="text/javascript">
-        var a = "{{manager|safe}}";
-        console.log(typeof(a));
-        console.log(a);
-        c = a.replaceAll('\'', '\"');
-        console.log(c);
-        c = JSON.parse(c);
-        console.log(c);
-        console.log(c[0]['u_id']);
-        var m='';
-        var url='http://127.0.0.1:8000/test/manager/';
+    {% if request.path == normalUserReviewRead %}
+        <script>
+            window.onpageshow = function (event) {
+                if (event.persisted) {
+                    document.location.reload();
+                }
+            };
+            var recommended = '{{recommended}}';
+            if (recommended === 'None' || recommended === '')
+                recommended = false;
+            var reported = '{{reported}}';
+            if (reported === 'None' || recommended === '')
+                reported = false;
+            var reviewNum = '{{review.id}}';
+            var recommendImg = "{% static 'images/iconImage/recommend.png' %}";
+            var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
+            var reportImg = "{% static 'images/iconImage/report.png' %}";
+            var reportedImg = "{% static 'images/iconImage/reported.png' %}";
+        </script>
+    {% endif %}
+    {% if user.is_anonymous %}
+        <script>
+            let userloggedin = false;
+        </script>
+    {% else %}
+        <script>
+            let userloggedin = true;
+        </script>
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <div>
+        <div id="reviewInfo">
+            <div id="room_images" class="content col-5"
+                 style="display:inline-block; float:left; height:200px; border:1px solid black;">
+            {% if review.additionalImage %}
+                <div class="slider" id="famous" onclick="">
+                    {% for reviewimg in review.additionalImage %}
+                        <img src="{% static 'images/' %}{{ reviewimg }}" style="height:100% ; width:100%;">
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div>등록된 사진이 없습니다</div>
+            {% endif %}
 
-    	function requestGet(){
-    		console.log("");
-    		console.log("[requestGet] : [start]");
-    		console.log("");
+            </div>
 
-    		// XMLHttpRequest 객체 생성 및 요청 수행
-    		var xhr = new XMLHttpRequest();
-    		xhr.open("GET", url, true);
+            <div class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+                <h1>{{ review.reviewTitle }}</h1>
+                <p>작성자 닉네임 : {{ review.uNickname }}</p>
+                <p>작성자 email : {{ review.uEmail }}</p>
+                <p>작성일 : {{ review.reviewDate }}</p>
+                <p>원룸 주소 : {{ review.address }}</p>
+            </div>
+            <div class="content col-2" style="display:inline-block; float:left; height:200px; border:1px solid black;">
+                <p>수정/삭제 버튼 놓을 곳</p>
+                <p style="font-size:25px;">
+                    {% if recommended %}
+                        <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec"
+                                                                                       src="{% static 'images/iconImage/recommended.png' %}"></a>
+                    {% else %}
+                        <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec"
+                                                                                       src="{% static 'images/iconImage/recommend.png' %}"></a>
+                    {% endif %}
+                    : <span id="recommend_num">{{ review.recommendedOn|length }}</span>
+                </p>
+                <p style="font-size:25px;">
+                    {% if reported %}
+                        <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep"
+                                                                                    src="{% static 'images/iconImage/reported.png' %}"></a>
+                    {% else %}
+                        <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep"
+                                                                                    src="{% static 'images/iconImage/report.png' %}"></a>
+                    {% endif %}
+                    : <span id="report_num">{{ review.reportedOn|length }}</span>
+                </p>
+            </div>
+        </div>
+        <div id="reviewContent" class="content col">
+            {% for s in review.reviewSentence %}
+                <span>{{ s }}</span>
+                <br>
+            {% endfor %}
+        </div>
+        <div id="icon">
+            <h1>아이콘</h1>
+{#            {% for i in icons %}#}
+{#                <a onclick="selectIcon(this)">#}
+{#                    <img src="{% static i.iconKind %}">#}
+{#                    <input type="text" hidden value="{{ i.iconInformation }}">#}
+{#                    <input type="text" hidden value="{% static i.iconKind %}">#}
+{#                    <input type="text" hidden value="{% static i.changedIconKind %}">#}
+{#                </a>#}
+{#            {% endfor %}#}
+            {% if review.includedIcon %}
+                {% for icon in review.includedIcon %}
+                    <img src="{% static 'images/iconImage/' %}{{ icon }}" onclick="selectIcon2(this)">
+                {% endfor %}
+            {% else %}
+                <div>아이콘이 없습니다.</div>
+            {% endif %}
+        </div>
+        <div id="same_room_reviews">
+            <!-같은 원룸의 리뷰들 목록-->
+            <!-추천 순으로 약 5개만 출력-->
+        </div>
+    </div>
 
-    		console.log("[request url] : " + url);
-    		console.log("[request method] : " + "GET");
-    		console.log("");
-
-    		//xhr.onreadystatechange = CallbackFunction; //콜백 함수 지정해서 처리 가능
-    		xhr.onreadystatechange = function() {
-    			if (xhr.readyState == 4) {
-    				if (xhr.status == 200 || xhr.status == 201){
-    					console.log("[status] : " + xhr.status);
-    					console.log("[response] : " + "[success]");
-    					console.log("[response] : " + xhr.response);
-
-                        m=xhr.response;
-                        console.log(m);
-                        m = JSON.parse(m)[0];
-                        document.getElementById("hey").innerHTML = m['u_id'];
-    				}
-    				else {
-    					console.log("[status] : " + xhr.status);
-    					console.log("[response] : " + "[fail]");
-    					console.log("[response] : " + xhr.response);
-    				}
-    			}
-    		}
-    		xhr.send(null); //get 쿼리 파람 방식일때 null
-    	};
-
-        function secTest(){
-            console.log(m);
-        };
-    </script>
-    <button type="button", onclick="requestGet()">
-        See Manager Info
-    </button>
-    <button type="button", onclick="secTest()">
-        Hey
-    </button>
-</body>
-</html>
+{% endblock %}
