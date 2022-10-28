@@ -104,7 +104,7 @@
                     추천 수 {{ review.recommendedOn|length }}</span>
                 <div style = "color: #ECECEC;">&ensp;
         {#            리뷰 내용 데이터 #}
-                    리뷰내용 -> {{ review.reviewSentence }}</div>
+                    리뷰내용 -> {{ review.reviewSentence|index:0 }}</div>
                 <span style = "color : #A23355 ;font-size: 1.88vw; letter-spacing :1vw; ">&ensp;
         {#            리뷰별 아이콘 데이터 목록 #}
                     {% if review.includedIcon %}
@@ -121,7 +121,7 @@
     function sort(data){
         console.log(data)
         // 현재 url 가져오기
-        var link = window.location.href //
+        var link = window.location.href
         var search = window.location.search
         const URLSearch = new URLSearchParams(location.search);
         if(URLSearch.has('sorted')){

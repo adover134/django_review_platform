@@ -3,7 +3,6 @@
 {% url 'user-detail' pk=u_id as singleUser %}
 
 {% block main_contents %}
-    <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;"></div>
     <div style="width: 100%; height: 100%;">
@@ -73,5 +72,6 @@
         realUpload.addEventListener('change', getImageFiles);
 
     </script>
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
     <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
 {% endblock %}
