@@ -4,7 +4,7 @@ var selected_icon = null;
 var selected_num;
 // 선택된 아이콘이 있을 경우 해당 아이콘의 미선택 상태의 이미지 위치를 넣는다.
 var unselect_image;
-var sentence = document.getElementById("reviewContent").children;
+var sentence = document.getElementById("row4").children;
 var length = sentence.length;
 
 function selectIcon(e){
@@ -26,10 +26,10 @@ function selectIcon(e){
 
 function tok(a){
     for(var i=0;i< icons[a].length;i++)
-        document.getElementById('reviewContent').children[icons[a][i]].style.color='#A23355';
+        document.getElementById('row4').children[icons[a][i]].style.color='#A23355';
 }
 function tak(){
-    var reviews = document.getElementById('reviewContent').children;
+    var reviews = document.getElementById('row4').children;
     for(var i=0;i<reviews.length;i++)
         reviews[i].style.color = 'black';
 }
