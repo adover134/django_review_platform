@@ -52,5 +52,5 @@ function layout_change(event){
         document.getElementById('layout2').checked=true;
     }
 }
-l1i.addEventListener('click', layout_change)
-l2i.addEventListener('click', layout_change)
+// l1i.addEventListener('click', layout_change)
+// l2i.addEventListener('click', layout_change)
