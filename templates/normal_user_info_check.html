@@ -16,20 +16,21 @@
 <link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
 <div id="infoCheckAndUpdate">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
-    <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
+    <form id="infoData" method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
         {% csrf_token %}
         <div style ="overflow:hidden; font-weight:600;font-size:50px;width:80%; display: inline-block;">{# 닉네임은 성,이름으로 대체 #}
-            <input name="last_name"  type="text" value="{{ user.last_name }}" style="border:none;font-weight:600;font-size:50px;width:10%;"> <input name="first_name" type="text" value="{{ user.first_name }}" style="border:none;font-weight:1000;font-size:50px;width:20%;">   님
+            <input name="last_name"  type="text" value="{{ user.last_name }}" style="border:none;font-weight:600;font-size:50px;width:10%;">
+            <input name="first_name" type="text" value="{{ user.first_name }}" style="border:none;font-weight:1000;font-size:50px;width:20%;">   님
         </div>
         <div style="position:relative;display:inline-block; top:2vh; right:3.7%;float:right;">
-            <button type="button">회원 탈퇴</button>
+            <button id="withdrawal" value="{{ user.id }}">회원 탈퇴</button>
         </div>
         <div id ="info">
         <div style = "display: inline-block;">
             {{ user.email }}
         </div>
         <div id = "retouch" >
-            <a style ="text-decoration: none; color:darkred;" href="javascript:(0)" onclick="document.getElementById('search_filter').submit();">수정</a>
+            <span id="changeMyInfo" style ="text-decoration: none; color:darkred; cursor: pointer" href="javascript:(0)">수정</span>
         </div>
         <div>
             마지막 로그인 일시 {{ user.last_login }}
@@ -45,6 +46,28 @@
         </div>
         </div>
     </form>
+    <div id="input_form" hidden>
+        <form method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
+            {% csrf_token %}
+            <div id="user_name"> {# 닉네임은 성,이름으로 대체 #}
+                <div id="input_user_lname">
+                    성 : <input value="{{ user.last_name }}" placeholder="성을 입력하세요">
+                </div>
+                <div id="input_user_fname">
+                    이름 : <input value="{{ user.first_name }}" placeholder="이름을 입력하세요">
+                </div>
+            </div>
+            <div> {# 이메일 #}
+                <div id="input_user_email">
+                    이메일 : <input value="{{ user.email }}" placeholder="이메일을 입력하세요">
+                </div>
+            </div>
+            <div style="float:right;">
+                <input id="changeBtn" type="submit" value="변경하기">
+                <button id="cancel">취소하기</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div id="reviews_div">
@@ -53,14 +76,8 @@
             <div style="display: inline-block;padding-right: 2%;">
                 <select id="sort_select_box" name="sort_select_box" onchange="sort()">
                     <option value="1">최신 순</option>
-                    {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
                     <option value="2">추천 순</option>
-                    {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
                     <option value="3">정확도 순</option>
-                    {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
                 </select>
             </div>
             <div>
@@ -78,14 +95,11 @@
                     {% endif %}
                 </div>
                 <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
-        {#                리뷰 제목 #}
-                        최신 리뷰 제목 -> {{ review.reviewTitle }}</span>
+                    {{ review.reviewTitle }}</span>
                 <span style = "float : right; padding-top: 1%;">
-        {#            추천 수 데이터 #}
                     추천 수 {{ review.recommendedOn|length }}</span>
                 <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
-        {#            리뷰 내용 데이터 #}
-                      리뷰내용 -> {{ review.reviewSentence }}</div>
+                      {{ review.reviewSentence }}</div>
                 <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
         {#            리뷰별 아이콘 데이터 목록 #}
                     {% if review.includedIcon %}
@@ -99,16 +113,16 @@
     </div>
 </div>
 <script>
-    function sort(data){
+    function sort(data) {
         console.log(data)
         // 현재 url 가져오기
         var link = window.location.href
         var search = window.location.search
         const URLSearch = new URLSearchParams(location.search);
-        if(URLSearch.has('sorted')){
+        if (URLSearch.has('sorted')) {
             URLSearch.set('sorted', data.value)
         }
-
+    }
 
     window.onload=function() {
         let a = new URLSearchParams(window.location.search).get('sorted');
@@ -135,17 +149,17 @@
         .addEventListener("click", () => {
             document.getElementById("input_form").hidden = false
             document.getElementById("infoData").hidden = true
-    }, false);
+        }, false);
+
     document.getElementById("cancel")
         .addEventListener("click", () => {
             document.getElementById("input_form").hidden = true
             document.getElementById("infoData").hidden = false
-    }, false);
+        }, false);
 
     document.getElementById("withdrawal")
         .addEventListener("click", () => {
             if (!confirm("회원 탈퇴시, 모든 데이터가 삭제됩니다.\n탈퇴하시겠습니까?")) {
-                alert(document.getElementById("withdrawal").value)
                 alert("취소되었습니다.");
             } else {
                 $.ajaxSetup({
