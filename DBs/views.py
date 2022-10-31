@@ -76,6 +76,7 @@ class ReviewViewSets(ModelViewSet):
         review = serializer.save()
         headers = self.get_success_headers(serializer.data)
         review_id = review.id
+        print(review_id)
 
         for i in range(len(s['kind'])):
             iconData = {}
@@ -245,7 +246,9 @@ class ReviewViewSets(ModelViewSet):
         return HttpResponse(status=200)
 
     def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoomViewSets(ModelViewSet):
@@ -331,10 +334,11 @@ class IconViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
-        print('ddd', data)
-        data1['reviewId'] = data['reviewId'][0]
+        if str(type(data.get('reviewId'))) == "<class 'str'>":
+            data1['reviewId'] = data.get('reviewId')
+        else:
+            data1['reviewId'] = data.get('reviewId')[0]
         if data.get('kind'):
-            print('d', data['kind'][0])
             match(data['kind'][0]):
                 case '0': # 교통 정보 아이콘 이름
                     data1['iconKind'] = '0'

@@ -173,12 +173,12 @@ def normal_user_review_read(request):
                 reported = True
                 break
     review_writer = json.loads(requests.get('http://127.0.0.1:8000/db/user/'+str(review.get('uId'))+'/').text)
-    print('ttt', review_writer)
-    print('ttt', user)
-    if user == review_writer:
-        print('True')
+    if user.username == review_writer.get('username'):
+        is_writer = 'true'
+    else:
+        is_writer = 'false'
 
-    return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'icon': icon, 'recommended': recommended, 'reported': reported})
+    return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'is_writer': is_writer, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
 
 @api_view(['POST'])
