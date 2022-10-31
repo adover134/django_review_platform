@@ -5,6 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
     <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
 <div id="reviewHead" style = "height:32.8%; ">
@@ -13,7 +14,6 @@
                 <img src="{% static 'images/' %}no-photo.png" style="width:100%; height:100%;">
         </div>
         <div id="mapDiv" style = "display:inline-block;"></div>
-        <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
         <script>
             $(document).ready(function () {
                 var a = $('.slider').bxSlider({
@@ -137,6 +137,9 @@
                 {% endfor %}
             {% else %}
                 <span>아이콘이 없습니다.</span>
+                <script>
+                    document.getElementById('icons').style.textAlign='center';
+                </script>
             {% endif %}
         </div>
         <div id="rec_rep">
@@ -156,6 +159,7 @@
     </div>
 </div>
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
+<script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
 <script>
     window.onload = function()
     {
