@@ -129,9 +129,23 @@ window.onload = function()
     a=document.getElementById('address');
     b=(a.offsetHeight/16).toString()+'rem';
     a.style.fontSize=b;
+    a=document.getElementById('review_update');
+    b=(a.offsetHeight/16).toString();
+    var c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    a=document.getElementById('review_delete');
+    b=(a.offsetHeight/16).toString();
+    c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
     a=document.getElementById('room_read');
     b=(a.offsetHeight/16).toString();
-    let c=(a.offsetWidth/16/a.innerText.length).toString();
+    c=(a.offsetWidth/16/a.innerText.length).toString();
     if (b<c)
         a.style.fontSize=b+'rem';
     else
@@ -144,9 +158,8 @@ window.onload = function()
     a=document.getElementById('icons');
     b=(a.offsetHeight);
     c=$('#icons').find('img');
-    c[0].style.height=b.toString()+'px';
-    c[0].style.width=b.toString()+'px';
-    console.log(c[0]);
+    for(let i=0;i<c.length;i++)
+        c[i].style.height=b.toString()+'px';
     a=document.getElementById('rec_button');
     b=(a.offsetHeight/16).toString();
     c=(a.offsetWidth/16/a.innerText.length).toString();
@@ -204,6 +217,20 @@ window.onresize = function()
     a=document.getElementById('address');
     b=(a.offsetHeight/16).toString()+'rem';
     a.style.fontSize=b;
+    a=document.getElementById('review_update');
+    b=(a.offsetHeight/16).toString();
+    let d = (a.offsetWidth/16/a.innerText.length).toString();
+    if (b<d)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=d+'rem';
+    a=document.getElementById('review_delete');
+    b=(a.offsetHeight/16).toString();
+    d=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<d)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=d+'rem';
     a=document.getElementById('room_read');
     b=(a.offsetHeight/16).toString();
     let c=(a.offsetWidth/16/a.innerText.length).toString();
@@ -219,9 +246,8 @@ window.onresize = function()
     a=document.getElementById('icons');
     b=(a.offsetHeight);
     c=$('#icons').find('img');
-    c[0].style.height=b.toString()+'px';
-    c[0].style.width=b.toString()+'px';
-    console.log(c[0]);
+    for(let i=0;i<c.length;i++)
+        c[i].style.height=b.toString()+'px';
     a=document.getElementById('rec_button');
     b=(a.offsetHeight/16);
     c=(a.offsetWidth/16/a.innerText.length);
@@ -237,7 +263,7 @@ window.onresize = function()
     else
         a.style.fontSize=c.toString()+'rem';
     let k = document.getElementsByClassName('review_preview');
-    for (let i=0;i<k.length;i++){
+    for (i=0;i<k.length;i++){
         let o = k[i];
         a=o.offsetHeight/16;
         let l=o.offsetWidth-o.offsetHeight;
@@ -259,4 +285,31 @@ window.onresize = function()
         b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
+}
+function review_delete(e) {
+    // preventing from page reload and default actions
+    console.log(e)
+    if (is_writer)
+    // make POST ajax call
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: "/db/review/" + e,
+            async: false,
+            headers: {'X-CSRFToken': csrftoken},
+            dataType: 'json',
+            data: {},
+            success: function (response) {
+                // on successfull creating object
+                window.location.replace('/normalUserReviewSearch');
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert(response["responseJSON"]["error"]);
+            }
+        })
+    }
+    else{
+        alert('본인이 작성한 리뷰만 삭제 가능합니다.\n작성자 본인이시라면 로그인해주세요.');
+    }
 }

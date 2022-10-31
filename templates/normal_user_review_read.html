@@ -1,6 +1,7 @@
 {% extends 'normal_user_review_list.html' %}
 {% load index static %}
 {% block info %}
+{% url 'normalUserReviewDelete' as normalUserReviewDelete %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
@@ -107,14 +108,23 @@
                 &nbsp작성자 : {{review.reviewWriter}}
             </div>
         </div>
-        <div style="height:100%; width:8.1%;"></div>
         <div id="address">
             <div style="display:flex; align-items:center; height:100%; width:100%;">
                 <span>{{review.address}}&nbsp&nbsp</span>
             </div>
         </div>
+        <div style="height:100%; width:4.15%; border-right:1px solid #B3B3B3;">
+            <div id="review_update" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                <a>수정</a>
+            </div>
+        </div>
+        <div style="height:100%; width:4.15%;">
+            <div id="review_delete" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                <a href="#" onclick="review_delete('{{review.id}}')">삭제</a>
+            </div>
+        </div>
         <div id="room_read">
-            <div style="display:flex; align-items:center; height:100%; width:100%;">
+            <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
                 <a>이동</a>
             </div>
         </div>
@@ -179,6 +189,7 @@
     </div>
 </div>
 <br>
+<script>var is_writer = {{is_writer}};</script>
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
 <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
 {% endblock %}
