@@ -332,7 +332,6 @@ class IconViewSets(ModelViewSet):
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
         print('ddd', data)
-        data1['iconInformation'] = data['iconInformation']
         data1['reviewId'] = data['reviewId'][0]
         if data.get('kind'):
             print('d', data['kind'][0])
