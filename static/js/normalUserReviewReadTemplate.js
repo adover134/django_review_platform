@@ -223,19 +223,19 @@ window.onresize = function()
     c[0].style.width=b.toString()+'px';
     console.log(c[0]);
     a=document.getElementById('rec_button');
-    b=(a.offsetHeight/16).toString();
-    c=(a.offsetWidth/16/a.innerText.length).toString();
+    b=(a.offsetHeight/16);
+    c=(a.offsetWidth/16/a.innerText.length);
     if (b<c)
-        a.style.fontSize=b+'rem';
+        a.style.fontSize=b.toString()+'rem';
     else
-        a.style.fontSize=c+'rem';
+        a.style.fontSize=c.toString()+'rem';
     a=document.getElementById('rep_button');
-    b=(a.offsetHeight/16).toString();
-    c=(a.offsetWidth/16/a.innerText.length).toString();
+    b=(a.offsetHeight/16);
+    c=(a.offsetWidth/16/a.innerText.length);
     if (b<c)
-        a.style.fontSize=b+'rem';
+        a.style.fontSize=b.toString()+'rem';
     else
-        a.style.fontSize=c+'rem';
+        a.style.fontSize=c.toString()+'rem';
     let k = document.getElementsByClassName('review_preview');
     for (let i=0;i<k.length;i++){
         let o = k[i];
