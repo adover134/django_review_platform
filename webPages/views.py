@@ -101,9 +101,12 @@ def normal_user_review_search(request):
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
     # print('a:', paged_review[2])
+    t = []
+    for r in paged_review:
+        t.append(list(set(r.get('includedIcon'))))
+    print(t)
     context['paged_review'] = paged_review
-
-    print(review_list)
+    context['icons'] = t
 
     return render(request, 'normal_user_review_search.html', context)
 

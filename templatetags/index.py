@@ -52,3 +52,10 @@ def check_active(user):
     else:
         state = '모든 기능 사용 가능'
     return state
+
+
+@register.filter
+def sets(lists):
+    print(lists)
+    print(';;;', list(set(lists)))
+    return sorted(list(set(lists)))
