@@ -55,7 +55,8 @@
 }
 #address{
     border-left:1px solid #B3B3B3;
-    text-align:left;
+    width:40.32%;
+    text-align:right;
 }
 #room_read{
     border-left:1px solid #B3B3B3;
@@ -70,12 +71,13 @@
 #title{
     width:100%;
     height:100%;
+    font-weight:bolder;
     text-align:left;
 }
 #row3{
     border-top:1px solid #B3B3B3;
     border-bottom:1px solid #B3B3B3;
-    height:20px;
+    height:6.11%;
     margin-bottom:0.494%;
 }
 #row3 > div{
