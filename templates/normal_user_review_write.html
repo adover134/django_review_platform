@@ -13,13 +13,13 @@
                 <input id="id_address" style="float: right; border-color: #A23355;
                         flex:1" name="address" required>
                 <script>
-                    let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';
-                    document.getElementById('room_search_filter').style.fontSize=a;
+                    {#let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';#}
+                    {#document.getElementById('room_search_filter').style.fontSize=a;#}
                 </script>
             </div>
             <div id="tr2">
                 <div style="height: 9.09%; width: 100%; margin-bottom: 2.604%;">
-                    <input style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
+                    <input id="id_title" style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
                            placeholder="제목을 입력하세요">
                 </div>
                 <div style="height: 58.7%; border:2px solid #B3B3B3;">
@@ -30,7 +30,7 @@
                     <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
                     <div style="float: right">
                         <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
-                        <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                        <input id="review_btn" value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
                         color: white">
                     </div>
                 </div>
@@ -70,7 +70,46 @@
         const realUpload = document.querySelector('.real-upload');
         realUpload.addEventListener('change', getImageFiles);
 
+        {#  리뷰 작성/수정 구분  #}
+        function reviewChangePage(){
+            const urlSearch = new URLSearchParams(location.search);
+            if(urlSearch.has('id')){
+                document.getElementById('id_address').value= "{{ room.address }}"
+                document.getElementById('id_title').innerText= "{{ review.reviewTitle }}"
+                let images = ''
+                {% for img in review.additionalImage %}
+                    images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
+                {% endfor %}
+                document.getElementsByClassName('image-preview')[0].innerHTML = images
+                {#document.getElementById('id_rent').value= "{{ review.rent }}"#}
+                {#document.getElementById('id_deposit').value= "{{ review.deposit }}"#}
+                {#document.getElementById('id_monthlyRent').value= "{{ review.monthlyRent }}"#}
+                {#document.getElementById('id_roomSize').value= "{{ review.roomSize }}"#}
+                {#document.getElementById('id_humidity').value= "{{ review.humidity }}"#}
+                {#document.getElementById('id_soundproof').value= "{{ review.soundproof }}"#}
+                {#document.getElementById('id_lighting').value= "{{ review.lighting }}"#}
+                {#document.getElementById('id_cleanliness').value= "{{ review.cleanliness }}"#}
+                {#document.getElementById('review_sentence').innerText= "{{ review.reviewSentence|safe }}"#}
+                let text = '';
+                {% for sentence in review.reviewSentence %}
+                    text += "{{ sentence }}"
+                {% endfor %}
+                document.getElementById('review_sentence').innerText = text
+            }
+        }
+
+        function updateReview(){
+            document.getElementById('review_sentence1').value = document.getElementById('review_sentence').innerText
+
+        }
     </script>
+
+    {% if request.path == normalUserReviewChange %}
+        <script>
+            reviewChangePage()
+        </script>
+    {% endif %}
+
     <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
     <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
 {% endblock %}

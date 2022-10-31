@@ -180,6 +180,59 @@ def normal_user_review_read(request):
 
     return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'is_writer': is_writer, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
+# 리뷰 수정 페이지 GET
+def normal_user_review_change(request):
+    review_num = request.GET.get('id')
+    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
+    roomId = review['roomId']
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+    print(review)
+
+    context = {
+        'review': review,
+        'room': room
+    }
+
+    return render(request, 'normal_user_review_write.html', context)
+
+# 리뷰 수정 등록 PUT
+@api_view(['PUT'])
+def normal_user_review_update(request):
+    user = request.user
+    review_id = None
+    print('method: ', request.method)
+    if request.method == 'PUT':
+        data = dict(request.PUT)
+        print('data: ', data)
+        data1 = {}
+        form = customForms.TextReviewWriteForm(request.PUT, request.FILES)
+        data1['reviewSentence'] = data['review_sentence']
+        print('revSentence: ', data1['reviewSentence'])
+        images = request.FILES.getlist('images')
+        print(form)
+        if form.is_valid():
+            print('PUT: ', request.PUT)
+            print(request.FILES)
+            data1['reviewTitle'] = data['title']
+            # 주소로 원룸을 검색한다.
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
+            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
+            '''
+
+            '''
+            # 원룸 번호를 구한다.
+            print(room)
+            data1['roomId'] = room[0].get('id')
+            data1['uId'] = user.id
+            review = requests.put('http://127.0.0.1:8000/db/review/?id='+str(data1['reviewId']), data=data1)
+            review_id = json.loads(review.text).get('id')
+            for image in images:
+                img = json.loads(
+                    requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
+                img_name = handle_uploaded_file(image, str(img.get('id')))
+                requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
+                             data={'reviewId': review_id, 'image': img_name})
+        return Response(str(review_id))
 
 @api_view(['POST'])
 def normal_user_review_recommend(request):

@@ -17,6 +17,32 @@ function review_submit(e) {
     document.getElementById('review_sentence1').value = document.getElementById('review_sentence').innerText
     // serialize the data for sending the form data.
     var form = new FormData(e.currentTarget);
+    const URLSearch = new URLSearchParams(location.search);
+    if (URLSearch.has('id')) {
+        alert("if문-리뷰수정")
+        // var reviewForm = new FormData($('text_review')[0])
+        var form = new FormData(e.currentTarget);
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": "{{csrf_token}}" }
+        });
+        $.ajax({
+                type: 'PUT',
+                url: "../normal_user_review_update/",
+                async: false,
+                processData: false,
+                contentType: false,
+                data: form,
+                success: function (response){
+                    alert("리뷰가 수정되었습니다.")
+                    window.location.replace('/normal_user_review_read/?id='+response);
+                },
+                error: function (e){
+                    alert("리뷰 수정에 실패하였습니다.")
+                }
+            })
+    }
+    else{
+        alert("else문-리뷰등록")
     // make POST ajax call
     $.ajax({
         type: 'POST',
@@ -33,7 +59,7 @@ function review_submit(e) {
             // alert the error if any error occured
             alert(response["responseJSON"]["error"]);
         }
-    })
+    })}
 }
 window.onload = function(){
     document.getElementById("id_address").addEventListener("click", function(){ //주소입력칸을 클릭하면
