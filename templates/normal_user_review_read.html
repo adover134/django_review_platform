@@ -24,7 +24,6 @@
             });
         </script>
         <script type="text/javascript">
-        console.log('{{review.reviewWriter}}');
 
         // icon 이미지 <-> selected icon 이미지 변환 함수
         // 만들 예정
@@ -100,19 +99,27 @@
 
     <div id="row1">
         <div id="writer">
-
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                &nbsp작성자 : {{review.reviewWriter}}
+            </div>
         </div>
         <div style="height:100%; width:8.1%;"></div>
         <div id="address">
-
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                <span>{{review.address}}&nbsp&nbsp</span>
+            </div>
         </div>
         <div id="room_read">
-
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                <a>이동</a>
+            </div>
         </div>
     </div>
     <div id="row2">
         <div id="title">
-
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                <span>&nbsp{{review.reviewTitle}}</span>
+            </div>
         </div>
     </div>
     <div id="row3">
@@ -130,11 +137,11 @@
         {% endfor %}
     </div>
     <div id="row5">
-        <div id="icons">
+        <div id="icons" style="display:flex; align-items:center;">
             {% if icons %}
                 {% for i in icon %}
                     <a onclick="selectIcon(this)">
-                        <img src="{% static 'images/iconImage/' %}{{i}}.png" style="width:25px; height:25px;">
+                        <img src="{% static 'images/iconImage/' %}{{i}}.png">
                         <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}.png">
                         <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}{{i}}.png">
                         <input type="text" hidden value="{{i}}">
@@ -152,42 +159,22 @@
 
             </div>
             <div id="rec_button">
-                추천
+                <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                    추천
+                </div>
             </div>
             <div id="rep_icon">
 
             </div>
             <div id="rep_button">
-                신고
+                <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                    신고
+                </div>
             </div>
         </div>
     </div>
 </div>
+<br>
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
 <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
-<script>
-    window.onload = function()
-    {
-        let a = Array.from(document.getElementById('row3').children);
-        console.log(a[0].offsetHeight);
-        a.forEach(function (o) {
-            let b = o.offsetHeight / 16;
-            let c = o.offsetWidth - o.offsetHeight;
-            let d = o.innerText;
-            c = (c / d.length) / 16;
-            console.log(o);
-            if (b > c)
-                o.style.fontSize = c.toString() + 'rem';
-            else
-                o.style.fontSize = b.toString() + 'rem';
-        });
-        a=document.getElementById('rec_button');
-        b=(a.offsetHeight/16).toString()+'rem';
-        a.style.fontSize=b;
-        a=document.getElementById('rep_button');
-        b=(a.offsetHeight/16).toString()+'rem';
-        a.style.fontSize=b;
-    }
-</script>
-<br>
 {% endblock %}

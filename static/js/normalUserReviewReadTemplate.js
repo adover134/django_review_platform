@@ -110,3 +110,153 @@ function toggleReport(){
         })
     }
 }
+window.onload = function()
+{
+    let a = Array.from(document.getElementById('row3').children);
+    a.forEach(function (o) {
+        let b = o.offsetHeight / 16;
+        let c = o.offsetWidth - o.offsetHeight;
+        let d = o.innerText;
+        c = (c / d.length) / 16;
+        if (b > c)
+            o.style.fontSize = c.toString() + 'rem';
+        else
+            o.style.fontSize = b.toString() + 'rem';
+    });
+    a=document.getElementById('writer');
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    a=document.getElementById('address');
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    a=document.getElementById('room_read');
+    b=(a.offsetHeight/16).toString();
+    let c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    a=document.getElementById('title');
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    a=document.getElementById('icons');
+    b=(a.offsetHeight);
+    c=$('#icons').find('img');
+    c[0].style.height=b.toString()+'px';
+    c[0].style.width=b.toString()+'px';
+    console.log(c[0]);
+    a=document.getElementById('rec_button');
+    b=(a.offsetHeight/16).toString();
+    c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    a=document.getElementById('rep_button');
+    b=(a.offsetHeight/16).toString();
+    c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    let k = document.getElementsByClassName('review_preview');
+    for (let i=0;i<k.length;i++){
+        let o = k[i];
+        a=o.offsetHeight/16;
+        let l=o.offsetWidth-o.offsetHeight;
+        let m = o.innerText;
+        let n = (l / m.length)/16;
+        if (a > n) {
+            o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
+        }
+        else
+            o.style.fontSize=a.toString()+'rem';
+    }
+    a = Array.from(document.getElementsByClassName('review_title'));
+    a.forEach(function(o){
+        b=(o.offsetHeight/16).toString()+'rem';
+        o.style.fontSize=b;
+    });
+    a = Array.from(document.getElementsByClassName('review_preview'));
+    a.forEach(function(o){
+        b=(o.offsetHeight/16).toString()+'rem';
+        o.style.fontSize=b;
+    });
+}
+window.onresize = function()
+{
+    let a = Array.from(document.getElementById('row3').children);
+    a.forEach(function (o) {
+        let b = o.offsetHeight / 16;
+        let c = o.offsetWidth - o.offsetHeight;
+        let d = o.innerText;
+        c = (c / d.length) / 16;
+        if (b > c)
+            o.style.fontSize = c.toString() + 'rem';
+        else
+            o.style.fontSize = b.toString() + 'rem';
+    });
+    a=document.getElementById('writer');
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    a=document.getElementById('address');
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    a=document.getElementById('room_read');
+    b=(a.offsetHeight/16).toString();
+    let c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    a=document.getElementById('title');
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    b=(a.offsetHeight/16).toString()+'rem';
+    a.style.fontSize=b;
+    a=document.getElementById('icons');
+    b=(a.offsetHeight);
+    c=$('#icons').find('img');
+    c[0].style.height=b.toString()+'px';
+    c[0].style.width=b.toString()+'px';
+    console.log(c[0]);
+    a=document.getElementById('rec_button');
+    b=(a.offsetHeight/16).toString();
+    c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    a=document.getElementById('rep_button');
+    b=(a.offsetHeight/16).toString();
+    c=(a.offsetWidth/16/a.innerText.length).toString();
+    if (b<c)
+        a.style.fontSize=b+'rem';
+    else
+        a.style.fontSize=c+'rem';
+    let k = document.getElementsByClassName('review_preview');
+    for (let i=0;i<k.length;i++){
+        let o = k[i];
+        a=o.offsetHeight/16;
+        let l=o.offsetWidth-o.offsetHeight;
+        let m = o.innerText;
+        let n = (l / m.length)/16;
+        if (a > n) {
+            o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
+        }
+        else
+            o.style.fontSize=a.toString()+'rem';
+    }
+    a = Array.from(document.getElementsByClassName('review_title'));
+    a.forEach(function(o){
+        b=(o.offsetHeight/16).toString()+'rem';
+        o.style.fontSize=b;
+    });
+    a = Array.from(document.getElementsByClassName('review_preview'));
+    a.forEach(function(o){
+        b=(o.offsetHeight/16).toString()+'rem';
+        o.style.fontSize=b;
+    });
+}
