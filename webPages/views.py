@@ -131,7 +131,6 @@ def normal_user_review_read(request):
     icons.append([])
     icons.append([])
     if icon_urls:
-        print('it ', icon_urls)
         for i in range(len(icon_urls)):
             icon = json.loads(requests.get(icon_urls[i]).text)
             match icon.get('iconKind'):
@@ -144,11 +143,15 @@ def normal_user_review_read(request):
                 case '3':
                     icons[3].append(i)
 
-    # 출력할 아이콘 목록
     icon = []
-    for i in range(4):
-        if len(icons[i]) > 0:
-            icon.append(i)
+    if icons == [[],[],[],[]]:
+        icons = None
+        icon = []
+    else:
+        # 출력할 아이콘 목록
+        for i in range(4):
+            if len(icons[i]) > 0:
+                icon.append(i)
 
     # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
     recommended = None

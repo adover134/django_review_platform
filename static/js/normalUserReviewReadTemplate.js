@@ -4,7 +4,7 @@ var selected_icon = null;
 var selected_num;
 // 선택된 아이콘이 있을 경우 해당 아이콘의 미선택 상태의 이미지 위치를 넣는다.
 var unselect_image;
-var sentence = document.getElementById("row4").children;
+var sentence = $('#row4').find('span');
 var length = sentence.length;
 
 function selectIcon(e){
@@ -26,12 +26,12 @@ function selectIcon(e){
 
 function tok(a){
     for(var i=0;i< icons[a].length;i++)
-        document.getElementById('row4').children[icons[a][i]].style.color='#A23355';
+        sentence[icons[a][i]].style.color='#A23355';
 }
 function tak(){
-    var reviews = document.getElementById('row4').children;
-    for(var i=0;i<reviews.length;i++)
-        reviews[i].style.color = 'black';
+    console.log(reviews);
+    for(var i=0;i<sentence.length;i++)
+        sentence[i].style.color = 'black';
 }
 const csrftoken = Cookies.get('csrftoken');
 function toggleRecommend(){

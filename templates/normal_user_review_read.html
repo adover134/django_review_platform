@@ -87,6 +87,7 @@
                         })
                     })
                 });
+            var icons = {{icons}}
         </script>
     </div>
 </div>
@@ -119,11 +120,24 @@
         <div style="width:19.962%; height:100%;"></div>
     </div>
     <div id="row4">
-
+        {% for sentence in review.reviewSentence %}
+            <span>{{sentence}}</span><br>
+        {% endfor %}
     </div>
     <div id="row5">
         <div id="icons">
-
+            {% if icons %}
+                {% for i in icon %}
+                    <a onclick="selectIcon(this)">
+                        <img src="{% static 'images/iconImage/' %}{{i}}.png" style="width:25px; height:25px;">
+                        <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}.png">
+                        <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}{{i}}.png">
+                        <input type="text" hidden value="{{i}}">
+                    </a>
+                {% endfor %}
+            {% else %}
+                <span>아이콘이 없습니다.</span>
+            {% endif %}
         </div>
         <div id="rec_rep">
             <div id="rec_icon">

@@ -90,30 +90,6 @@ def handle_uploaded_file(f, name):
     return name+'.png'
 
 
-def normal_user_review_read(request):
-    token = request.COOKIES.get('token')
-    user = request.user
-    review = None
-    review_num = request.GET.get('id')
-    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
-    address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
-    review['address'] = address
-    icon_urls = review.get('includedIcon')
-    icons = []
-    if icon_urls:
-        print('it ', icon_urls)
-        for icon in icon_urls:
-            icon_info = json.loads(requests.get(icon).text)
-            print(icon_info)
-            icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
-            icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
-            icons.append(icon_info)
-    if user:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons})
-    else:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons})
-
-
 def image(request):
     return render(request, 'normal_user_review_search.html')
 
