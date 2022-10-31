@@ -172,6 +172,11 @@ def normal_user_review_read(request):
             if json.loads(requests.get(report).text).get('uId') == user.id:
                 reported = True
                 break
+    review_writer = json.loads(requests.get('http://127.0.0.1:8000/db/user/'+str(review.get('uId'))+'/').text)
+    print('ttt', review_writer)
+    print('ttt', user)
+    if user == review_writer:
+        print('True')
 
     return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
