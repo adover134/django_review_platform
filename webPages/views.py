@@ -232,6 +232,15 @@ def normal_user_review_update(request):
 
 
 @api_view(['POST'])
+@login_required()
+def normal_user_review_delete(request):
+    print(request.POST.get('review'))
+    if json.loads(requests.get('http://127.0.0.1:8000/db/review/'+request.POST.get('review')).text).get('uId') == request.user.id:
+        requests.delete('http://127.0.0.1:8000/db/review/'+request.POST.get('review'))
+    return Response('success')
+
+
+@api_view(['POST'])
 def normal_user_review_recommend(request):
     data = dict(request.POST)
     user = request.user

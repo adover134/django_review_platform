@@ -114,9 +114,32 @@
                 <a href="/normal_user_review_change/?id={{review.id}}">수정</a>
             </div>
         </div>
+        <script>
+            const csrftoken = Cookies.get('csrftoken');
+            function review_delete_func(){
+                $.ajax({
+                    type: 'POST',
+                    url: "/normal_user_review_delete/",
+                    async: false,
+                    headers: {'X-CSRFToken': csrftoken},
+                    dataType: 'json',
+                    data: {
+                        'review': {{review.id}},
+                    },
+                    success: function (response) {
+                        // on successful creating object
+                        window.location.replace('/normal_user_review_search/');
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert('error');
+                    }
+                })
+            }
+        </script>
         <div style="height:100%; width:4.15%;">
             <div id="review_delete" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                <a href="#" onclick="review_delete('{{review.id}}')">삭제</a>
+                <a href="javascript:(0)" onclick="review_delete_func();">삭제</a>
             </div>
         </div>
         <div id="room_read">

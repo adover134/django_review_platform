@@ -28,7 +28,6 @@ window.onresize = function(){
 }
 window.onload = function(){
     let searched_address = new URLSearchParams(window.location.search);
-    console.log(searched_address);
     if (searched_address){
         document.getElementById("address1").value = new URLSearchParams(window.location.search).get('address');
     }

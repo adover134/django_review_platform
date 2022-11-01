@@ -33,7 +33,6 @@ function tak(){
     for(var i=0;i<sentence.length;i++)
         sentence[i].style.color = 'black';
 }
-const csrftoken = Cookies.get('csrftoken');
 function toggleRecommend(){
     if (reported){
         alert('이미 신고한 글입니다.');
@@ -198,6 +197,7 @@ window.onload = function()
         o.style.fontSize=b;
     });
 }
+
 window.onresize = function()
 {
     let a = Array.from(document.getElementById('row3').children);
@@ -285,31 +285,4 @@ window.onresize = function()
         b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
-}
-function review_delete(e) {
-    // preventing from page reload and default actions
-    console.log(e)
-    if (is_writer)
-    // make POST ajax call
-    {
-        $.ajax({
-            type: 'DELETE',
-            url: "/db/review/" + e,
-            async: false,
-            headers: {'X-CSRFToken': csrftoken},
-            dataType: 'json',
-            data: {},
-            success: function (response) {
-                // on successfull creating object
-                window.location.replace('/normalUserReviewSearch');
-            },
-            error: function (response) {
-                // alert the error if any error occured
-                alert(response["responseJSON"]["error"]);
-            }
-        })
-    }
-    else{
-        alert('본인이 작성한 리뷰만 삭제 가능합니다.\n작성자 본인이시라면 로그인해주세요.');
-    }
 }
