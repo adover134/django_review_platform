@@ -1,0 +1,66 @@
+{% extends 'normal_user_base.html' %}
+{% load static %}
+
+{% block main_contents %}
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+        window.onload = function(){
+            document.getElementById("id_address").addEventListener("click", function(){ //주소입력칸을 클릭하면
+            //카카오 지도 발생
+            new daum.Postcode({
+                oncomplete: function(data) { //선택시 입력값 세팅
+                document.getElementById("id_address").value = data.address; // 주소 넣기
+                document.getElementById("id_postcode").value = data.zonecode; // 주소 넣기
+            }}).open();
+            });
+        }
+
+
+        function normalUserRoomWrite(e) {
+            e.preventDefault();
+            var form = new FormData(e.currentTarget)
+            alert('함수 호출')
+            // 원룸 등록
+            $.ajax({
+                type: 'POST',
+                url: "/normal_user_room_write/",
+                async: false,
+                data: form,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    // on successfull creating object
+                    {#if(response.get('postcode')){ // 코드 수정 필요함#}
+                    {#    alert(postcode, "이미 등록된 원룸입니다.")#}
+                    {#    window.location.href = '/normal_user_room_read/?postcode='+ response['postcode']#}
+                    {# } #}
+                    {#else{#}
+                        alert("원룸이 등록되었습니다.")
+                        window.location.replace('/normal_user_room_read/?roomId=' + response);
+                    {# } #}
+                },
+                error: function (response) {
+                    // alert the error if any error occured
+
+                    alert("원룸 등록에 실패하였습니다.")
+                    alert(response["responseJSON"]["error"]);
+                }
+            })
+        }
+    {#$("#form_room").submit(normalUserRoomWrite);#}
+    </script>
+    <form id="form_room" action="#" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input id="id_address" name="address" placeholder="주소를 입력하세요">
+    <input id="id_postcode" name="postcode" placeholder="우편번호" readonly>
+    <input name="name" placeholder="원룸이름">
+    <input name="builtYear" placeholder="건축연도">
+    <input name="commonInfo" placeholder="commonInfo">
+    <input name="ownerPhone" placeholder="집주인 전화번호">
+    <button type="submit">원룸 등록</button>
+    </form>
+    <script>
+    $("#form_room").submit(normalUserRoomWrite);
+    </script>
+{% endblock %}
