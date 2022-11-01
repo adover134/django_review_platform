@@ -27,7 +27,7 @@
                     <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
                     <div style="float: right">
                         <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
-                        <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                        <input id="review_submit" value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
                         color: white">
                     </div>
                 </div>
@@ -92,6 +92,7 @@
                     text += "{{ sentence }}\n"
                 {% endfor %}
                 document.getElementById('review_sentence').innerText = text
+                document.getElementById('review_submit').value = '리뷰 수정'
             }
         }
         reviewChangePage()
