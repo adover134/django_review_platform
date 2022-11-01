@@ -26,7 +26,7 @@ urlpatterns = [
     path('loginPage/', views.loginPage, name='loginPage'),
     path('signup/', views.signup, name='signup'),
     path('infoCheck/', views.infoCheck, name='infoCheck'),
-    path('normalUserReviewSearch/', views.normal_user_review_search, name='normalUserReviewSearch'),
+    path('normal_user_review_search/', views.normal_user_review_search, name='normalUserReviewSearch'),
     path('normal_user_review_write_page/', views.normal_user_review_write_page, name='normalUserReviewWrite'),
     path('normal_user_review_read/', views.normal_user_review_read, name='normalUserReviewRead'),
     path('toggleRecommmend/', views.normal_user_review_recommend, name='normalUserReviewRecommend'),
@@ -43,7 +43,7 @@ urlpatterns = [
     path('normal_user_review_write/', views.review_write, name='review_write'),
     path('normal_user_review_change/', views.normal_user_review_change, name='normalUserReviewChange'),
     path('normal_user_review_update/', views.normal_user_review_update, name='normalUserReviewUpdate'),
-    # path('review_search/', views.review_search, name='reviewTest'),
+    path('normal_user_review_delete/', views.normal_user_review_delete, name='normalUserReviewDelete'),
     path('introduction/', views.introduction, name='introduction'),
     path('user_inactivated/', views.user_inactivated),
 ]

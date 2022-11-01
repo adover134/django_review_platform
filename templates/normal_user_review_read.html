@@ -11,12 +11,8 @@
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
 <div id="reviewHead" style = "height:32.8%; ">
     <div style ="margin:15px; height:100%">
-        <div style="width:24.7%; height:90.7%; margin-right:20px; display: inline-block;float:left;">
-            {% if review.representiveImage == 'None' %}
-                <img src="{% static 'images/' %}{{review.representiveImage}}.png">
-            {% else %}
-                <img src="{% static 'images/iconImage/' %}no-photo.png" style="width:100%; height:100%;">
-            {% endif %}
+        <div id="review_image" style="width:24.7%; height:90.7%; margin-right:20px; display: inline-block;float:left;">
+            <img src="{% static 'images/reviewImage/' %}{{review.representiveImage|defaultImage}}" style="width:100%; height:100%;">
         </div>
         <div id="mapDiv" style = "display:inline-block;"></div>
         <script>
@@ -115,12 +111,35 @@
         </div>
         <div style="height:100%; width:4.15%; border-right:1px solid #B3B3B3;">
             <div id="review_update" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                <a>수정</a>
+                <a href="/normal_user_review_change/?id={{review.id}}">수정</a>
             </div>
         </div>
+        <script>
+            const csrftoken = Cookies.get('csrftoken');
+            function review_delete_func(){
+                $.ajax({
+                    type: 'POST',
+                    url: "/normal_user_review_delete/",
+                    async: false,
+                    headers: {'X-CSRFToken': csrftoken},
+                    dataType: 'json',
+                    data: {
+                        'review': {{review.id}},
+                    },
+                    success: function (response) {
+                        // on successful creating object
+                        window.location.replace('/normal_user_review_search/');
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert('error');
+                    }
+                })
+            }
+        </script>
         <div style="height:100%; width:4.15%;">
             <div id="review_delete" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                <a href="#" onclick="review_delete('{{review.id}}')">삭제</a>
+                <a href="javascript:(0)" onclick="review_delete_func();">삭제</a>
             </div>
         </div>
         <div id="room_read">
@@ -170,7 +189,7 @@
         </div>
         <div id="rec_rep">
             <div id="rec_icon">
-
+                <a><img src="{% static 'images/iconImage/' %}recommend.png"></a>
             </div>
             <div id="rec_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
@@ -178,7 +197,7 @@
                 </div>
             </div>
             <div id="rep_icon">
-
+                <a><img src="{% static 'images/iconImage/' %}report.png"></a>
             </div>
             <div id="rep_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">

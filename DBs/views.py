@@ -222,20 +222,23 @@ class ReviewViewSets(ModelViewSet):
         data = self.get_serializer(instance).data
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
-        # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
-        #for icon in data['icons']:
-        #    a=3
-            #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
-        # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
-        data1 = request.data
-        # 텍스트 리뷰인 경우
-        # 리뷰 본문 데이터를 가져온다.
-        review_sentence = data1['reviewSentence']
-        # 시각화 모듈을 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장이 이뤄진다.
-        #시각화모듈(reviewSentence)
-        # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
-        # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
-        data['reviewSentence'] = sentence_split(review_sentence)
+        update_data = copy.deepcopy(request.data)
+        data1 = data
+        data1['reviewTitle'] = update_data.get('reviewTitle')
+
+        print(update_data)
+        review_sentence = review_to_icons(update_data.get('reviewSentence'))
+        data1['reviewSentence'] = review_sentence['reviews']
+
+        # 새 분석 결과를 아이콘 정보로 저장한다.
+        for i in range(len(review_sentence['kind'])):
+            iconData = {}
+            iconData['review'] = review_sentence['reviews'][i]
+            iconData['kind'] = review_sentence['kind'][i]
+            iconData['reviewId'] = review_id
+            if review_sentence['kind'][i] != 4:
+                requests.post('http://127.0.0.1:8000/db/icon/', data=iconData)
+
         # 갱신된 데이터로 새 시리얼라이저를 생성한다.
         serializer = self.get_serializer(instance, data=data)
         # 생성된 시리얼라이저의 유효성을 검사한다.
@@ -243,7 +246,7 @@ class ReviewViewSets(ModelViewSet):
         # 검사 후, 그 시리얼라이저로 데이터를 갱신한다.
         self.perform_update(serializer)
         # 성공 응답코드를 반환한다.
-        return HttpResponse(status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -547,6 +550,11 @@ class ReviewImageViewSets(ModelViewSet):
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoomImageViewSets(ModelViewSet):

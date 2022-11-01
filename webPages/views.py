@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 import requests
 import json
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import api_view
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -234,6 +235,64 @@ def normal_user_review_update(request):
                              data={'reviewId': review_id, 'image': img_name})
         return Response(str(review_id))
 
+# 리뷰 수정 페이지 GET
+def normal_user_review_change(request):
+    review_num = request.GET.get('id')
+    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
+    roomId = review['roomId']
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+
+    context = {
+        'review': review,
+        'room': room
+    }
+
+    return render(request, 'normal_user_review_write.html', context)
+
+
+@api_view(['POST'])
+def normal_user_review_update(request):
+    user = request.user
+    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+request.GET.get('id')+'/').text)
+    if request.method == 'POST':
+        data = dict(request.POST)
+        data1 = {}
+        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
+        data1['reviewSentence'] = data['review_sentence']
+        images = request.FILES.getlist('images')
+        if form.is_valid():
+            for icon in review.get('includedIcon'):
+                requests.delete(icon)
+            data1['reviewTitle'] = data['title']
+            # 주소로 원룸을 검색한다.
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
+            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
+            '''
+
+            '''
+            # 원룸 번호를 구한다.
+            data1['roomId'] = room[0].get('id')
+            data1['uId'] = user.id
+            requests.put('http://127.0.0.1:8000/db/review/'+str(review.get('id'))+'/', data=data1)
+            review_id = review.get('id')
+            for image in images:
+                img = json.loads(
+                    requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
+                img_name = handle_uploaded_file(image, str(img.get('id')))
+                requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
+                             data={'reviewId': review_id, 'image': img_name})
+        return Response(str(review_id))
+
+
+@api_view(['POST'])
+@login_required()
+def normal_user_review_delete(request):
+    print(request.POST.get('review'))
+    if json.loads(requests.get('http://127.0.0.1:8000/db/review/'+request.POST.get('review')).text).get('uId') == request.user.id:
+        requests.delete('http://127.0.0.1:8000/db/review/'+request.POST.get('review'))
+    return Response('success')
+
+
 @api_view(['POST'])
 def normal_user_review_recommend(request):
     data = dict(request.POST)
@@ -410,6 +469,7 @@ def review_write(request):
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
+        print('dd', data)
         form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
@@ -440,7 +500,7 @@ def review_write(request):
 
 
 def handle_uploaded_file(f, name):
-    with open('static/images/reviewImage' + name + '.png', 'wb+') as destination:
+    with open('static/images/reviewImage/' + name + '.png', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     return name + '.png'

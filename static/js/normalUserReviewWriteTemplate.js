@@ -9,8 +9,7 @@ function to_text(){
     document.getElementById('icons').style.display='none';
 }
 
-$("#text_review").submit(review_submit)
-
+$("#text_review").submit(review_submit);
 function review_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
@@ -18,48 +17,42 @@ function review_submit(e) {
     // serialize the data for sending the form data.
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
-    if (URLSearch.has('id')) {
-        alert("if문-리뷰수정")
+    if (window.location.pathname==='/normal_user_review_change/') {
         // var reviewForm = new FormData($('text_review')[0])
-        var form = new FormData(e.currentTarget);
-        $.ajaxSetup({
-            headers: { "X-CSRFToken": "{{csrf_token}}" }
-        });
         $.ajax({
-                type: 'PUT',
-                url: "../normal_user_review_update/",
-                async: false,
-                processData: false,
-                contentType: false,
-                data: form,
-                success: function (response){
-                    alert("리뷰가 수정되었습니다.")
-                    window.location.replace('/normal_user_review_read/?id='+response);
-                },
-                error: function (e){
-                    alert("리뷰 수정에 실패하였습니다.")
-                }
-            })
-    }
+            type: 'POST',
+            url: "/normal_user_review_update/?id="+URLSearch.get('id'),
+            async: false,
+            data: form,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // on successfull creating object
+                window.location.replace('/normal_user_review_read/?id='+response);
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert(response["responseJSON"]["error"]);
+            }
+        })}
     else{
-        alert("else문-리뷰등록")
     // make POST ajax call
-    $.ajax({
-        type: 'POST',
-        url: "/normal_user_review_write/",
-        async: false,
-        data: form,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            // on successfull creating object
-            window.location.replace('/normal_user_review_read/?id='+response);
-        },
-        error: function (response) {
-            // alert the error if any error occured
-            alert(response["responseJSON"]["error"]);
-        }
-    })}
+        $.ajax({
+            type: 'POST',
+            url: "/normal_user_review_write/",
+            async: false,
+            data: form,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // on successfull creating object
+                window.location.replace('/normal_user_review_read/?id='+response);
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert(response["responseJSON"]["error"]);
+            }
+        })}
 }
 window.onload = function(){
     document.getElementById("id_address").addEventListener("click", function(){ //주소입력칸을 클릭하면
