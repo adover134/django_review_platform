@@ -27,6 +27,18 @@ div#midContent{
   height:82.5%;
   width:100%;
 }
+#leftSideMenu{
+  border-right:2px solid #B3B3B3;
+  border-left:none;
+  width:20%;
+}
+#mainDiv{
+  width:60%;
+}
+#rightSideMenu{
+  border-left:2px solid #B3B3B3;
+  width:20%;
+}
 div.middle{
   display:inline-block;
   float:left;
