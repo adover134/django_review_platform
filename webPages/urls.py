@@ -41,6 +41,8 @@ urlpatterns = [
     path('test/', include('webTests.urls')),
     path('room_test3-1/', views.testing, name='TESTING'),
     path('normal_user_review_write/', views.review_write, name='review_write'),
+    path('normal_user_review_change/', views.normal_user_review_change, name='normalUserReviewChange'),
+    path('normal_user_review_update/', views.normal_user_review_update, name='normalUserReviewUpdate'),
     path('introduction/', views.introduction, name='introduction'),
     path('user_inactivated/', views.user_inactivated),
 ]
