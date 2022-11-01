@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -98,6 +99,11 @@ class ReviewImage(models.Model):
     def __str__(self):
         return self.image
 
+    def delete(self):
+        print(self.image)
+        delete_review_image(self.image)
+        return models.Model.delete(self)
+
 
 class RoomImage(models.Model):
     roomId = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='roomImage')
@@ -108,3 +114,8 @@ class RoomImage(models.Model):
 
     def __str__(self):
         return self.image
+
+
+def delete_review_image(image):
+    if os.path.exists('static/images/reviewImage'+image):
+        os.remove('static/images/reviewImage'+image)
