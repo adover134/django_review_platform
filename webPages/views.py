@@ -125,7 +125,6 @@ def normal_user_review_read(request):
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
-    print(review)
     review['address'] = address
     icon_urls = review.get('includedIcon')
 
@@ -189,7 +188,6 @@ def normal_user_review_change(request):
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
     roomId = review['roomId']
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-    print(review)
 
     context = {
         'review': review,
@@ -207,7 +205,6 @@ def normal_user_review_update(request):
         data = dict(request.POST)
         data1 = {}
         form = customForms.TextReviewWriteForm(request.POST, request.FILES)
-        print(data)
         data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
         if form.is_valid():
@@ -221,7 +218,6 @@ def normal_user_review_update(request):
 
             '''
             # 원룸 번호를 구한다.
-            print(room)
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
             requests.put('http://127.0.0.1:8000/db/review/'+str(review.get('id'))+'/', data=data1)
