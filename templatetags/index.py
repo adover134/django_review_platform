@@ -66,3 +66,11 @@ def defaultImage(image):
         return image
     else:
         return 'no-photo.png'
+
+
+@register.filter
+def defaultRoomImage(image):
+    if image is not None and os.path.isfile('static/images/roomImage/'+image):
+        return image
+    else:
+        return 'no-photo.png'
