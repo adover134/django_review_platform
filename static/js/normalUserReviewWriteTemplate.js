@@ -9,8 +9,7 @@ function to_text(){
     document.getElementById('icons').style.display='none';
 }
 
-$("#text_review").submit(review_submit)
-const csrftoken = Cookies.get('csrftoken');
+$("#text_review").submit(review_submit);
 function review_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
@@ -19,7 +18,6 @@ function review_submit(e) {
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
     if (window.location.pathname==='/normal_user_review_change/') {
-        alert("if문-리뷰수정")
         // var reviewForm = new FormData($('text_review')[0])
         $.ajax({
             type: 'POST',
@@ -38,7 +36,6 @@ function review_submit(e) {
             }
         })}
     else{
-        alert("else문-리뷰등록")
     // make POST ajax call
         $.ajax({
             type: 'POST',
