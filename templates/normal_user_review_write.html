@@ -70,7 +70,7 @@
         {#  리뷰 작성/수정 구분  #}
         function reviewChangePage(){
             const urlSearch = new URLSearchParams(location.search);
-            if(urlSearch.has('id')){
+            if(window.location.pathname==='/normal_user_review_change/'){
                 document.getElementById('id_address').value= "{{ room.address }}"
                 document.getElementById('id_title').value= "{{ review.reviewTitle }}"
                 let images = ''
