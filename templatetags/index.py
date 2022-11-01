@@ -62,7 +62,7 @@ def sets(lists):
 
 @register.filter
 def defaultImage(image):
-    if os.path.isfile('static/images/reviewImage/'+image):
+    if image is not None and os.path.isfile('static/images/reviewImage/'+image):
         return image
     else:
         return 'no-photo.png'
