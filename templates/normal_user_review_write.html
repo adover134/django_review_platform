@@ -18,27 +18,27 @@
             </div>
             <div id="tr2">
                 <div style="height: 9.09%; width: 100%; margin-bottom: 1.302%;">
-                    <input style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
+                    <input id="id_title" style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
                            placeholder="제목을 입력하세요">
                 </div>
                 <div style="height:22%; width:100%;margin-bottom: 1%;">
                     <div style = "height:100%; width:30%;display:inline-block; border-right:2px solid #B3B3B3; float:left;">
-                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value=""checked="checked">월세</label>
-                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value="">전세</label>
-                        <br><label style="float:left;width:100%;;">보증금 <input style = "margin-left: 1.7%;"class ="deposit" type="number" name="deposit" value=""> 만원</label>
-                        <br><label class="o">월세 <input style ="margin-left:5%;"class ="deposit" type="number" name="monthly" value=""> 만원</label>
-                        <br><label class="o">넓이 <input style ="margin-left:5%; width:40%; height:20px;" type="number" name="area" value="">
-                                <select style ="height:24px;" name = "room_area">
-                                    <option value="room_area"> 평 </option>
+                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value="0" oninput="toggleChk()">전세</label>
+                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value="1" checked oninput="toggleChk()">월세</label>
+                        <br><label style="float:left;width:100%;;">보증금 <input id="id_deposit" style = "margin-left: 1.7%;"class ="deposit" type="number" name="deposit" value="" required> 만원</label>
+                        <label style="display:block;" class="o">월세 <input id="monthly" style ="margin-left:5%;"class ="deposit" type="number" name="monthly" value="" required> 만원</label>
+                        <br><label class="o">넓이 <input id="id_roomSize" style ="margin-left:5%; width:40%; height:20px;" type="number" step="any" name="area" value="" required>
+                                <select style ="height:24px;" name = "room_area" required>
                                     <option value="meter">㎡</option>
+                                    <option value="room_area"> 평 </option>
                                 </select>
                             </label>
                     </div>
                     <div style="height:100%;width:70%; display: inline-block;">
-                        <label class = "label">방음 <input style ="margin-left:5%;" type="range" id="proof" class="range" min="0" max="5"></label>
-                        <label class = "label" >일조량 <input style ="margin-left:5%;" type="range" id="sunshine" class="range" min="0" max="5"></label>
-                        <br><label class="label" >청결 <input style ="margin-left:5%;" type="range" id="clean" class="range" min="0" max="5"></label>
-                        <label class = "label">습도 <input style ="margin-left:10%;" type="range" id="humidity" class="range" min="0" max="5"></label>
+                        <label class = "label">방음 <input style ="margin-left:5%;" type="range" id="proof" class="range" min="1" max="5" name="proof" value="3" required></label>
+                        <label class = "label" >일조량 <input style ="margin-left:5%;" type="range" id="sunshine" class="range" min="1" max="5" name="sunshine" value="3" required></label>
+                        <br><label class="label" >청결 <input style ="margin-left:5%;" type="range" id="clean" class="range" min="1" max="5" name="clean" value="3" required></label>
+                        <label class = "label">습도 <input style ="margin-left:10%;" type="range" id="humidity" class="range" min="1" max="5" name="humidity" value="3" required></label>
                     </div>
                 </div>
                 <div style="height: 42%; border:2px solid #B3B3B3;">
@@ -49,7 +49,7 @@
                     <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
                     <div style="float: right">
                         <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
-                        <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                        <input id="review_submit" value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
                         color: white">
                     </div>
                 </div>
@@ -85,7 +85,7 @@
 
           return li;
         }
-
+        var text = '';
         const realUpload = document.querySelector('.real-upload');
         realUpload.addEventListener('change', getImageFiles);
         {#  리뷰 작성/수정 구분  #}
@@ -99,16 +99,15 @@
                     images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
                 {% endfor %}
                 document.getElementsByClassName('image-preview')[0].innerHTML = images
-                {#document.getElementById('id_rent').value= "{{ review.rent }}"#}
-                {#document.getElementById('id_deposit').value= "{{ review.deposit }}"#}
-                {#document.getElementById('id_monthlyRent').value= "{{ review.monthlyRent }}"#}
-                {#document.getElementById('id_roomSize').value= "{{ review.roomSize }}"#}
-                {#document.getElementById('id_humidity').value= "{{ review.humidity }}"#}
-                {#document.getElementById('id_soundproof').value= "{{ review.soundproof }}"#}
-                {#document.getElementById('id_lighting').value= "{{ review.lighting }}"#}
-                {#document.getElementById('id_cleanliness').value= "{{ review.cleanliness }}"#}
-                {#document.getElementById('review_sentence').innerText= "{{ review.reviewSentence|safe }}"#}
-                let text = '';
+                document.getElementsByName('checking')[{{review.rent}}].checked = true;
+                document.getElementById('id_deposit').value= {{ review.deposit }};
+                document.getElementById('monthly').value= {{ review.monthlyRent }}
+                document.getElementById('id_roomSize').value= {{ review.roomSize }}
+                document.getElementById('humidity').value= {{ review.humidity }}
+                document.getElementById('proof').value= {{ review.proof }}
+                document.getElementById('sunshine').value= {{ review.sunshine }}
+                document.getElementById('clean').value= {{ review.clean }}
+
                 {% for sentence in review.reviewSentence %}
                     text += "{{ sentence }}\n"
                 {% endfor %}

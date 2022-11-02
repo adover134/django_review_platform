@@ -182,7 +182,7 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
-
+    print(review)
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -213,21 +213,19 @@ def normal_user_review_change(request):
 
 
 # 리뷰 수정 등록 PUT
-@api_view(['PUT'])
+@api_view(['POST'])
 def normal_user_review_update(request):
     user = request.user
     review_id = None
-    if request.method == 'PUT':
-        data = dict(request.PUT)
+    cont = {}
+    if request.method == 'POST':
+        data = dict(request.POST)
+        print('ddre', data)
         data1 = {}
-        form = customForms.TextReviewWriteForm(request.PUT, request.FILES)
+        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
-        print('revSentence: ', data1['reviewSentence'])
         images = request.FILES.getlist('images')
-        print(form)
         if form.is_valid():
-            print('PUT: ', request.PUT)
-            print(request.FILES)
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
@@ -236,18 +234,34 @@ def normal_user_review_update(request):
 
             '''
             # 원룸 번호를 구한다.
-            print(room)
+            if len(room) > 0:
+                cont['room_id'] = room[0].get('id')
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
-            review = requests.put('http://127.0.0.1:8000/db/review/?id='+str(data1['reviewId']), data=data1)
-            review_id = json.loads(review.text).get('id')
+            data1['rent'] = int(data['checking'][0])
+            data1['deposit'] = int(data['deposit'][0])
+            if data.get('monthly'):
+                data1['monthlyRent'] = int(data['monthly'][0])
+            area_kind = data['room_area'][0]
+            if area_kind == 'room_area':
+                data1['roomSize'] = float(data['area'][0])*3.31
+            else:
+                data1['roomSize'] = float(data['area'][0])
+            data1['proof'] = int(data['proof'][0])
+            data1['sunshine'] = int(data['sunshine'][0])
+            data1['clean'] = int(data['clean'][0])
+            data1['humidity'] = int(data['humidity'][0])
+            review = requests.put('http://127.0.0.1:8000/db/review/'+str(request.GET.get('id'))+'/', data=data1)
+            review_id = request.GET.get('id')
+            print('relgetneaaed', review_id)
+            cont['review_id'] = review_id
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
                 img_name = handle_uploaded_file(image, str(img.get('id')))
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
-        return Response(str(review_id))
+        return Response(cont)
 
 
 # 리뷰 수정 페이지 GET
@@ -483,6 +497,7 @@ def review_write(request):
     review_id = None
     if request.method == 'POST':
         data = dict(request.POST)
+        print('ddddd', data)
         data1 = {}
         form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
@@ -505,6 +520,19 @@ def review_write(request):
                 data1['roomId'] = room.get('id')
                 cont['room_id'] = room.get('id')
             data1['uId'] = str(user.id)
+            data1['rent'] = int(data['checking'][0])
+            data1['deposit'] = int(data['deposit'][0])
+            if data.get('monthly'):
+                data1['monthlyRent'] = int(data['monthly'][0])
+            area_kind = data['room_area'][0]
+            if area_kind == 'room_area':
+                data1['roomSize'] = float(data['area'][0])*3.31
+            else:
+                data1['roomSize'] = float(data['area'][0])
+            data1['proof'] = int(data['proof'][0])
+            data1['sunshine'] = int(data['sunshine'][0])
+            data1['clean'] = int(data['clean'][0])
+            data1['humidity'] = int(data['humidity'][0])
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
