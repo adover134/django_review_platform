@@ -510,10 +510,47 @@ def handle_uploaded_file(f, name):
             destination.write(chunk)
     return name + '.png'
 
+def normal_user_room_write_page(request):
+    return render(request, 'normal_user_room_write.html')
 
-def room_write(request):
+@api_view(['POST'])
+def normal_user_room_write(request):
     user = request.user
-    return render(request, 'room_write.html')
+    print(request.method)
+
+    if request.method == 'POST':
+        data = dict(request.POST)
+        data1 = {}
+        form = customForms.RoomWriteForm(request.POST, request.FILES)
+
+        data1['address'] = data['address']
+        data1['postcode'] = data['postcode']
+        data1['name'] = data['name']
+        data1['builtYear'] = data['builtYear']
+        data1['commonInfo'] = data['builtYear']
+        data1['ownerPhone'] = data['ownerPhone']
+
+        print('postcode: ', data['postcode'])
+        print('FILES: ', request.FILES)
+
+        if form.is_valid():
+            # 우편번호로 원룸 존재 체크
+            # 이미 등록된 원룸인 경우
+            if json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data['postcode'][0]).text):
+                print("이미 등록된 원룸입니다.")
+                context = {
+                    'postcode': data['postcode'][0]
+                }
+                return Response(context) # 해당 우편번호 리턴
+            else: #등록되지 않은 원룸의 경우 생성
+                room = requests.post('http://127.0.0.1:8000/db/room/', data=data1)
+                room_id = json.loads(room.text).get('id')
+                print(room_id)
+                print('room: ', room)
+                return Response(room_id)
+
+
+
 
 # 회원 탈퇴
 # is_active 필드값 1 -> 0으로 변경

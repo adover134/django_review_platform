@@ -289,7 +289,12 @@ class RoomViewSets(ModelViewSet):
             for info in data1.get('commonInfo'):   # 입력된 공통 정보 번호를 검색 조건에 추가한다.
                 query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
             query.add(query_common_info, Q.AND)
-
+        if data1.get('postcode'):
+            postcode = Q()
+            postcode = data1.get('postcode')[0]
+            postcode = postcode.replace('/', '')
+            query_postcode = Q(postcode=postcode)
+            query.add(query_postcode, Q.AND)
         #최종 검색을 한다.
         searched = Room.objects.filter(query)
         # 검색 결과를 반환한다.

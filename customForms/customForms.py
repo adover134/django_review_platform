@@ -17,6 +17,15 @@ class TextReviewWriteForm(ReviewWriteForm):
     field_order = ['title', 'address', 'review_sentence', 'images']
 
 
+class RoomWriteForm(forms.Form):
+    address = forms.CharField(widget=customFields.NonStickyTextInputField())
+    postcode = forms.IntegerField(widget=customFields.NonStickyTextInputField())
+    name = forms.CharField(widget=customFields.NonStickyTextInputField())
+    builtYear = forms.IntegerField(widget=customFields.NonStickyTextInputField())
+    # commonInfo = forms.
+    ownerPhone = forms.CharField(widget=customFields.NonStickyTextInputField())
+
+
 class UserInfoForm(forms.Form):
     성 = forms.CharField()
     이름 = forms.CharField()
