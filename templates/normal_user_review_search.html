@@ -70,15 +70,21 @@
                 </script>
                 <div id="written_date_selects" >
                     <div id="written_date_selects_div">
-                        <select id="writtenStart" name="writtenStart"></select>
-                            ~
-                        <select id="writtenEnd" name="writtenEnd"></select>
+                        <select name="date">
+                            <option value=''>-- 선택 --</option>
+                            <option value="1week" {% if date == '1week' %}selected{% endif %}>최근 1주일간</option>
+                            <option value="2weeks" {% if date == '2weeks' %}selected{% endif %}>최근 2주일간</option>
+                            <option value="1month" {% if date == '1month' %}selected{% endif %}>최근 1달간</option>
+                        </select>
+{#                        <select id="writtenStart" name="writtenStart"></select>#}
+{#                            ~#}
+{#                        <select id="writtenEnd" name="writtenEnd"></select>#}
                     </div>
                     <script>
-                        a=((document.getElementById('writtenStart').offsetHeight-6)/16).toString()+'rem';
-                        document.getElementById('writtenStart').style.fontSize=a;
-                        b=((document.getElementById('writtenEnd').offsetHeight-6)/16).toString()+'rem';
-                        document.getElementById('writtenEnd').style.fontSize=b;
+                        {#a=((document.getElementById('writtenStart').offsetHeight-6)/16).toString()+'rem';#}
+                        {#document.getElementById('writtenStart').style.fontSize=a;#}
+                        {#b=((document.getElementById('writtenEnd').offsetHeight-6)/16).toString()+'rem';#}
+                        {#document.getElementById('writtenEnd').style.fontSize=b;#}
                     </script>
                 </div>
             </div>
