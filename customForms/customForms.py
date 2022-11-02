@@ -7,6 +7,7 @@ from DBs.models import Review
 class ReviewWriteForm(forms.Form):
     title = forms.CharField(widget=customFields.NonStickyTextInputField())
     address = forms.CharField(widget=customFields.NonStickyTextInputField())
+    postcode = forms.CharField(widget=customFields.NonStickyTextInputField())
     images = forms.ImageField(label='room_images', widget=customFields.NonStickyImageField(attrs={'multiple': True, 'autocomplete': 'off'}), required=False)
 
 
@@ -18,7 +19,7 @@ class TextReviewWriteForm(ReviewWriteForm):
 
 
 class RoomWriteForm(forms.Form):
-    address = forms.CharField(widget=customFields.NonStickyTextInputField())
+    room_address = forms.CharField(widget=customFields.NonStickyTextInputField())
     postcode = forms.IntegerField(widget=customFields.NonStickyTextInputField())
     name = forms.CharField(widget=customFields.NonStickyTextInputField())
     builtYear = forms.IntegerField(widget=customFields.NonStickyTextInputField())

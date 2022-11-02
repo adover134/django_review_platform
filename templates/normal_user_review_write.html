@@ -1,5 +1,5 @@
 {% extends 'normal_user_base.html' %}
-{% load static %}
+{% load index static %}
 
 {% block main_contents %}
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -13,6 +13,9 @@
                         text-align: center; margin: 0 auto" id="review_address">주소</div>
                 <input id="id_address" style="float: right; border-color: #A23355;
                         flex:1" name="address" required>
+                <div style="background-color: #A23355 ; color: white; height:100%; width: 10.61% ;
+                        text-align: center; margin: 0 auto" id="review_postcode">우편번호</div>
+                <input id="id_postcode" style="float: right; border-color: #A23355; width:20%;" name="postcode" required>
             </div>
             <div id="tr2">
                 <div style="height: 9.09%; width: 100%; margin-bottom: 2.604%;">
@@ -69,9 +72,9 @@
 
         {#  리뷰 작성/수정 구분  #}
         function reviewChangePage(){
-            console.log(window.location.pathname);
             if(window.location.pathname==='/normal_user_review_change/'){
                 document.getElementById('id_address').value= "{{ room.address }}"
+                document.getElementById('id_postcode').value= "{{ room.postcode }}"
                 document.getElementById('id_title').value= "{{ review.reviewTitle }}"
                 let images = ''
                 {% for img in review.additionalImage %}
@@ -95,7 +98,6 @@
                 document.getElementById('review_submit').value = '리뷰 수정'
             }
         }
-        reviewChangePage()
     </script>
     <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
     <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>

@@ -6,7 +6,7 @@
     {% endblock %}
     <script>
         let current_URL = new URLSearchParams(window.location.search);
-        var page_num=window.location.href.indexOf('&page');
+        var page_num=window.location.href.indexOf('page');
     </script>
     <div id="reviews_div">
         <div id="reviews">
@@ -45,19 +45,27 @@
             {% if paged_review.has_previous %}
                 <a id="prev_page">이전으로</a>
                 <script>
-                    if(page_num === -1)
-                        document.getElementById('prev_page').href=window.location.href+"&page={{paged_review.prev_page_number}}"
+                    if(page_num === -1) {
+                        if (window.location.pathname === '/normal_user_review_search/')
+                            document.getElementById('prev_page').href = window.location.href + "?page={{paged_review.previous_page_number}}";
+                        else
+                            document.getElementById('prev_page').href = window.location.href + "&page={{paged_review.previous_page_number}}";
+                    }
                     else
-                        document.getElementById('prev_page').href=window.location.href.slice(0, page_num)+"&page={{paged_review.prev_page_number}}"
+                        document.getElementById('prev_page').href=window.location.href.slice(0, page_num)+"page={{paged_review.previous_page_number}}";
                 </script>
             {% endif %}
             {% if paged_review.has_next %}
                 <a id="next_page">다음으로</a>
                 <script>
-                    if(page_num === -1)
-                        document.getElementById('next_page').href=window.location.href+"&page={{paged_review.next_page_number}}"
+                    if(page_num === -1) {
+                        if (window.location.pathname === '/normal_user_review_search/')
+                            document.getElementById('next_page').href = window.location.href + "?page={{paged_review.next_page_number}}";
+                        else
+                            document.getElementById('next_page').href = window.location.href + "&page={{paged_review.next_page_number}}";
+                    }
                     else
-                        document.getElementById('next_page').href=window.location.href.slice(0, page_num)+"&page={{paged_review.next_page_number}}"
+                        document.getElementById('next_page').href=window.location.href.slice(0, page_num)+"page={{paged_review.next_page_number}}";
                 </script>
             {% endif %}
         {% else %}

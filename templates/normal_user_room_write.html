@@ -11,7 +11,7 @@
             new daum.Postcode({
                 oncomplete: function(data) { //선택시 입력값 세팅
                 document.getElementById("id_address").value = data.address; // 주소 넣기
-                document.getElementById("id_postcode").value = data.zonecode; // 주소 넣기
+                document.getElementById("id_postcode").value = data.zonecode; // 우편번호 넣기
             }}).open();
             });
         }
@@ -19,7 +19,8 @@
 
         function normalUserRoomWrite(e) {
             e.preventDefault();
-            var form = new FormData(e.currentTarget)
+            var form = new FormData(e.currentTarget);
+            console.log(form);
             alert('함수 호출')
             // 원룸 등록
             $.ajax({
@@ -52,11 +53,10 @@
     </script>
     <form id="form_room" action="#" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <input id="id_address" name="address" placeholder="주소를 입력하세요">
+    <input id="id_address" name="room_address" placeholder="주소를 입력하세요">
     <input id="id_postcode" name="postcode" placeholder="우편번호" readonly>
     <input name="name" placeholder="원룸이름">
     <input name="builtYear" placeholder="건축연도">
-    <input name="commonInfo" placeholder="commonInfo">
     <input name="ownerPhone" placeholder="집주인 전화번호">
     <button type="submit">원룸 등록</button>
     </form>

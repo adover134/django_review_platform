@@ -194,7 +194,9 @@ def normal_user_review_read(request):
 
     return render(request, 'normal_user_review_read.html', {'review': review, 'paged_review': paged_review, 'icons': icons, 'is_writer': is_writer, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
+
 # 리뷰 수정 페이지 GET
+@login_required(login_url='/loginPage/')
 def normal_user_review_change(request):
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
@@ -207,6 +209,7 @@ def normal_user_review_change(request):
     }
 
     return render(request, 'normal_user_review_write.html', context)
+
 
 # 리뷰 수정 등록 PUT
 @api_view(['PUT'])
@@ -245,8 +248,10 @@ def normal_user_review_update(request):
                              data={'reviewId': review_id, 'image': img_name})
         return Response(str(review_id))
 
+
 # 리뷰 수정 페이지 GET
-def normal_user_review_change(request):
+@login_required(login_url='/loginPage/')
+def normal_user_room_change(request):
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
     roomId = review['roomId']
@@ -260,19 +265,22 @@ def normal_user_review_change(request):
     return render(request, 'normal_user_review_write.html', context)
 
 
-@api_view(['POST'])
-def normal_user_review_update(request):
+# 리뷰 수정 등록 PUT
+@api_view(['PUT'])
+def normal_user_room_update(request):
     user = request.user
-    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+request.GET.get('id')+'/').text)
-    if request.method == 'POST':
-        data = dict(request.POST)
+    review_id = None
+    if request.method == 'PUT':
+        data = dict(request.PUT)
         data1 = {}
-        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
+        form = customForms.TextReviewWriteForm(request.PUT, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
+        print('revSentence: ', data1['reviewSentence'])
         images = request.FILES.getlist('images')
+        print(form)
         if form.is_valid():
-            for icon in review.get('includedIcon'):
-                requests.delete(icon)
+            print('PUT: ', request.PUT)
+            print(request.FILES)
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
@@ -281,10 +289,11 @@ def normal_user_review_update(request):
 
             '''
             # 원룸 번호를 구한다.
+            print(room)
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
-            requests.put('http://127.0.0.1:8000/db/review/'+str(review.get('id'))+'/', data=data1)
-            review_id = review.get('id')
+            review = requests.put('http://127.0.0.1:8000/db/review/?id='+str(data1['reviewId']), data=data1)
+            review_id = json.loads(review.text).get('id')
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
@@ -474,25 +483,27 @@ def review_write(request):
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
-        print('dd', data)
         form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
-        print(form)
+        cont = {}
         if form.is_valid():
-            print(request.POST)
-            print(request.FILES)
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
-            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
-            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
-            '''
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data['postcode'][0]).text)
 
-            '''
             # 원룸 번호를 구한다.
-            print(room)
-            data1['roomId'] = room[0].get('id')
-            data1['uId'] = user.id
+            if len(room) > 0:
+                data1['roomId'] = room[0].get('id')
+            # 해당 원룸이 없다면 만든다.
+            else:
+                room_data = {}
+                room_data['address'] = str(data['address'][0])
+                room_data['postcode'] = int(data['postcode'][0])
+                room = json.loads(requests.post('http://127.0.0.1:8000/db/room/', data=room_data).text)
+                data1['roomId'] = room.get('id')
+                cont['room_id'] = room.get('id')
+            data1['uId'] = str(user.id)
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
@@ -501,7 +512,8 @@ def review_write(request):
                 img_name = handle_uploaded_file(image, str(img.get('id')))
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
-        return Response(str(review_id))
+        cont['review_id'] = str(review_id)
+        return Response(cont)
 
 
 def handle_uploaded_file(f, name):
@@ -516,38 +528,26 @@ def normal_user_room_write_page(request):
 @api_view(['POST'])
 def normal_user_room_write(request):
     user = request.user
-    print(request.method)
 
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
         form = customForms.RoomWriteForm(request.POST, request.FILES)
 
-        data1['address'] = data['address']
-        data1['postcode'] = data['postcode']
-        data1['name'] = data['name']
-        data1['builtYear'] = data['builtYear']
-        data1['commonInfo'] = data['builtYear']
-        data1['ownerPhone'] = data['ownerPhone']
-
-        print('postcode: ', data['postcode'])
-        print('FILES: ', request.FILES)
-
         if form.is_valid():
             # 우편번호로 원룸 존재 체크
             # 이미 등록된 원룸인 경우
-            if json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data['postcode'][0]).text):
-                print("이미 등록된 원룸입니다.")
-                context = {
-                    'postcode': data['postcode'][0]
-                }
-                return Response(context) # 해당 우편번호 리턴
+            print('확인 중')
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
+            if room:
+                return Response(room[0].get('id')) # 해당 우편번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
-                room = requests.post('http://127.0.0.1:8000/db/room/', data=data1)
+                room = requests.post('http://127.0.0.1:8000/db/room/', data=data)
                 room_id = json.loads(room.text).get('id')
-                print(room_id)
-                print('room: ', room)
-                return Response(room_id)
+                return Response(str(room_id))
+        else:
+            print('오류!')
+            return status.HTTP_403_FORBIDDEN
 
 
 

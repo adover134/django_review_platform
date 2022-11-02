@@ -35,7 +35,18 @@ function review_submit(e) {
             contentType: false,
             success: function (response) {
                 // on successfull creating object
-                window.location.replace('/normal_user_review_read/?id='+response);
+                console.log(response);
+                if(Object.keys(response).includes('room_id'))
+                {
+                    if(confirm('정보가 없는 원룸입니다. 정보를 입력해 주실래요?')){
+                        window.location.replace('/normal_user_review_read/?id='+response['review_id']);
+                        //window.location.replace('/normal_user_room_change/?id='+response['room_id']);
+                    }
+                    else
+                        window.location.replace('/normal_user_review_read/?id='+response['review_id']);
+                }
+                else
+                    window.location.replace('/normal_user_review_read/?id='+response['review_id']);
             },
             error: function (response) {
                 // alert the error if any error occured
@@ -44,12 +55,23 @@ function review_submit(e) {
         })}
 }
 window.onload = function(){
-    document.getElementById("id_address").addEventListener("click", function(){ //주소입력칸을 클릭하면
+    function map(){ //주소입력칸을 클릭하면
         //카카오 지도 발생
         new daum.Postcode({
             oncomplete: function(data) { //선택시 입력값 세팅
                 document.getElementById("id_address").value = data.address; // 주소 넣기
+                document.getElementById("id_postcode").value = data.zonecode; // 우편번호 넣기
+                document.getElementById('id_address').readOnly=true;
+                document.getElementById('id_postcode').readOnly=true;
+                document.getElementById('id_address').removeEventListener("click", map);
             }
         }).open();
-    });
+    }
+    document.getElementById("id_address").addEventListener("click", map);
+    reviewChangePage();
+    if(window.location.pathname==='/normal_user_review_change/'){
+        document.getElementById('id_address').readOnly=true;
+        document.getElementById('id_postcode').readOnly=true;
+        document.getElementById('id_address').removeEventListener("click", map);
+    }
 }

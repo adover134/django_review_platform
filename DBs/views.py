@@ -253,6 +253,52 @@ class RoomViewSets(ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = dict(copy.deepcopy(request.data))
+        print('WER', request.data)
+        data1 = {}
+        print('whwhwwhwh', data)
+        if data.get('address'):
+            if str(type(data.get('address'))) == "<class 'list'>":
+                data1['address'] = data.get('address')[0]
+            else:
+                data1['address'] = data.get('address')
+        elif data.get('room_address'):
+            if str(type(data.get('room_address'))) == "<class 'list'>":
+                data1['address'] = data.get('room_address')[0]
+            else:
+                data1['address'] = data.get('address')
+        if str(type(data.get('postcode'))) == "<class 'list'>":
+            data1['postcode'] = int(data.get('postcode')[0])
+        else:
+            data1['postcode'] = int(data.get('postcode'))
+        if data.get('commonInfo'):
+            data1['commonInfo'] = data.get('commonInfo')
+        else:
+            data1['commonInfo'] = []
+        if data.get('name'):
+            if str(type(data.get('name'))) == "<class 'list'>":
+                data1['name'] = data.get('name')[0]
+            else:
+                data1['name'] = data.get('name')
+        if data.get('builtYear'):
+            if str(type(data.get('builtYear'))) == "<class 'list'>":
+                data1['builtYear'] = data.get('builtYear')[0]
+            else:
+                data1['builtYear'] = data.get('builtYear')
+        if data.get('ownerPhone'):
+            if str(type(data.get('ownerPhone'))) == "<class 'list'>":
+                data1['ownerPhone'] = data.get('ownerPhone')[0]
+            else:
+                data1['ownerPhone'] = data.get('ownerPhone')
+        print(data1)
+        serializer = self.get_serializer(data=data1)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        print('ddddatat\ntatateadat\nteata3: ', serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(self, request, args, kwargs)
@@ -260,6 +306,7 @@ class RoomViewSets(ModelViewSet):
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
+        print(data1)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
         if not data1:
             return super().list(self, request, args, kwargs)
@@ -297,6 +344,7 @@ class RoomViewSets(ModelViewSet):
             query.add(query_postcode, Q.AND)
         #최종 검색을 한다.
         searched = Room.objects.filter(query)
+        print('serserser', searched)
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
