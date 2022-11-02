@@ -76,14 +76,12 @@ class ReviewViewSets(ModelViewSet):
         review = serializer.save()
         headers = self.get_success_headers(serializer.data)
         review_id = review.id
-        print(review_id)
 
         for i in range(len(s['kind'])):
             iconData = {}
             iconData['review'] = s['reviews'][i]
             iconData['kind'] = s['kind'][i]
             iconData['reviewId'] = review_id
-            print(s)
             if s['kind'][i] != 4:
                 requests.post('http://127.0.0.1:8000/db/icon/', data=iconData)
 
@@ -111,7 +109,6 @@ class ReviewViewSets(ModelViewSet):
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uId'):
             u = data1.get('uId')[0].replace('/', '')
-            print(u)
             query_user = Q(uId=u)
             query.add(query_user, Q.AND)
         elif data1.get('roomId'):
@@ -205,7 +202,6 @@ class ReviewViewSets(ModelViewSet):
                         searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
         # 검색된 값을 반환한다.
-        print(searched)
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
@@ -226,7 +222,6 @@ class ReviewViewSets(ModelViewSet):
         data1 = data
         data1['reviewTitle'] = update_data.get('reviewTitle')
 
-        print(update_data)
         review_sentence = review_to_icons(update_data.get('reviewSentence'))
         data1['reviewSentence'] = review_sentence['reviews']
 
@@ -353,13 +348,11 @@ class IconViewSets(ModelViewSet):
                     data1['iconKind'] = '2'
                     data1['changedIconKind'] = '22'
                 case '3': # 주거 정보 아이콘 이름
-                    print('wer')
                     data1['iconKind'] = '3'
                     data1['changedIconKind'] = '33'
         else:
             data1['iconKind'] = data['iconKind'][0]
             data1['changedIconKind'] = data['changedIconKind'][0]
-        print('datacheck:', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
@@ -397,7 +390,6 @@ class RecommendViewSets(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        print(serializer.data)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -580,12 +572,6 @@ class RoomImageViewSets(ModelViewSet):
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
-
-
-def ajaxTest(request):
-    manager = json.loads(requests.get('http://127.0.0.1:8000/db/manager/').text)
-    print(manager)
-    return render(request, 'test.html', {"manager": manager})
 
 
 @api_view(['GET'])
