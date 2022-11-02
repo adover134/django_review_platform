@@ -2,6 +2,11 @@ div#rightSideMenu {
   display: none;
 }
 
+.left-side-room-img {
+  width: 30%;
+  height: 100px;
+}
+
 .slider > div {
   height: 35vh;
   min-height: 204px;
