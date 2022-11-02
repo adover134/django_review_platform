@@ -41,4 +41,38 @@ img {
   float: left;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.o {
+  display: inline-block;
+  float: left;
+  width: 100%;
+  margin-left: 3%;
+}
+
+.deposit {
+  width: 50%;
+  height: 20px;
+}
+
+.chk_info {
+  margin-left: 5px;
+}
+
+.range {
+  margin-left: 5px;
+  margin-top: 8%;
+}
+
+.label {
+  float: left;
+  width: 40%;
+  margin-left: 7%;
+}
+
 /*# sourceMappingURL=normalUserReviewWriteTemplate.css.map */

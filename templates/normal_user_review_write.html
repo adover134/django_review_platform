@@ -3,7 +3,6 @@
 
 {% block main_contents %}
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;"></div>
     <div style="width: 100%; height: 100%;">
         <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
@@ -18,11 +17,31 @@
                 <input id="id_postcode" style="float: right; border-color: #A23355; width:20%;" name="postcode" required>
             </div>
             <div id="tr2">
-                <div style="height: 9.09%; width: 100%; margin-bottom: 2.604%;">
-                    <input id="id_title" style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
+                <div style="height: 9.09%; width: 100%; margin-bottom: 1.302%;">
+                    <input style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
                            placeholder="제목을 입력하세요">
                 </div>
-                <div style="height: 58.7%; border:2px solid #B3B3B3;">
+                <div style="height:22%; width:100%;margin-bottom: 1%;">
+                    <div style = "height:100%; width:30%;display:inline-block; border-right:2px solid #B3B3B3; float:left;">
+                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value=""checked="checked">월세</label>
+                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value="">전세</label>
+                        <br><label style="float:left;width:100%;;">보증금 <input style = "margin-left: 1.7%;"class ="deposit" type="number" name="deposit" value=""> 만원</label>
+                        <br><label class="o">월세 <input style ="margin-left:5%;"class ="deposit" type="number" name="monthly" value=""> 만원</label>
+                        <br><label class="o">넓이 <input style ="margin-left:5%; width:40%; height:20px;" type="number" name="area" value="">
+                                <select style ="height:24px;" name = "room_area">
+                                    <option value="room_area"> 평 </option>
+                                    <option value="meter">㎡</option>
+                                </select>
+                            </label>
+                    </div>
+                    <div style="height:100%;width:70%; display: inline-block;">
+                        <label class = "label">방음 <input style ="margin-left:5%;" type="range" id="proof" class="range" min="0" max="5"></label>
+                        <label class = "label" >일조량 <input style ="margin-left:5%;" type="range" id="sunshine" class="range" min="0" max="5"></label>
+                        <br><label class="label" >청결 <input style ="margin-left:5%;" type="range" id="clean" class="range" min="0" max="5"></label>
+                        <label class = "label">습도 <input style ="margin-left:10%;" type="range" id="humidity" class="range" min="0" max="5"></label>
+                    </div>
+                </div>
+                <div style="height: 42%; border:2px solid #B3B3B3;">
                     <div contenteditable class="fake_textarea" style="height: 100%; width: 100%; text-align:left;" id="review_sentence"></div>
                     <input style="display:none;" name="review_sentence" id="review_sentence1">
                 </div>
@@ -30,7 +49,7 @@
                     <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
                     <div style="float: right">
                         <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
-                        <input id="review_submit" value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                        <input value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
                         color: white">
                     </div>
                 </div>
@@ -69,7 +88,6 @@
 
         const realUpload = document.querySelector('.real-upload');
         realUpload.addEventListener('change', getImageFiles);
-
         {#  리뷰 작성/수정 구분  #}
         function reviewChangePage(){
             if(window.location.pathname==='/normal_user_review_change/'){
