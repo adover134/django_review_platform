@@ -17,7 +17,8 @@ function review_submit(e) {
             contentType: false,
             success: function (response) {
                 // on successfull creating object
-                window.location.replace('/normal_user_review_read/?id='+response);
+                console.log(response);
+                window.location.replace('/normal_user_review_read/?id='+response['review_id']);
             },
             error: function (response) {
                 // alert the error if any error occured
@@ -35,7 +36,6 @@ function review_submit(e) {
             contentType: false,
             success: function (response) {
                 // on successfull creating object
-                console.log(response);
                 if(Object.keys(response).includes('room_id'))
                 {
                     if(confirm('정보가 없는 원룸입니다. 정보를 입력해 주실래요?')){
@@ -46,7 +46,9 @@ function review_submit(e) {
                         window.location.replace('/normal_user_review_read/?id='+response['review_id']);
                 }
                 else
+                {
                     window.location.replace('/normal_user_review_read/?id='+response['review_id']);
+                }
             },
             error: function (response) {
                 // alert the error if any error occured
@@ -73,5 +75,16 @@ window.onload = function(){
         document.getElementById('id_address').readOnly=true;
         document.getElementById('id_postcode').readOnly=true;
         document.getElementById('id_address').removeEventListener("click", map);
+    }
+}
+function toggleChk(){
+    var checking = document.getElementsByName('checking');
+    if (checking[1].checked===true){
+        document.getElementById('monthly').parentElement.style.display='block';
+        document.getElementById('monthly').required=true;
+    }
+    else{
+        document.getElementById('monthly').parentElement.style.display='none';
+        document.getElementById('monthly').required=false;
     }
 }

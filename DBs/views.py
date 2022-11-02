@@ -62,6 +62,14 @@ class ReviewViewSets(ModelViewSet):
         data1['reviewTitle'] = data.get('reviewTitle')
         data1['roomId'] = int(data.get('roomId'))
         data1['uId'] = int(data.get('uId'))
+        data1['rent'] = int(data.get('rent'))
+        data1['deposit'] = int(data.get('deposit'))
+        data1['monthlyRent'] = int(data.get('monthlyRent'))
+        data1['roomSize'] = float(data.get('roomSize'))
+        data1['soundproof'] = int(data.get('proof'))
+        data1['lighting'] = int(data.get('sunshine'))
+        data1['cleanliness'] = int(data.get('clean'))
+        data1['humidity'] = int(data.get('humidity'))
         # 입력값의 종류에 따라 아이콘에 대한 입력 방식이 달라진다.
         # 텍스트 리뷰인 경우
         s = review_to_icons(data.get('reviewSentence'))
@@ -70,6 +78,7 @@ class ReviewViewSets(ModelViewSet):
         # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
         # 시각화모듈(data['reviewSentence'])
         # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
+        print('data11111', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
@@ -216,11 +225,27 @@ class ReviewViewSets(ModelViewSet):
         instance = self.get_object()
         # 기존 데이터를 직렬화한다.
         data = self.get_serializer(instance).data
+        print('arijewrklwejlkfwjlwerjlt', data)
+        for i in data.get('includedIcon'):
+            print('insert', i)
+            requests.delete(i)
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
         data1 = data
+        print(update_data)
         data1['reviewTitle'] = update_data.get('reviewTitle')
+        data1['roomId'] = int(update_data.get('roomId'))
+        data1['uId'] = int(update_data.get('uId'))
+        data1['rent'] = int(update_data.get('rent'))
+        data1['deposit'] = int(update_data.get('deposit'))
+        if update_data.get('monthlyRent'):
+            data1['monthlyRent'] = int(update_data.get('monthlyRent'))
+        data1['roomSize'] = float(update_data.get('roomSize'))
+        data1['soundproof'] = int(update_data.get('proof'))
+        data1['lighting'] = int(update_data.get('sunshine'))
+        data1['cleanliness'] = int(update_data.get('clean'))
+        data1['humidity'] = int(update_data.get('humidity'))
 
         review_sentence = review_to_icons(update_data.get('reviewSentence'))
         data1['reviewSentence'] = review_sentence['reviews']
@@ -255,9 +280,7 @@ class RoomViewSets(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = dict(copy.deepcopy(request.data))
-        print('WER', request.data)
         data1 = {}
-        print('whwhwwhwh', data)
         if data.get('address'):
             if str(type(data.get('address'))) == "<class 'list'>":
                 data1['address'] = data.get('address')[0]
@@ -291,11 +314,9 @@ class RoomViewSets(ModelViewSet):
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data.get('ownerPhone')
-        print(data1)
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        print('ddddatat\ntatateadat\nteata3: ', serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -306,7 +327,6 @@ class RoomViewSets(ModelViewSet):
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
-        print(data1)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
         if not data1:
             return super().list(self, request, args, kwargs)
@@ -344,7 +364,6 @@ class RoomViewSets(ModelViewSet):
             query.add(query_postcode, Q.AND)
         #최종 검색을 한다.
         searched = Room.objects.filter(query)
-        print('serserser', searched)
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
