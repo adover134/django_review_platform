@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/normalUserSignUpTemplate.css' %}">
 <div id="disclaimer">
     <p id="disclaimer_head">
-        주의사항
+        안내사항
     </p>
     <ul id="disclaimer_body">
         <li>
@@ -15,18 +15,21 @@
             따라서 이메일을 제공하지 않을 시 회원가입이 제한됩니다.
         </li>
         <li>
-            또한, 회원만이 가능한 기능인 리뷰 작성/수정/삭제/추천/신고 등을 이용할 수 없습니다.
+            로그인을 하지 않을 경우 리뷰 작성/수정/삭제/추천/신고 등의 회원 전용 기능을 이용할 수 없습니다.
         </li>
         <li>
             본 사이트는 회원 정보를 회원 식별 및 관리 이외의 용도로 사용하지 않습니다.
         </li>
+        <li>
+            위의 사항들을 모두 인지하고 동의하신다면 카카오 로그인 버튼을,
+        </li>
+        <li>
+            동의하지 않는 경우 메인페이지로 이동하기 버튼을 눌러주세요.
+        </li>
     </ul>
-    <p id="disclaimer_end">
-        위의 주의사항들을 모두 읽으셨고 동의하신다면 원하는 플랫폼의 로그인 버튼을, 아니면 돌아가기 버튼을 눌러주세요.
-    </p>
 </div>
 <div id="sign_up">
-    <a type="button" href="{% url 'social:begin' 'kakao' %}?next={{ signup }}">카카오 로그인</a>
-    <button type="button" onclick="location.href = '/'">돌아가기</button>
+    <a type="button" href="{% url 'social:begin' 'kakao' %}?next={{ signup }}"><img src="{% static 'images/logo/kakao_login_large_wide.png' %}"></a>
+    <div style="cursor:pointer;" onclick="location.href = '/'">메인 페이지로 이동하기</div>
 </div>
 {% endblock %}

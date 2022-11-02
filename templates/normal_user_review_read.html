@@ -26,73 +26,99 @@
         </script>
         <script type="text/javascript">
 
-        // icon 이미지 <-> selected icon 이미지 변환 함수
-        // 만들 예정
-        function selectIcon2(e){
-            alert("아이콘 클릭 이벤트 발생")
-        }
-
-            document.getElementById('mapDiv').style.width = '71%';
-            document.getElementById('mapDiv').style.height = '90.7%';
-            document.getElementById('mapDiv').style.minWidth = '71%';
-            var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
-                mapOption = {
-                    center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
-                    level: 5 // 지도의 확대 레벨
-                };
-
-            // 지도 생성
-            function resizeMap() {
-                var mapContainer = document.getElementById('map');
-                mapContainer.style.width = document.getElementById('mainDiv').style.width;
+            // icon 이미지 <-> selected icon 이미지 변환 함수
+            // 만들 예정
+            function selectIcon2(e){
+                alert("아이콘 클릭 이벤트 발생")
             }
 
-            var map = new kakao.maps.Map(mapContainer, mapOption);
+                document.getElementById('mapDiv').style.width = '71%';
+                document.getElementById('mapDiv').style.height = '90.7%';
+                document.getElementById('mapDiv').style.minWidth = '71%';
+                var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
+                    mapOption = {
+                        center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
+                        level: 5 // 지도의 확대 레벨
+                    };
 
-            {# 지도에 원룸 위치 표시 #}
-            var geocoder = new kakao.maps.services.Geocoder();
+                // 지도 생성
+                function resizeMap() {
+                    var mapContainer = document.getElementById('map');
+                    mapContainer.style.width = document.getElementById('mainDiv').style.width;
+                }
 
-            $.ajax({
-                url: 'http://127.0.0.1:8000/db/room/',
-                method: "GET",
-                dataType: "json"
-            })
-                .done(function (json) {
-                    $.each(json, function (key, value) {
-                        // 주소로 좌표를 검색합니다
-                        geocoder.addressSearch(value.address, function (result, status) {
+                var map = new kakao.maps.Map(mapContainer, mapOption);
 
-                            // 정상적으로 검색이 완료됐으면
-                            if (status === kakao.maps.services.Status.OK) {
-                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                {# 지도에 원룸 위치 표시 #}
+                var geocoder = new kakao.maps.services.Geocoder();
 
-                                // 결과값으로 받은 위치를 마커로 표시합니다
-                                var marker = new kakao.maps.Marker({
-                                    map: map,
-                                    position: coords
-                                });
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/db/room/',
+                    method: "GET",
+                    dataType: "json"
+                })
+                    .done(function (json) {
+                        $.each(json, function (key, value) {
+                            // 주소로 좌표를 검색합니다
+                            geocoder.addressSearch(value.address, function (result, status) {
 
-                                var room_info = ''
-                                if (value.name !== null)
-                                    room_info = value.name
-                                else
-                                    room_info = value.address
+                                // 정상적으로 검색이 완료됐으면
+                                if (status === kakao.maps.services.Status.OK) {
+                                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                                // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                var infowindow = new kakao.maps.InfoWindow({
-                                    content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
-                                });
+                                    // 결과값으로 받은 위치를 마커로 표시합니다
+                                    var marker = new kakao.maps.Marker({
+                                        map: map,
+                                        position: coords
+                                    });
 
-                                infowindow.open(map, marker);
-                            }
+                                    var room_info = ''
+                                    if (value.name !== null)
+                                        room_info = value.name
+                                    else
+                                        room_info = value.address
+
+                                    // 인포윈도우로 장소에 대한 설명을 표시합니다
+                                    var infowindow = new kakao.maps.InfoWindow({
+                                        content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
+                                    });
+
+                                    infowindow.open(map, marker);
+                                }
+                            })
                         })
-                    })
-                });
-        {% if icons == None %}
-            var icons = null;
-        {% else %}
-            var icons = {{icons}};
-        {% endif %}
+                    });
+            {% if icons == None %}
+                var icons = null;
+            {% else %}
+                var icons = {{icons}};
+            {% endif %}
+            {% if recommended %}
+                var recommended = true;
+            {% else %}
+                var recommended = false;
+            {% endif %}
+            {% if reported %}
+                var reported = true;
+            {% else %}
+                var reported = false;
+            {% endif %}
+            {% if reported %}
+                var reported = true;
+            {% else %}
+                var reported = false;
+            {% endif %}
+            {% if user.is_anonymous %}
+                let userloggedin=false;
+            {% else %}
+                let userloggedin=true;
+            {% endif %}
+            var reviewNum = {{review.id}};
+            var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
+            var recommendImg = "{% static 'images/iconImage/recommend.png' %}";
+            var reportedImg = "{% static 'images/iconImage/reported.png' %}";
+            var reportImg = "{% static 'images/iconImage/report.png' %}";
+            var recommendNum = '{{review.recommendedOn|length}}';
         </script>
     </div>
 </div>
@@ -189,19 +215,19 @@
         </div>
         <div id="rec_rep">
             <div id="rec_icon">
-                <a><img src="{% static 'images/iconImage/' %}recommend.png"></a>
+                <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec" src="{% static 'images/iconImage/' %}recommend.png"></a>
             </div>
             <div id="rec_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                    추천
+                    추천 {{review.recommendedOn|length}}
                 </div>
             </div>
             <div id="rep_icon">
-                <a><img src="{% static 'images/iconImage/' %}report.png"></a>
+                <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep" src="{% static 'images/iconImage/' %}report.png"></a>
             </div>
             <div id="rep_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                    신고
+                    신고 {{review.reportedOn|length}}
                 </div>
             </div>
         </div>
