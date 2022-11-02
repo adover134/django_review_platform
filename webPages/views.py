@@ -66,7 +66,8 @@ def infoCheck(request):
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    return render(request, 'normal_user_info_check.html', {'userForm': userForm, 'reviews': reviews})
+    print('erere', paged_review[0])
+    return render(request, 'normal_user_info_check.html', {'userForm': userForm, 'paged_review': paged_review})
 
 
 def normal_user_review_search(request):

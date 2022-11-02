@@ -19,6 +19,7 @@ class Room(models.Model):
     address = models.TextField()
     postcode = models.IntegerField(null=True)
     name = models.TextField(null=True)
+    buildingFloorNum = models.IntegerField(null=True)
     builtYear = models.IntegerField(null=True)
     commonInfo = models.JSONField(null=True)
     ownerPhone = models.TextField(null=True)

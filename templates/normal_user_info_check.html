@@ -1,7 +1,7 @@
-{% extends 'normal_user_base.html' %}
+{% extends 'normal_user_review_list.html' %}
 {% load index static %}
 
-{% block main_contents %}
+{% block info %}
 {% if request.path != infoCheck %}
 <meta http-equiv="refresh" content="0; url='{{infoCheck}}'">
 {% else %}
@@ -13,7 +13,6 @@
     };
 </script>
 {% endif %}
-<link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
 <div id="infoCheckAndUpdate">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
     <form id="infoData" method="POST" enctype="multipart/form-data" action="/change_user_info/" onsubmit="get_layout()">
@@ -70,7 +69,7 @@
     </div>
 </div>
 
-<div id="reviews_div">
+<div id="reviews_div1">
     <div id="util" style="display:block;">
         <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
             <div style="display: inline-block;padding-right: 2%;">
@@ -85,31 +84,6 @@
                         style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
             </div>
         </div>
-    </div>
-    <div id="reviews" style="display:block;">
-        {% for review in reviews %}
-            <div style="border: 3px; margin: 1.86% 6.25% 1.86% 6.25%; line-height: 2.8vh;height: 20vh;" >
-                <div style= "background-color:#0dcaf0;height: 68.4%; width :15.2%; display:inline-block; float:left;">
-                    {% if review.additionalImage %}
-                        <img style= "height:100%; width :100%;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
-                    {% endif %}
-                </div>
-                <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
-                    {{ review.reviewTitle }}</span>
-                <span style = "float : right; padding-top: 1%;">
-                    추천 수 {{ review.recommendedOn|length }}</span>
-                <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
-                      {{ review.reviewSentence }}</div>
-                <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
-        {#            리뷰별 아이콘 데이터 목록 #}
-                    {% if review.includedIcon %}
-                        {% for icon in review.includedIcon %}
-                            <img src="{% static 'images/iconImage/' %}{{ icon }}">
-                        {% endfor %}
-                    {% endif %}
-                </span>
-            </div>
-        {% endfor %}
     </div>
 </div>
 <script>
@@ -189,5 +163,6 @@
         })
 
 </script>
+<link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
 <script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
 {% endblock %}
