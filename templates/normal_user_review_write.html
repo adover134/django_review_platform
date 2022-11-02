@@ -12,10 +12,9 @@
                         text-align: center; margin: 0 auto" id="review_address">주소</div>
                 <input id="id_address" style="float: right; border-color: #A23355;
                         flex:1" name="address" required>
-                <script>
-                    let a = (document.getElementById('room_search_filter').offsetHeight/16).toString()+'rem';
-                    document.getElementById('room_search_filter').style.fontSize=a;
-                </script>
+                <div style="background-color: #A23355 ; color: white; height:100%; width: 10.61% ;
+                        text-align: center; margin: 0 auto" id="review_postcode">우편번호</div>
+                <input id="id_postcode" style="float: right; border-color: #A23355; width:20%;" name="postcode" required>
             </div>
             <div id="tr2">
                 <div style="height: 9.09%; width: 100%; margin-bottom: 1.302%;">
@@ -117,7 +116,34 @@
 
         const realUpload = document.querySelector('.real-upload');
         realUpload.addEventListener('change', getImageFiles);
-
+        {#  리뷰 작성/수정 구분  #}
+        function reviewChangePage(){
+            if(window.location.pathname==='/normal_user_review_change/'){
+                document.getElementById('id_address').value= "{{ room.address }}"
+                document.getElementById('id_postcode').value= "{{ room.postcode }}"
+                document.getElementById('id_title').value= "{{ review.reviewTitle }}"
+                let images = ''
+                {% for img in review.additionalImage %}
+                    images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
+                {% endfor %}
+                document.getElementsByClassName('image-preview')[0].innerHTML = images
+                {#document.getElementById('id_rent').value= "{{ review.rent }}"#}
+                {#document.getElementById('id_deposit').value= "{{ review.deposit }}"#}
+                {#document.getElementById('id_monthlyRent').value= "{{ review.monthlyRent }}"#}
+                {#document.getElementById('id_roomSize').value= "{{ review.roomSize }}"#}
+                {#document.getElementById('id_humidity').value= "{{ review.humidity }}"#}
+                {#document.getElementById('id_soundproof').value= "{{ review.soundproof }}"#}
+                {#document.getElementById('id_lighting').value= "{{ review.lighting }}"#}
+                {#document.getElementById('id_cleanliness').value= "{{ review.cleanliness }}"#}
+                {#document.getElementById('review_sentence').innerText= "{{ review.reviewSentence|safe }}"#}
+                let text = '';
+                {% for sentence in review.reviewSentence %}
+                    text += "{{ sentence }}\n"
+                {% endfor %}
+                document.getElementById('review_sentence').innerText = text
+                document.getElementById('review_submit').value = '리뷰 수정'
+            }
+        }
     </script>
     <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
     <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
