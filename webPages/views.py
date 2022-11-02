@@ -105,7 +105,6 @@ def normal_user_review_search(request):
     t = []
     for r in paged_review:
         t.append(list(set(r.get('includedIcon'))))
-    print(t)
     context['paged_review'] = paged_review
     context['icons'] = t
 
@@ -127,6 +126,10 @@ def normal_user_review_read(request):
     address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
     review['address'] = address
     icon_urls = review.get('includedIcon')
+
+    sorted = ''
+    if 'sorted' in request.GET:
+        sorted = request.GET.get('sorted')
 
     # 아이콘 4종류에 대해, 해당하는 리뷰의 번호들을 얻을 수 있다.
     icons = []
@@ -179,7 +182,17 @@ def normal_user_review_read(request):
     else:
         is_writer = 'false'
 
-    return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons, 'is_writer': is_writer, 'icon': icon, 'recommended': recommended, 'reported': reported})
+    reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
+
+    # paginator
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    if page:
+        paged_review = paginator.get_page(page)
+    else:
+        paged_review = paginator.get_page(1)
+
+    return render(request, 'normal_user_review_read.html', {'review': review, 'paged_review': paged_review, 'icons': icons, 'is_writer': is_writer, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
 # 리뷰 수정 페이지 GET
 def normal_user_review_change(request):
@@ -187,7 +200,6 @@ def normal_user_review_change(request):
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
     roomId = review['roomId']
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-    print(review)
 
     context = {
         'review': review,
@@ -201,10 +213,8 @@ def normal_user_review_change(request):
 def normal_user_review_update(request):
     user = request.user
     review_id = None
-    print('method: ', request.method)
     if request.method == 'PUT':
         data = dict(request.PUT)
-        print('data: ', data)
         data1 = {}
         form = customForms.TextReviewWriteForm(request.PUT, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
@@ -333,7 +343,6 @@ def normal_user_review_report(request):
 # 파라미터로 받은 원룸 ID를 가진 리뷰 목록 반환(opt. 정렬조건)
 def get_reviews_by_roomId(roomId, sorted): # 파라미터: 원룸 아이디
     reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?roomId=' + roomId + '/').text)
-    print("반환 리뷰: ", reviews)
     # 파라미터 정렬조건 값 존재시
     if sorted != '':
         reviews = json.loads(requests.get(
@@ -350,10 +359,9 @@ def room_with_reviews_display(request):
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
 
     if 'sorted' in request.GET:
-        sorted = request.GET['sorted']
+        sorted = request.GET.get('sorted')
 
     reviews = get_reviews_by_roomId(roomId, sorted)
-    print(reviews)
 
     #paginator
     paginator = Paginator(reviews, 5)
@@ -377,7 +385,6 @@ def change_user_info(request):
     user = request.user
     if request.method == 'POST':
         data = dict(request.POST)
-        print(data)
         data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'), 'layout': data.get('레이아웃')}
         requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
 
@@ -399,20 +406,18 @@ def check_user_reviews(request):
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    print(paged_review[0])
     return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
 
 
 def room_read(request):
-    roomId = request.GET['roomId'] #파라미터로 넘어오는 원룸 아이디 데이터
+    roomId = request.GET.get('roomId') #파라미터로 넘어오는 원룸 아이디 데이터
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
     sorted = ''
 
     if 'sorted' in request.GET:
-        sorted = request.GET['sorted']
+        sorted = request.GET.get('sorted')
 
     reviews = get_reviews_by_roomId(roomId, sorted)
-    print("room_test -- reviews : ", reviews)
 
     #paginator
     paginator = Paginator(reviews, 5)

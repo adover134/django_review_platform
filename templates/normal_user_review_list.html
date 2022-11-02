@@ -6,9 +6,10 @@
     {% endblock %}
     <script>
         let current_URL = new URLSearchParams(window.location.search);
+        var page_num=window.location.href.indexOf('&page');
     </script>
     <div id="reviews_div">
-        <div id="reviews" >
+        <div id="reviews">
         {% if paged_review %}
             {% for review in paged_review %}
                 <div class="review" style="cursor: default;">
@@ -44,16 +45,22 @@
             {% if paged_review.has_previous %}
                 <a id="prev_page">이전으로</a>
                 <script>
-                    document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+"&page={{paged_review.previous_page_number}}"
+                    if(page_num === -1)
+                        document.getElementById('prev_page').href=window.location.href+"&page={{paged_review.prev_page_number}}"
+                    else
+                        document.getElementById('prev_page').href=window.location.href.slice(0, page_num)+"&page={{paged_review.prev_page_number}}"
                 </script>
             {% endif %}
             {% if paged_review.has_next %}
                 <a id="next_page">다음으로</a>
                 <script>
-                    document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+"&page={{paged_review.next_page_number}}"
+                    if(page_num === -1)
+                        document.getElementById('next_page').href=window.location.href+"&page={{paged_review.next_page_number}}"
+                    else
+                        document.getElementById('next_page').href=window.location.href.slice(0, page_num)+"&page={{paged_review.next_page_number}}"
                 </script>
             {% endif %}
-            {% else %}
+        {% else %}
                 <div style="text-align: center">검색 결과가 없습니다.</div>
         {% endif %}
         </div>

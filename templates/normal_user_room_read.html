@@ -1,7 +1,6 @@
 {% extends 'normal_user_review_list.html' %}
 {% load index static %}
 {% block info %}
-    <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
     <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
@@ -11,7 +10,6 @@
                 <img src="{% static 'images/iconImage/' %}no-photo.png" style="width:100%; height:100%;">
         </div>
         <div id="mapDiv" style = "display:inline-block;"></div>
-        <script type="text/javascript" src="{% static 'js/normalUserRoomReadTemplate.js' %}"></script>
         <script>
             $(document).ready(function () {
                 var a = $('.slider').bxSlider({
@@ -96,56 +94,58 @@
     </div>
     <div style="width:100%; height:56%;">
         <div style="width:100%; height:56%;"></div><div id="reviews_div">
-    <div id="util" style="display:block;">
-        <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
-            <div style="display: inline-block;padding-right: 2%;">
-                <select id="sort_select_box" name="sort_select_box" onchange="sort()">
-                    <option value="1">최신 순</option>
-                    {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-                    <option value="2">추천 순</option>
-                    {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-                    <option value="3">정확도 순</option>
-                    {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-                    {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
-                </select>
+            <div id="util" style="display:block;">
+                <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
+                    <div style="display: inline-block;padding-right: 2%;">
+                        <select id="sort_select_box" name="sort_select_box" onchange="sort()">
+                            <option value="1">최신 순</option>
+                            {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
+                            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
+                            <option value="2">추천 순</option>
+                            {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
+                            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
+                            <option value="3">정확도 순</option>
+                            {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
+                            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="location.href='/normal_user_review_write_page'"
+                                style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
+                    </div>
+                </div>
             </div>
-            <div>
-                <button onclick="location.href='/normal_user_review_write_page'"
-                        style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
+            <div id="reviews" style="display:block;">
+                {% for review in reviews %}
+                    <div style="border: 3px; margin: 1.86% 6.25% 1.86% 6.25%; line-height: 2.8vh;height: 20vh;" >
+                        <div style= "background-color:#0dcaf0;height: 68.4%; width :15.2%; display:inline-block; float:left;">
+                            {% if review.additionalImage %}
+                                <img style= "height:100%; width :100%;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
+                            {% endif %}
+                        </div>
+                        <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
+                {#                리뷰 제목 #}
+                                {{ review.reviewTitle }}</span>
+                        <span style = "float : right; padding-top: 1%;">
+                {#            추천 수 데이터 #}
+                            추천 수 {{ review.recommendedOn|length }}</span>
+                        <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
+                {#            리뷰 내용 데이터 #}
+                              {{ review.reviewSentence }}</div>
+                        <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
+                {#            리뷰별 아이콘 데이터 목록 #}
+                            {% if review.includedIcon %}
+                                {% for icon in review.includedIcon %}
+                                    <img src="{% static 'images/iconImage/' %}{{ icon }}">
+                                {% endfor %}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    <div id="reviews" style="display:block;">
-        {% for review in reviews %}
-            <div style="border: 3px; margin: 1.86% 6.25% 1.86% 6.25%; line-height: 2.8vh;height: 20vh;" >
-                <div style= "background-color:#0dcaf0;height: 68.4%; width :15.2%; display:inline-block; float:left;">
-                    {% if review.additionalImage %}
-                        <img style= "height:100%; width :100%;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
-                    {% endif %}
-                </div>
-                <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
-        {#                리뷰 제목 #}
-                        {{ review.reviewTitle }}</span>
-                <span style = "float : right; padding-top: 1%;">
-        {#            추천 수 데이터 #}
-                    추천 수 {{ review.recommendedOn|length }}</span>
-                <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
-        {#            리뷰 내용 데이터 #}
-                      {{ review.reviewSentence }}</div>
-                <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
-        {#            리뷰별 아이콘 데이터 목록 #}
-                    {% if review.includedIcon %}
-                        {% for icon in review.includedIcon %}
-                            <img src="{% static 'images/iconImage/' %}{{ icon }}">
-                        {% endfor %}
-                    {% endif %}
-                </span>
-            </div>
-        {% endfor %}
-    </div>
 </div>
-    </div>
-</div>
+<link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
+<script type="text/javascript" src="{% static 'js/normalUserRoomReadTemplate.js' %}"></script>
 {% endblock %}
