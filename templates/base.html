@@ -8,11 +8,15 @@
 {% url 'infoCheck' as infoCheck %}
 {% url 'normalUserReviewSearch' as normalUserReviewSearch %}
 {% url 'normalUserReviewWrite' as normalUserReviewWrite %}
+{% url 'normalUserRoomWritePage' as normalUserRoomWritePage %}
+{% url 'normalUserRoomWrite' as normalUserRoomWrite %}
 {% url 'normalUserRoomSearch' as normalUserRoomSearch %}
 {% url 'normalUserReviewRead' as normalUserReviewRead %}
+{% url 'normalUserReviewChange' as normalUserReviewChange %}
+{% url 'normalUserReviewUpdate' as normalUserReviewUpdate %}
 {% url 'wroteReviews' as wroteReviews %}
 {% url 'introduction' as introduction %}
-{% url 'roomWrite' as roomWrite %}
+{% url 'normalUserRoomWrite' as normalUserRoomWrite %}
 {% url 'roomRead' as roomRead %}
 
 <!DOCTYPE html>
@@ -36,15 +40,15 @@
         {% endblock %}
     </div>
     <div id="midContent">
-        <div class="middle" id="leftSideMenu" style="border-right:2px solid #B3B3B3; border-left:none; width:20%; ">
+        <div class="middle" id="leftSideMenu">
             {% block left_side_bar %}
             {% endblock %}
         </div>
-        <div class="middle" id="mainDiv" style="width:60%;">
+        <div class="middle" id="mainDiv">
             {% block main_contents %}
             {% endblock %}
         </div>
-        <div class="middle" id="rightSideMenu" style="border-left:2px solid #B3B3B3; width:20%;">
+        <div class="middle" id="rightSideMenu">
             {% block right_side_bar %}
             {% endblock %}
         </div>

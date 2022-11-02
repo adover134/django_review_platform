@@ -6,19 +6,15 @@
     {% endblock %}
     <script>
         let current_URL = new URLSearchParams(window.location.search);
+        var page_num=window.location.href.indexOf('&page');
     </script>
     <div id="reviews_div">
-        <div id="reviews" >
+        <div id="reviews">
         {% if paged_review %}
             {% for review in paged_review %}
                 <div class="review" style="cursor: default;">
                     <div class="review_image">
-                        {% if review.representiveImage == 'None' %}
-                            <img src="{% static 'images/' %}{{review.representiveImage}}.png">
-                        {% else %}
-                            {# 리뷰 대표 이미지 없을 경우 다른 이미지 출력 #}
-                            <img src="{% static 'images/iconImage/' %}no-photo.png" style="width:100%; height:100%;">
-                        {% endif %}
+                        <img src="{% static 'images/reviewImage/' %}{{review.representiveImage|defaultImage}}" style="height:100%; width:100%;">
                     </div>
                     <div class="review_info">
                         <div class="review_title" style="color:black; cursor: pointer;">
@@ -49,70 +45,24 @@
             {% if paged_review.has_previous %}
                 <a id="prev_page">이전으로</a>
                 <script>
-                    document.getElementById('prev_page').href='{{normalUserReviewSearch}}?'+"&page={{paged_review.previous_page_number}}"
+                    if(page_num === -1)
+                        document.getElementById('prev_page').href=window.location.href+"&page={{paged_review.prev_page_number}}"
+                    else
+                        document.getElementById('prev_page').href=window.location.href.slice(0, page_num)+"&page={{paged_review.prev_page_number}}"
                 </script>
             {% endif %}
             {% if paged_review.has_next %}
                 <a id="next_page">다음으로</a>
                 <script>
-                    document.getElementById('next_page').href='{{normalUserReviewSearch}}?'+"&page={{paged_review.next_page_number}}"
+                    if(page_num === -1)
+                        document.getElementById('next_page').href=window.location.href+"&page={{paged_review.next_page_number}}"
+                    else
+                        document.getElementById('next_page').href=window.location.href.slice(0, page_num)+"&page={{paged_review.next_page_number}}"
                 </script>
             {% endif %}
-            {% else %}
+        {% else %}
                 <div style="text-align: center">검색 결과가 없습니다.</div>
         {% endif %}
         </div>
-        <script>
-            window.onresize = function(){
-                let k = document.getElementsByClassName('review_preview');
-                for (let i=0;i<k.length;i++){
-                    let o = k[i];
-                    a=o.offsetHeight/16;
-                    let l=o.offsetWidth-o.offsetHeight;
-                    let m = o.innerText;
-                    let n = (l / m.length)/16;
-                    if (a > n) {
-                        o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
-                    }
-                    else
-                        o.style.fontSize=a.toString()+'rem';
-                }
-                a = Array.from(document.getElementsByClassName('review_title'));
-                a.forEach(function(o){
-                    b=(o.offsetHeight/16).toString()+'rem';
-                    o.style.fontSize=b;
-                });
-                a = Array.from(document.getElementsByClassName('review_preview'));
-                a.forEach(function(o){
-                    b=(o.offsetHeight/16).toString()+'rem';
-                    o.style.fontSize=b;
-                });
-            }
-            window.onload = function(){
-                let k = document.getElementsByClassName('review_preview');
-                for (let i=0;i<k.length;i++){
-                    let o = k[i];
-                    a=o.offsetHeight/16;
-                    let l=o.offsetWidth-o.offsetHeight;
-                    let m = o.innerText;
-                    let n = (l / m.length)/16;
-                    if (a > n) {
-                        o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
-                    }
-                    else
-                        o.style.fontSize=a.toString()+'rem';
-                }
-                a = Array.from(document.getElementsByClassName('review_title'));
-                a.forEach(function(o){
-                    b=(o.offsetHeight/16).toString()+'rem';
-                    o.style.fontSize=b;
-                });
-                a = Array.from(document.getElementsByClassName('review_preview'));
-                a.forEach(function(o){
-                    b=(o.offsetHeight/16).toString()+'rem';
-                    o.style.fontSize=b;
-                });
-            }
-        </script>
     </div>
 {% endblock %}

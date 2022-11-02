@@ -105,7 +105,7 @@
 {% endblock %}
 {% block info %}
 <div style ="border-bottom: solid 2px #B3B3B3 ; width:100%; height:10.6% ;padding:3.47% 8.854% 0.5% 6.07%;">
-	    <input type="search"style="  border-radius: 5px; width: 60.7%; height:100%;" placeholder="검색어 입력">
+	    <input type="search" id="address1" style="  border-radius: 5px; width: 60.7%; height:100%;" placeholder="검색어 입력">
 	    <span type ="icon" class ="icon"><i class="fa fa-search"></i></span>
 
     <div style="word-spacing:15px; float:right; ">
@@ -120,17 +120,18 @@
     </div>
 </div>
     <script>
-    $("select[name=sort_select_box]").change(function(){
-        const currentUrl = location.pathname
+        $("select[name=sort_select_box]").change(function(){
+            var currentUrl = location.pathname
 
-        console.log(currentUrl)
-        console.log($(this).val()); //value값 가져오기 => (1,2,3)
-        console.log($("select[name=sort_select_box] option:selected").text()); //text값 가져오기 => (최신순, 추천순, )
+            console.log(currentUrl)
+            console.log($(this).val()); //value값 가져오기 => (1,2,3)
+            console.log($("select[name=sort_select_box] option:selected").text()); //text값 가져오기 => (최신순, 추천순, )
 
-        var sorted_value = $(this).val()
-        const urlSearch = new URLSearchParams(location.search);
-        urlSearch.set('sorted', sorted_value)
-        window.open(location.pathname + '?' + urlSearch, '_self');
-    });
+            var sorted_value = $(this).val()
+            const urlSearch = new URLSearchParams(location.search);
+            urlSearch.set('sorted', sorted_value)
+            window.open(location.pathname + '?' + urlSearch, '_self');
+        });
     </script>
+    <script type="text/javascript" src="{% static 'js/normalUserReviewSearchTemplate.js' %}"></script>
 {% endblock %}

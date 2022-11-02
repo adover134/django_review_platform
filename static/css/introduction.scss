@@ -1,14 +1,11 @@
-@import "color.scss";
-#reviewInfo{
-  height:32.8%;
-  width:100%;
+#leftSideMenu{
+  display:none;
 }
-#mid{
-  outline:2px solid #B3B3B3;width:100%;
-  height:11.1%
+#rightSideMenu{
+  display:none;
 }
 #mainDiv{
-  height:100%;
+  width:100%;
   overflow-y:scroll;
   overflow-x:hidden;
 }
@@ -24,7 +21,4 @@
 }
 #mainDiv::-webkit-scrollbar-track{
   background-color:#FFFFFF;
-}
-#reviews_div {
-  height: 100%;
 }

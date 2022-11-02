@@ -1,5 +1,6 @@
 from django import template
 import json
+import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from webPages.config import KAKAO_JAVA_KEY
@@ -56,6 +57,20 @@ def check_active(user):
 
 @register.filter
 def sets(lists):
-    print(lists)
-    print(';;;', list(set(lists)))
     return sorted(list(set(lists)))
+
+
+@register.filter
+def defaultImage(image):
+    if image is not None and os.path.isfile('static/images/reviewImage/'+image):
+        return image
+    else:
+        return 'no-photo.png'
+
+
+@register.filter
+def defaultRoomImage(image):
+    if image is not None and os.path.isfile('static/images/roomImage/'+image):
+        return image
+    else:
+        return 'no-photo.png'

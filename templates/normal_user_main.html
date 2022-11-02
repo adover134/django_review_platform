@@ -17,8 +17,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-<link rel="stylesheet" href="{% static 'css/normalUserMainTemplate.css' %}">
-<script type="text/javascript" src="{% static 'js/normalUserMainTemplate.js' %}"></script>
 <script>
 $(document).ready(function(){
     var a = $('.slider').bxSlider({
@@ -30,23 +28,30 @@ $(document).ready(function(){
 </script>
 <div class="slider" id="famous" onclick="">
     {% if popular_reviews %}
-        {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
-            <div style = "margin:15px;color:#B3B3B3;"onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <div style="float:left;">
-                    <span>작성자 : {{ popular_review.reviewWriter }}</span>
+        {% for popular_review in popular_reviews %} {# 최신순 데이터 최대 4개 출력 #}
+            <div>
+                <div style="height:10%;">
+                    <div class="pop_writer" style="float:left; height:100%; width:55%;">
+                        <span>작성자 : {{ popular_review.reviewWriter }}</span>
+                    </div>
+                    <div style = "float:right; height:100%;">추천 수 : {{ popular_review.recommendedOn|length }}</div>
                 </div>
-                    <div style = "padding-left:65%;">추천 수 : {{ popular_review.recommendedOn|length }}</div>
-                <div style="color:black; font-weight: 600; font-size:20px;">{{ popular_review.reviewTitle }}</div>
-                <div class="pop-img">
+                {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <div style="color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')">{{ popular_review.reviewTitle }}</div>
+                <div class="pop-img" style="height:20%;">
                     <img class="left-side-room-img" style="width:100%; height:100%;" src="{% static 'images/' %}{{ popular_review.additionalImage|first }}">
                 </div>
-                <div style = "margin-left: 50px;">
-                 <span>리뷰 내용 : {{ popular_review.reviewSentence }}</span>
+                <div style = "display:flex; justify-content:center; height:50%;width:100%;">
+                    <div style="width:70%;">
+                        <span>리뷰 내용 : {{ popular_review.reviewSentence }}</span>
+                    </div>
                 </div>
-                <br><div style = "display:inline-block;float:left;">
-                    {% for popular_icon in popular_review.includedIcon %}
-                        <img style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}">
-                    {% endfor %}
+                <div style = "height:10%;">
+                    <div style="height:100%; display:flex; align-items:center;">
+                        {% for popular_icon in popular_review.includedIcon %}
+                            <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}.png">
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         {% endfor %}
@@ -55,24 +60,31 @@ $(document).ready(function(){
     {% endif %}
 </div>
 <div class="slider" id="recent">
-    {% if popular_reviews %}
+    {% if latest_reviews %}
         {% for latest_review in latest_reviews %} {# 최신순 데이터 최대 4개 출력 #}
-            <div onclick="window.location.replace('{{normalUserReviewRead}}?id={{latest_review.id}}')"> {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <div style="float:left;">
-                    <span>작성자 : {{ latest_review.reviewWriter }}</span>
+            <div>
+                <div style="height:10%;">
+                    <div style="float:left; height:100%;">
+                        <span>작성자 : {{ latest_review.reviewWriter }}</span>
+                    </div>
+                    <div style = "float:right; height:100%;">추천 수 : {{ latest_review.recommendedOn|length }}</div>
                 </div>
-                    <div style = "padding-left:65%;">추천 수 : {{ latest_review.recommendedOn|length }}</div>
-                <div style="color:black; font-weight: 600; font-size:20px;">{{ latest_review.reviewTitle }}</div>
-                <div class="pop-img">
+                {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <div style="color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{latest_review.id}}')">{{ latest_review.reviewTitle }}</div>
+                <div class="pop-img" style="height:20%;">
                     <img class="left-side-room-img" style="width:100%; height:100%;" src="{% static 'images/' %}{{ latest_review.additionalImage|first }}">
                 </div>
-                <div style = "margin-left: 50px;">
-                 <span>리뷰 내용 : {{ latest_review.reviewSentence }}</span>
+                <div style = "display:flex; justify-content:center; height:50%;width:100%;">
+                    <div style="width:70%;">
+                        <span>리뷰 내용 : {{ latest_review.reviewSentence }}</span>
+                    </div>
                 </div>
-                <br><div style = "display:inline-block;float:left;">
-                    {% for latest_icon in latest_review.includedIcon %}
-                        <img style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ latest_icon }}">
-                    {% endfor %}
+                <div style = "height:10%;">
+                    <div style="height:100%; display:flex; align-items:center;">
+                        {% for latest_icon in latest_review.includedIcon %}
+                            <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ latest_icon }}.png">
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         {% endfor %}
@@ -159,4 +171,6 @@ $(document).ready(function(){
             })
         });
 </script>
+<link rel="stylesheet" href="{% static 'css/normalUserMainTemplate.css' %}">
+<script type="text/javascript" src="{% static 'js/normalUserMainTemplate.js' %}"></script>
 {% endblock %}

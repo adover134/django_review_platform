@@ -82,7 +82,6 @@ class ReviewViewSets(ModelViewSet):
             iconData['review'] = s['reviews'][i]
             iconData['kind'] = s['kind'][i]
             iconData['reviewId'] = review_id
-            print(s)
             if s['kind'][i] != 4:
                 requests.post('http://127.0.0.1:8000/db/icon/', data=iconData)
 
@@ -110,7 +109,6 @@ class ReviewViewSets(ModelViewSet):
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uId'):
             u = data1.get('uId')[0].replace('/', '')
-            print(u)
             query_user = Q(uId=u)
             query.add(query_user, Q.AND)
         elif data1.get('roomId'):
@@ -204,7 +202,6 @@ class ReviewViewSets(ModelViewSet):
                         searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
 
         # 검색된 값을 반환한다.
-        print(searched)
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
     def retrieve(self, request, *args, **kwargs):
@@ -221,20 +218,22 @@ class ReviewViewSets(ModelViewSet):
         data = self.get_serializer(instance).data
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
-        # 해당 리뷰의 기존 아이콘 데이터를 불러와 삭제한다.
-        #for icon in data['icons']:
-        #    a=3
-            #requests.delete('http://127.0.0.1:8000/db/icon/'+icon.icon_id)
-        # 입력받은 데이터를 data1으로 받는다. (data1은 JSON(dictionary) 타입)
-        data1 = request.data
-        # 텍스트 리뷰인 경우
-        # 리뷰 본문 데이터를 가져온다.
-        review_sentence = data1['reviewSentence']
-        # 시각화 모듈을 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장이 이뤄진다.
-        #시각화모듈(reviewSentence)
-        # 따라서 본 메소드에서는 해당 과정을 구현하지 않는다.
-        # 기존 데이터에서 리뷰 본문만 새 데이터로 변경한다.
-        data['reviewSentence'] = sentence_split(review_sentence)
+        update_data = copy.deepcopy(request.data)
+        data1 = data
+        data1['reviewTitle'] = update_data.get('reviewTitle')
+
+        review_sentence = review_to_icons(update_data.get('reviewSentence'))
+        data1['reviewSentence'] = review_sentence['reviews']
+
+        # 새 분석 결과를 아이콘 정보로 저장한다.
+        for i in range(len(review_sentence['kind'])):
+            iconData = {}
+            iconData['review'] = review_sentence['reviews'][i]
+            iconData['kind'] = review_sentence['kind'][i]
+            iconData['reviewId'] = review_id
+            if review_sentence['kind'][i] != 4:
+                requests.post('http://127.0.0.1:8000/db/icon/', data=iconData)
+
         # 갱신된 데이터로 새 시리얼라이저를 생성한다.
         serializer = self.get_serializer(instance, data=data)
         # 생성된 시리얼라이저의 유효성을 검사한다.
@@ -242,10 +241,12 @@ class ReviewViewSets(ModelViewSet):
         # 검사 후, 그 시리얼라이저로 데이터를 갱신한다.
         self.perform_update(serializer)
         # 성공 응답코드를 반환한다.
-        return HttpResponse(status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoomViewSets(ModelViewSet):
@@ -288,7 +289,12 @@ class RoomViewSets(ModelViewSet):
             for info in data1.get('commonInfo'):   # 입력된 공통 정보 번호를 검색 조건에 추가한다.
                 query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
             query.add(query_common_info, Q.AND)
-
+        if data1.get('postcode'):
+            postcode = Q()
+            postcode = data1.get('postcode')[0]
+            postcode = postcode.replace('/', '')
+            query_postcode = Q(postcode=postcode)
+            query.add(query_postcode, Q.AND)
         #최종 검색을 한다.
         searched = Room.objects.filter(query)
         # 검색 결과를 반환한다.
@@ -331,10 +337,11 @@ class IconViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
-        print('ddd', data)
-        data1['reviewId'] = data['reviewId'][0]
+        if str(type(data.get('reviewId'))) == "<class 'str'>":
+            data1['reviewId'] = data.get('reviewId')
+        else:
+            data1['reviewId'] = data.get('reviewId')[0]
         if data.get('kind'):
-            print('d', data['kind'][0])
             match(data['kind'][0]):
                 case '0': # 교통 정보 아이콘 이름
                     data1['iconKind'] = '0'
@@ -346,13 +353,11 @@ class IconViewSets(ModelViewSet):
                     data1['iconKind'] = '2'
                     data1['changedIconKind'] = '22'
                 case '3': # 주거 정보 아이콘 이름
-                    print('wer')
                     data1['iconKind'] = '3'
                     data1['changedIconKind'] = '33'
         else:
             data1['iconKind'] = data['iconKind'][0]
             data1['changedIconKind'] = data['changedIconKind'][0]
-        print('datacheck:', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
@@ -390,7 +395,6 @@ class RecommendViewSets(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        print(serializer.data)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -544,6 +548,11 @@ class ReviewImageViewSets(ModelViewSet):
         # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class RoomImageViewSets(ModelViewSet):
     queryset = RoomImage.objects.all()
@@ -568,12 +577,6 @@ class RoomImageViewSets(ModelViewSet):
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
-
-
-def ajaxTest(request):
-    manager = json.loads(requests.get('http://127.0.0.1:8000/db/manager/').text)
-    print(manager)
-    return render(request, 'test.html', {"manager": manager})
 
 
 @api_view(['GET'])
