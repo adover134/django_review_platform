@@ -35,10 +35,38 @@
                             </label>
                     </div>
                     <div style="height:100%;width:70%; display: inline-block;">
-                        <label class = "label">방음 <input style ="margin-left:5%;" type="range" id="proof" class="range" min="0" max="5"></label>
-                        <label class = "label" >일조량 <input style ="margin-left:5%;" type="range" id="sunshine" class="range" min="0" max="5"></label>
-                        <br><label class="label" >청결 <input style ="margin-left:5%;" type="range" id="clean" class="range" min="0" max="5"></label>
-                        <label class = "label">습도 <input style ="margin-left:10%;" type="range" id="humidity" class="range" min="0" max="5"></label>
+                        <label class = "label">방음 <input style ="margin-left:5%;" type="range" id="proof" list="tickmarks1" class="range" min="0" max="5" step="1"></label>
+                        <label class = "label" >일조량 <input style ="margin-left:5%;" type="range" id="sunshine" list="tickmarks2" class="range" min="0" max="5" step="1"></label>
+                        <datalist id="tickmarks1">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                        <datalist style ="margin-left:19%;"id="tickmarks2">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                        <br><label class="label" >청결 <input style ="margin-top: 5%;margin-left:5%;" type="range" id="clean" list="tickmarks3" class="range" min="0" max="5" step="1"></label>
+                        <label class = "label">습도 <input style ="margin-top: 5%;margin-left:12%;" type="range" id="humidity" list="tickmarks4" class="range" min="0" max="5" step="1"></label>
+                        <datalist id="tickmarks3">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                        <datalist style ="margin-left:19%;" id="tickmarks4">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
                     </div>
                 </div>
                 <div style="height: 42%; border:2px solid #B3B3B3;">

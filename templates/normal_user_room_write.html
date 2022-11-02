@@ -51,16 +51,45 @@
         }
     {#$("#form_room").submit(normalUserRoomWrite);#}
     </script>
-    <form id="form_room" action="#" method="post" enctype="multipart/form-data">
+    <form style ="width:100%;height:10%;" action="#" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <input id="id_address" name="room_address" placeholder="주소를 입력하세요">
-    <input id="id_postcode" name="postcode" placeholder="우편번호" readonly>
-    <input name="name" placeholder="원룸이름">
-    <input name="builtYear" placeholder="건축연도">
-    <input name="ownerPhone" placeholder="집주인 전화번호">
-    <button type="submit">원룸 등록</button>
+        <div style ="width:100%;height:100%; margin-top:4%;margin-left:4%; ">
+            <div style ="float:left;width:65%;height:100%;display:inline-block;">
+            <div style="background-color: #A23355 ; float: left;color: white; height:60%; width: 15% ;display:inline-block;text-align:center; margin: 0 auto" id="review_address">주소</div>
+                    <input id="id_address" style="width:85%; height:60%;border-color: #A23355;flex:1" name="address" required>
+                </div>
+            <div style ="width:35%;height:100%;display:inline-block;">
+                <div style="background-color: #A23355 ; float:left;color: white; height:60%; width: 20% ;display:inline-block;text-align: center; margin: 0 auto" id="review_postcode">우편번호</div>
+                    <input id="id_postcode" style="float: left; border-color: #A23355; width:60%; height:60%;" name="postcode" required>
+                </div>
+        </div>
     </form>
-    <script>
+        <div style =" margin-top:4%; margin-left:4%;width:100%; height:85%;outline:3px solid #2B0A1A">
+            <div style ="width:48%; height:100%; display: inline-block;float:left;">
+            <div style ="width:100%;height:60%;display: inline-block;">
+                <span style ="margin-left:1%;font-weight: 700; font-size:25px;">원룸 정보</span>
+            <br><label style ="margin-left: 2.5%;width:20%;"><input type="radio" name = "checking" style="margin-right:5%;" value=""checked="checked">주차장</label>
+            <label style ="width:40%;margin-left: 2.5%;"><input type="radio" name = "checking" style="margin-right:5%;" value="">엘레베이터</label>
+            <br><input name="name" placeholder="원룸이름">
+            <input name="builtYear" placeholder="건축연도">
+            <input name="builtYear" placeholder="건물높이">
+            </div>
+                <div style ="width:48%;height:40%;">
+                    <input name="ownerPhone" placeholder="집주인 전화번호">
+                </div>
+            </div>
+            <div style ="width:48%; height:100%; display: inline-block;">
+                <div style ="padding-top: 3.038%; width:80%;height:70%;">
+                    <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
+                </div>
+                    <div style="float: right">
+                        <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
+                                    <button type="submit">원룸 등록</button>
+                    </div>
+            </div>
+        </div>
+            <script>
     $("#form_room").submit(normalUserRoomWrite);
     </script>
+<link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
 {% endblock %}
