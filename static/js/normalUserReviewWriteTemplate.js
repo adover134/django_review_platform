@@ -1,14 +1,3 @@
-function to_image(){
-    document.getElementById('text_review').style.display='none';
-    document.getElementById('image_review').style.display='inline-block';
-    document.getElementById('icons').style.display='inline-block';
-}
-function to_text(){
-    document.getElementById('text_review').style.display='block';
-    document.getElementById('image_review').style.display='none';
-    document.getElementById('icons').style.display='none';
-}
-
 $("#text_review").submit(review_submit);
 function review_submit(e) {
     // preventing from page reload and default actions
