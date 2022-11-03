@@ -17,11 +17,6 @@ window.onresize = function(){
         b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
-    a = Array.from(document.getElementsByClassName('review_preview'));
-    a.forEach(function(o){
-        b=(o.offsetHeight/16).toString()+'rem';
-        o.style.fontSize=b;
-    });
 }
 window.onload = function(){
     let k = document.getElementsByClassName('review_preview');
@@ -38,11 +33,6 @@ window.onload = function(){
             o.style.fontSize=a.toString()+'rem';
     }
     a = Array.from(document.getElementsByClassName('review_title'));
-    a.forEach(function(o){
-        b=(o.offsetHeight/16).toString()+'rem';
-        o.style.fontSize=b;
-    });
-    a = Array.from(document.getElementsByClassName('review_preview'));
     a.forEach(function(o){
         b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;

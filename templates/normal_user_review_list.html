@@ -61,6 +61,8 @@
                     if(page_num === -1) {
                         if (window.location.pathname === '/normal_user_review_search/')
                             document.getElementById('next_page').href = window.location.href + "?page={{paged_review.next_page_number}}";
+                        else if (window.location.href.indexOf('sorted') === -1)
+                            document.getElementById('next_page').href = window.location.href + "?page={{paged_review.next_page_number}}";
                         else
                             document.getElementById('next_page').href = window.location.href + "&page={{paged_review.next_page_number}}";
                     }
