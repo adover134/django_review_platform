@@ -1,10 +1,53 @@
-div#disclaimer > p {
-  text-align: center;
+#disclaimer p {
+  text-align: left;
 }
 
-div#disclaimer {
-  overflow-y: scroll;
-  overflow-x: hidden;
+#sign_up {
+  width: 50%;
+  height: 25%;
+  margin-left: 25%;
+}
+
+#sign_up > div {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#disclaimer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2%;
+  margin-bottom: 4%;
+}
+
+#disclaimer > div {
+  width: 95%;
+  padding: 3%;
+  background-color: #E8BECA;
+  border-radius: 20px;
+}
+
+#sign_up > div > div {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+}
+
+#disclaimer_head {
+  margin-bottom: 5%;
+}
+
+#disclaimer_body > span {
+  display: block;
+  margin-bottom: 1%;
 }
 
 /*# sourceMappingURL=normalUserSignUpTemplate.css.map */
