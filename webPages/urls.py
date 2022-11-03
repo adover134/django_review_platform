@@ -32,7 +32,6 @@ urlpatterns = [
     path('toggleRecommmend/', views.normal_user_review_recommend, name='normalUserReviewRecommend'),
     path('toggleReport/', views.normal_user_review_report, name='normalUserReviewReport'),
     path('room_with_reviews_display/', views.room_with_reviews_display),
-    path('change_user_info/', views.change_user_info),
     path('normal_user_review_list/', views.check_user_reviews, name='wroteReviews'),
     path('normal_user_room_write_page/', views.normal_user_room_write_page, name='normalUserRoomWritePage'),
     path('normal_user_room_write/', views.normal_user_room_write, name='normalUserRoomWrite'),

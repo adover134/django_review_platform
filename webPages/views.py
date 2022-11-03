@@ -66,7 +66,8 @@ def infoCheck(request):
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    print('erere', paged_review[0])
+    if len(paged_review)>0:
+        print('erere', paged_review[0])
     return render(request, 'normal_user_info_check.html', {'userForm': userForm, 'paged_review': paged_review})
 
 
@@ -407,17 +408,6 @@ def room_with_reviews_display(request):
     }
 
     return render(request, 'normal_user_room_read.html', data)
-
-
-@login_required(login_url='/loginPage/')
-def change_user_info(request):
-    user = request.user
-    if request.method == 'POST':
-        data = dict(request.POST)
-        data1 = {'first_name': data.get('이름'), 'last_name': data.get('성'), 'email': data.get('이메일'), 'layout': data.get('레이아웃')}
-        requests.put('http://localhost:8000/db/user/'+str(user.id)+'/', data=data1)
-
-    return render(request, 'normal_user_info_check.html')
 
 
 @login_required(login_url='/loginPage/')

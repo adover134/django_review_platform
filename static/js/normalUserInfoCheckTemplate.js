@@ -1,5 +1,3 @@
-var l1i = document.getElementById('layout1img');
-var l2i = document.getElementById('layout2img');
 function sort(){
     let selected = document.getElementById('sort_select_box');
     let a = window.location.href;
@@ -42,11 +40,6 @@ window.onload=function() {
         b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
-    a = Array.from(document.getElementsByClassName('review_preview'));
-    a.forEach(function(o){
-        b=(o.offsetHeight/16).toString()+'rem';
-        o.style.fontSize=b;
-    });
 }
 window.onresize = function(){
     let k = document.getElementsByClassName('review_preview');
@@ -67,37 +60,4 @@ window.onresize = function(){
         b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
-    a = Array.from(document.getElementsByClassName('review_preview'));
-    a.forEach(function(o){
-        b=(o.offsetHeight/16).toString()+'rem';
-        o.style.fontSize=b;
-    });
 }
-function get_layout(){
-    var layouts = document.getElementsByName('layout');
-    for (var layout of layouts)
-    {
-        if (layout.checked) {
-            document.getElementById('id_레이아웃').value = layout.value;
-        }
-    }
-}
-function layout_change(event){
-    let checked = event.target;
-    if (checked.id === 'layout1img')
-    {
-        l2i.style.border='none';
-        l1i.style.border='2px solid blue';
-        document.getElementById('layout1').checked=true;
-        document.getElementById('layout2').checked=false;
-    }
-    if (checked.id === 'layout2img')
-    {
-        l1i.style.border='none';
-        l2i.style.border='2px solid blue';
-        document.getElementById('layout1').checked=false;
-        document.getElementById('layout2').checked=true;
-    }
-}
-// l1i.addEventListener('click', layout_change)
-// l2i.addEventListener('click', layout_change)

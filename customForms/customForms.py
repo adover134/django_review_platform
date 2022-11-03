@@ -33,9 +33,9 @@ class RoomWriteForm(forms.Form):
 
 
 class UserInfoForm(forms.Form):
-    성 = forms.CharField()
-    이름 = forms.CharField()
-    이메일 = forms.EmailField()
+    last_name = forms.CharField()
+    first_name = forms.CharField()
+    email = forms.EmailField()
 
 
 class ReviewWriteForm2(forms.ModelForm):
