@@ -90,10 +90,11 @@ def normal_user_review_search(request):
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
         context['address'] = data.get('address')[0]
-    for i in range(3):
-        if data.get('icons'):
-            for c in data.get('icons'):
-                review_search_url = review_search_url+'&'+'commonInfo='+c
+    if data.get('icons'):
+        context['icons'] = []
+        for c in data.get('icons'):
+            review_search_url = review_search_url+'&'+'commonInfo='+c
+            context['icons'].append([c])
     if data.get('sorted'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
@@ -113,7 +114,8 @@ def normal_user_review_search(request):
     for r in paged_review:
         t.append(list(set(r.get('includedIcon'))))
     context['paged_review'] = paged_review
-    context['icons'] = t
+    # context['icons'] = t
+    print('context: ', context)
 
     return render(request, 'normal_user_review_search.html', context)
 

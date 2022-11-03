@@ -23,34 +23,38 @@
                 </script>
 
                 <div id="review_icon_selects">
-                    <label><input type="checkbox" name="color" value="blue">
-                    <i  class="fa fa-home fa-fw"></i>
+                    <label>
+                        <input type="checkbox" name="icons" value="0"
+                               {% for i in icons %}
+                               {% if i|first == '0' %}checked{% endif %}{% endfor %}>
+                        <i class="fa fa-fw">
+                            <img src="{% static 'images/iconImage/' %}00.png" style="width: 100%; height: 100%">
+                        </i>
                     </label>
-                    <label><input type="checkbox" name="color" value="red">
-                    <span class="sr-only"><i class="fa fa-spinner fa-spin fa-fw"></i></span>
+                    <label>
+                        <input type="checkbox" name="icons" value="1"
+                               {% for i in icons %}
+                               {% if i|first == '1' %}checked{% endif %}{% endfor %}>
+                        <span class="sr-only"><i class="fa fa-fw">
+                            <img src="{% static 'images/iconImage/' %}11.png" style="width: 100%; height: 100%">
+                        </i></span>
                     </label>
-                    <label><input type="checkbox" name="color" value="blue">
-                    <span style="color:red"><i class="fa fa-camera-retro fa-fw"></i></span>
-                        </label>
-                    <label><input type="checkbox" name="color" value="blue">
-                    <span style="color:red"><i class="fa fa-spinner fa-fw"></i></span>
-                        </label>
-                    <label><input type="checkbox" name="color" value="blue">
-                    <span style="color:red"><i class="fa fa-refresh fa-fw"></i></span>
-                        </label>
-                    <label><input type="checkbox" name="color" value="blue">
-                    <span style="color:red"><i class="fa fa-refresh fa-fw"></i></span>
-                        </label>
-                    <label><input type="checkbox" name="color" value="blue">
-                    <span style="color:red"><i class="fa fa-refresh fa-fw"></i></span>
-                        </label>
-                    <label><input type="checkbox" name="color" value="blue">
-                    <span style="color:red"><i class="fa fa-refresh fa-fw"></i></span>
+                    <label>
+                        <input type="checkbox" name="icons" value="2"
+                               {% for i in icons %}
+                               {% if i|first == '2' %}checked{% endif %}{% endfor %}>
+                        <span style="color:red"><i class="fa fa-fw">
+                            <img src="{% static 'images/iconImage/' %}22.png" style="width: 100%; height: 100%">
+                        </i></span>
                     </label>
-                    <label></label>
-                    <label></label>
-                    <label></label>
-                    <label></label>
+                    <label>
+                        <input type="checkbox" name="icons" value="3"
+                               {% for i in icons %}
+                               {% if i|first == '3' %}checked{% endif %}{% endfor %}>
+                        <span style="color:red"><i class="fa fa-fw">
+                            <img src="{% static 'images/iconImage/' %}33.png" style="width: 100%; height: 100%">
+                        </i></span>
+                    </label>
                 </div>
                 <script>
                     let b = Array.from(document.getElementById('review_icon_selects').children);
