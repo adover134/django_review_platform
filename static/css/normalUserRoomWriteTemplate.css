@@ -10,6 +10,7 @@ img{
     height:100%;
     list-style: none;
     float: left;
+    padding-right:20%;
 }
 
 .image-preview{
@@ -18,4 +19,10 @@ img{
     display: flex;
     float: left;
 }
-/*# sourceMappingURL=normalUseRoomWriteTemplate.css.map */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+/*# sourceMappingURL=normalUserRoomWriteTemplate.css.map */

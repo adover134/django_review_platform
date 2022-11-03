@@ -64,18 +64,19 @@
                 </div>
         </div>
     </form>
-        <div style =" margin-top:4%; margin-left:4%;width:100%; height:85%;outline:3px solid #2B0A1A">
+        <div style =" margin-top:4%; margin-left:4%;width:100%; height:85%;">
             <div style ="width:48%; height:100%; display: inline-block;float:left;">
-            <div style ="width:100%;height:60%;display: inline-block;">
+            <div style ="width:100%;height:45%;display: inline-block;">
                 <span style ="margin-left:1%;font-weight: 700; font-size:25px;">원룸 정보</span>
-            <br><label style ="margin-left: 2.5%;width:20%;"><input type="radio" name = "checking" style="margin-right:5%;" value=""checked="checked">주차장</label>
-            <label style ="width:40%;margin-left: 2.5%;"><input type="radio" name = "checking" style="margin-right:5%;" value="">엘레베이터</label>
-            <br><input name="name" placeholder="원룸이름">
-            <input name="builtYear" placeholder="건축연도">
-            <input name="builtYear" placeholder="건물높이">
+                <br><label style ="margin-top:2.5%;margin-left: 5%;width:20%;"><input type="checkbox" name = "checking" style="margin-right:5%;" value="">주차장</label>
+                <label style ="width:40%;margin-left: 2.5%;"><input type="checkbox" name = "checking" style="margin-right:5%;" value="">엘레베이터</label>
+                <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">원룸 이름 &nbsp; <input name="name" style="height:25px;" type ="text"></label>
+                <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">건축 연도 &nbsp; <input name="builtYear" style ="width:20%;height:25px;text-align: center;"type="number" minlength="1900" maxlength="2022" >&nbsp;년도</label>
+                <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">건물 높이 &nbsp; <input name="buildhigh" style ="width:15%;height:25px;text-align: center;"type ="number" minlength="-1" maxlength="10">&nbsp;층</label>
             </div>
-                <div style ="width:48%;height:40%;">
-                    <input name="ownerPhone" placeholder="집주인 전화번호">
+                <div style ="width:100%;height:55%;">
+                    <span style ="margin-left:1%;font-weight: 700; font-size:25px; display: inline-block;">임대인 정보</span>
+                    <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">연락처 &nbsp;<input name="ownerPhone" style =" margin-left:3%;width:40%; height:25px;text-align: center;"type ="tel"></label>
                 </div>
             </div>
             <div style ="width:48%; height:100%; display: inline-block;">
@@ -83,7 +84,7 @@
                     <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
                 </div>
                     <div style="float: right">
-                        <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
+                        <input style ="width:60%;" type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
                                     <button type="submit">원룸 등록</button>
                     </div>
             </div>
@@ -91,5 +92,5 @@
             <script>
     $("#form_room").submit(normalUserRoomWrite);
     </script>
-<link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
+<link rel="stylesheet" href="{% static 'css/normalUserRoomWriteTemplate.css' %}">
 {% endblock %}
