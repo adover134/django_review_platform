@@ -295,10 +295,11 @@ class RoomViewSets(ModelViewSet):
             data1['postcode'] = int(data.get('postcode')[0])
         else:
             data1['postcode'] = int(data.get('postcode'))
+        data1['commonInfo'] = []
         if data.get('commonInfo'):
-            data1['commonInfo'] = data.get('commonInfo')
-        else:
-            data1['commonInfo'] = []
+            for index in range(len(data.get('commonInfo'))):
+                if data.get('commonInfo')[index] == 'true':
+                    data1['commonInfo'].append(index-1)
         if data.get('name'):
             if str(type(data.get('name'))) == "<class 'list'>":
                 data1['name'] = data.get('name')[0]
@@ -378,9 +379,41 @@ class RoomViewSets(ModelViewSet):
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
         # data1에서 입력받은 값들만 변환한다.
-        for key in data2:
-            if data2[key] != '':
-                data1[key] = data2[key][0] # (입력받은 값들은['']의 형태로 배열로 들어온다.)
+
+        if data2.get('address'):
+            if str(type(data2.get('address'))) == "<class 'list'>":
+                data1['address'] = data2.get('address')[0]
+            else:
+                data1['address'] = data2.get('address')
+        elif data2.get('room_address'):
+            if str(type(data2.get('room_address'))) == "<class 'list'>":
+                data1['address'] = data2.get('room_address')[0]
+            else:
+                data1['address'] = data2.get('address')
+        if str(type(data2.get('postcode'))) == "<class 'list'>":
+            data1['postcode'] = int(data2.get('postcode')[0])
+        else:
+            data1['postcode'] = int(data2.get('postcode'))
+        data1['commonInfo'] = []
+        if data2.get('commonInfo'):
+            for index in range(len(data2.get('commonInfo'))):
+                if data2.get('commonInfo')[index] == 'true':
+                    data1['commonInfo'].append(index - 1)
+        if data2.get('name'):
+            if str(type(data2.get('name'))) == "<class 'list'>":
+                data1['name'] = data2.get('name')[0]
+            else:
+                data1['name'] = data2.get('name')
+        if data2.get('builtYear'):
+            if str(type(data2.get('builtYear'))) == "<class 'list'>":
+                data1['builtYear'] = data2.get('builtYear')[0]
+            else:
+                data1['builtYear'] = data2.get('builtYear')
+        if data2.get('ownerPhone'):
+            if str(type(data2.get('ownerPhone'))) == "<class 'list'>":
+                data1['ownerPhone'] = data2.get('ownerPhone')[0]
+            else:
+                data1['ownerPhone'] = data2.get('ownerPhone')
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
@@ -388,7 +421,7 @@ class RoomViewSets(ModelViewSet):
         # 모델에 갱신된 인스턴스 정보를 저장한다.
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
+        return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(self, request, args, kwargs)
