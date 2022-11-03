@@ -8,7 +8,6 @@ class ReviewWriteForm(forms.Form):
     title = forms.CharField(widget=customFields.NonStickyTextInputField())
     address = forms.CharField(widget=customFields.NonStickyTextInputField())
     postcode = forms.CharField(widget=customFields.NonStickyTextInputField())
-    buildingFloorNum = forms.IntegerField(widget=customFields.NonStickyTextInputField())
     checking = forms.IntegerField()
     deposit = forms.IntegerField()
     monthly = forms.IntegerField()

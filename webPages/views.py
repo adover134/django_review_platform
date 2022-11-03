@@ -21,7 +21,6 @@ def main(request):
         'latest_reviews': review_data.get('latest_reviews'),
         'popular_reviews': review_data.get('popular_reviews'),
     }
-    print(data.get('popular_reviews'))
     return render(request, 'normal_user_main.html', data)
 
 
@@ -56,7 +55,6 @@ def infoCheck(request):
 
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
-        print('sorted = ', sorted)
         reviews = json.loads(requests.get(
             'http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
     else:
@@ -66,8 +64,6 @@ def infoCheck(request):
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    if len(paged_review)>0:
-        print('erere', paged_review[0])
     return render(request, 'normal_user_info_check.html', {'userForm': userForm, 'paged_review': paged_review})
 
 
@@ -108,7 +104,6 @@ def normal_user_review_search(request):
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
     paged_review = paginator.get_page(page)
-    # print('a:', paged_review[2])
     t = []
     for r in paged_review:
         t.append(list(set(r.get('includedIcon'))))
@@ -188,7 +183,6 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
-    print(review)
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -226,7 +220,6 @@ def normal_user_review_update(request):
     cont = {}
     if request.method == 'POST':
         data = dict(request.POST)
-        print('ddre', data)
         data1 = {}
         form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
@@ -259,7 +252,6 @@ def normal_user_review_update(request):
             data1['humidity'] = int(data['humidity'][0])
             review = requests.put('http://127.0.0.1:8000/db/review/'+str(request.GET.get('id'))+'/', data=data1)
             review_id = request.GET.get('id')
-            print('relgetneaaed', review_id)
             cont['review_id'] = review_id
             for image in images:
                 img = json.loads(
@@ -275,7 +267,6 @@ def normal_user_review_update(request):
 def normal_user_room_change(request):
     roomId = request.GET.get('roomId')
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-    print('w')
     context = {
         'room': room
     }
@@ -288,12 +279,10 @@ def normal_user_room_change(request):
 def normal_user_room_update(request):
     if request.method == 'POST':
         data = dict(request.POST)
-        print(data)
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         images = request.FILES.getlist('images')
         if form.is_valid():
             room = json.loads(requests.put('http://127.0.0.1:8000/db/room/'+request.GET.get('roomId')+'/', data=data).text)
-            print('rlrierjweldirwej', room)
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room.get('id')}).text)
@@ -303,7 +292,6 @@ def normal_user_room_update(request):
             room_id = str(room.get('id'))
             return Response(room_id)
         else:
-            print('오류!')
             return status.HTTP_403_FORBIDDEN
 
 
@@ -311,7 +299,6 @@ def normal_user_room_update(request):
 @api_view(['POST'])
 @login_required()
 def normal_user_review_delete(request):
-    print(request.POST.get('review'))
     if json.loads(requests.get('http://127.0.0.1:8000/db/review/'+request.POST.get('review')).text).get('uId') == request.user.id:
         requests.delete('http://127.0.0.1:8000/db/review/'+request.POST.get('review'))
     return Response('success')
@@ -325,7 +312,6 @@ def normal_user_review_recommend(request):
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
         if data.get('recommended')[0] == 'false':
             data1 = {'uId': user.id, 'reviewId': int(data.get('review')[0])}
-            print(data1)
             a = requests.post('http://127.0.0.1:8000/db/recommend/', data=data1)
         else:
             # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
@@ -343,13 +329,11 @@ def normal_user_review_report(request):
         # 로그인이 되어 있다면 해당하는 리뷰 번호와 사용자 번호로 추천 내역을 DB에 추가한다.
         if data.get('reported')[0] == 'false':
             data1 = {'uId': user.id, 'reviewId': int(data.get('review')[0])}
-            print(data1)
             a = requests.post('http://127.0.0.1:8000/db/report/', data=data1)
         else:
             # 리뷰 번호와 사용자 번호로 추천 내역을 찾아서 삭제한다.
             url = 'http://127.0.0.1:8000/db/report/?reviewId='+str(data.get('review')[0])+'&uId='+str(user.id)
             a = requests.get(url)
-            print(a.text)
             requests.delete('http://127.0.0.1:8000/db/report/'+a.text)
     return Response('success')
 
@@ -439,7 +423,6 @@ def room_read(request):
 
 def room_search(request):
     rooms = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
-    print(rooms)
 
     data = {
         'rooms': rooms
@@ -484,8 +467,7 @@ def review_write(request):
         if form.is_valid():
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
-            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data['postcode'][0]).text)
-
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
             # 원룸 번호를 구한다.
             if len(room) > 0:
                 data1['roomId'] = room[0].get('id')
@@ -545,16 +527,12 @@ def normal_user_room_write(request):
         if form.is_valid():
             # 우편번호로 원룸 존재 체크
             # 이미 등록된 원룸인 경우
-            print('확인 중')
-            print(data)
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
             if room:
                 return Response(room[0].get('id')) # 해당 우편번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
                 room = requests.post('http://127.0.0.1:8000/db/room/', data=data)
-                print('rjirjri', room)
                 room_id = json.loads(room.text).get('id')
-                print(room_id)
                 for image in images:
                     img = json.loads(
                         requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room_id}).text)
@@ -563,7 +541,6 @@ def normal_user_room_write(request):
                                  data={'reviewId': room_id, 'image': img_name})
                 return Response(str(room_id))
         else:
-            print('오류!')
             return status.HTTP_403_FORBIDDEN
 
 
@@ -576,7 +553,6 @@ def user_inactivated(request):
     user = request.user
     user_data = json.loads(requests.get('http://127.0.0.1:8000/db/user/' + str(user.id) + '/').text)
     user_data['is_active'] = False # 상태 비활성화
-    print("put_user_data: ", user_data)
 
     response = requests.put('http://127.0.0.1:8000/db/user/' + str(user.id) + '/', data=user_data)
 
