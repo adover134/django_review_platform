@@ -42,7 +42,7 @@ input[type="range"] {
     overflow: hidden;
     height:75%;
     -webkit-appearance: none;
-    width: 70%;
+    width: 90%;
     background: transparent;
     border-radius: 5px;
 
@@ -63,6 +63,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     cursor: pointer;
     border-radius: 5px;
     border: 2px solid #B3B3B3;
+    padding-left:3%;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -81,8 +82,8 @@ datalist {
   display: inline-flex;
   writing-mode: horizontal-tb;
   justify-content: space-between;
-  width: 30%;
-  margin-left: 14%;
+  width: 50%;
+  margin-left: 10%;
 }
 .o{
     display: inline-block;
