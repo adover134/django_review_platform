@@ -78,7 +78,6 @@ class ReviewViewSets(ModelViewSet):
         # 시각화 모듈 이용해 리뷰 본문 텍스트로 아이콘 생성 및 저장한다.
         # 시각화모듈(data['reviewSentence'])
         # 완성된 리뷰 정보를 시리얼라이저로 직렬화한다.
-        print('data11111', data1)
         serializer = self.get_serializer(data=data1)
         # 시리얼라이저가 유효하면 저장한다.
         serializer.is_valid(raise_exception=True)
@@ -163,6 +162,10 @@ class ReviewViewSets(ModelViewSet):
             # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
             if data1.get('address'):
                 roomRetrieveURL = roomRetrieveURL + 'address=' + data1.get('address')[0]
+            if data1.get('postcode'):
+                if roomRetrieveURL[-1] != '?':
+                    roomRetrieveURL = roomRetrieveURL + '&'
+                roomRetrieveURL = roomRetrieveURL + 'postcode=' + data1.get('postcode')[0]
             # 건축년도에 대한 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
             if data1.get('builtFrom'):
                 if roomRetrieveURL[-1] != '?':
@@ -189,7 +192,7 @@ class ReviewViewSets(ModelViewSet):
                         query_room.add(Q(roomId=r['id']), Q.OR)
                     query.add(query_room, Q.AND)
 
-            # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
+        # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         # 위의 로직에서 원룸 데이터에 대한 검색조건이 query_room에 담긴다.
         # 그다음에는 해당하는 원룸 ID로 Review.obects.filter()를 써야한다.
         if query == Q() and room_search_flag == True:
@@ -225,15 +228,12 @@ class ReviewViewSets(ModelViewSet):
         instance = self.get_object()
         # 기존 데이터를 직렬화한다.
         data = self.get_serializer(instance).data
-        print('arijewrklwejlkfwjlwerjlt', data)
         for i in data.get('includedIcon'):
-            print('insert', i)
             requests.delete(i)
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
         data1 = data
-        print(update_data)
         data1['reviewTitle'] = update_data.get('reviewTitle')
         data1['roomId'] = int(update_data.get('roomId'))
         data1['uId'] = int(update_data.get('uId'))
@@ -315,6 +315,11 @@ class RoomViewSets(ModelViewSet):
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data.get('ownerPhone')
+        if data.get('buildingFloorNum'):
+            if str(type(data.get('buildingFloorNum'))) == "<class 'list'>":
+                data1['buildingFloorNum'] = data.get('buildingFloorNum')[0]
+            else:
+                data1['buildingFloorNum'] = data.get('buildingFloorNum')
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -358,7 +363,6 @@ class RoomViewSets(ModelViewSet):
                 query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
             query.add(query_common_info, Q.AND)
         if data1.get('postcode'):
-            postcode = Q()
             postcode = data1.get('postcode')[0]
             postcode = postcode.replace('/', '')
             query_postcode = Q(postcode=postcode)
@@ -414,6 +418,11 @@ class RoomViewSets(ModelViewSet):
                 data1['ownerPhone'] = data2.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data2.get('ownerPhone')
+        if data2.get('buildingFloorNum'):
+            if str(type(data2.get('buildingFloorNum'))) == "<class 'list'>":
+                data1['buildingFloorNum'] = data2.get('buildingFloorNum')[0]
+            else:
+                data1['buildingFloorNum'] = data2.get('buildingFloorNum')
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.
