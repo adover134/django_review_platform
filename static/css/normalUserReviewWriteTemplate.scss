@@ -5,7 +5,7 @@
 }
 #tr1{
     outline: solid 2px #B3B3B3 ;
-    height: 20.6%;
+    height: 10.6%;
     width: 100%;
     display: flex;
     padding: 1.5% 6.25% 1.5% 6.25%;
@@ -15,14 +15,9 @@
     width: 100%;
     padding: 3.03% 6.25% 3.03% 6.25%;
 }
-#mainDiv{
-    overflow-y:scroll;
-    overflow-x:hidden;
-}
 li{
     list-style: none;
 }
-
 img{
     width:100%;
     height:100%;
@@ -30,19 +25,17 @@ img{
     float: left;
     padding-right:20%;
 }
-
 .image-preview{
     width: 50%;
     height: 100%;
     display: flex;
     float: left;
 }
-
 input[type="range"] {
     overflow: hidden;
     height:75%;
     -webkit-appearance: none;
-    width: 90%;
+    width: 70%;
     background: transparent;
     border-radius: 5px;
 
@@ -63,7 +56,6 @@ input[type="range"]::-webkit-slider-runnable-track {
     cursor: pointer;
     border-radius: 5px;
     border: 2px solid #B3B3B3;
-    padding-left:3%;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -82,8 +74,8 @@ datalist {
   display: inline-flex;
   writing-mode: horizontal-tb;
   justify-content: space-between;
-  width: 50%;
-  margin-left: 10%;
+  width: 30%;
+  margin-left: 14%;
 }
 .o{
     display: inline-block;
