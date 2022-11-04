@@ -59,14 +59,12 @@ class ReviewViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
-        print(data)
         data1['reviewTitle'] = data.get('reviewTitle')
         data1['roomId'] = int(data.get('roomId'))
         data1['uId'] = int(data.get('uId'))
         data1['rent'] = int(data.get('rent'))
         data1['deposit'] = int(data.get('deposit'))
-        if data1.get('rent') == 1:
-            data1['monthlyRent'] = int(data.get('monthlyRent'))
+        data1['monthlyRent'] = int(data.get('monthlyRent'))
         data1['roomSize'] = float(data.get('roomSize'))
         data1['soundproof'] = int(data.get('proof'))
         data1['lighting'] = int(data.get('sunshine'))
@@ -101,15 +99,15 @@ class ReviewViewSets(ModelViewSet):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
-        if not data1 or data1 == {}:
+        if not data1:
             queryset = self.filter_queryset(self.get_queryset())
 
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = ReviewSerializer(page, many=True)
+                serializer = ReviewSerializer(page, context={'request': request}, many=True)
                 return self.get_paginated_response(serializer.data)
-            serializer = ReviewSerializer(queryset, many=True)
-            print('s', serializer)
+
+            serializer = ReviewSerializer(queryset, context={'request': request}, many=True)
             return Response(serializer.data)
         # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
@@ -129,22 +127,7 @@ class ReviewViewSets(ModelViewSet):
         else:
             # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
             if data1.get('date'):
-                date_value = data1.get('date')[0]
-                date_value = date_value.replace('/', '')
-                today = datetime.date.today()
-                from_date = None
-
-                match date_value:
-                    case '1week':
-                        from_date = today - datetime.timedelta(days=6)
-                    case '2weeks':
-                        from_date = today - datetime.timedelta(days=13)
-                    case '1month':
-                        from_date = today - datetime.timedelta(days=30)
-                    case '':
-                        from_date = today - datetime.timedelta(days=364)
-
-                query_date = Q(reviewDate__range=[from_date, today])
+                query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
                 query.add(query_date, Q.AND)
             # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
             if data1.get('recommend'):
@@ -246,11 +229,10 @@ class ReviewViewSets(ModelViewSet):
         # 기존 데이터를 직렬화한다.
         data = self.get_serializer(instance).data
         for i in data.get('includedIcon'):
-            requests.delete('http://127.0.0.1:8000/db/icon/'+str(i)+'/')
+            requests.delete(i)
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
-        print(update_data)
         data1 = data
         data1['reviewTitle'] = update_data.get('reviewTitle')
         data1['roomId'] = int(update_data.get('roomId'))
@@ -298,6 +280,7 @@ class RoomViewSets(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = dict(copy.deepcopy(request.data))
+        print('fojsfljksfjklsfjklsfljksflsfjl', data)
         data1 = {}
         if data.get('address'):
             if str(type(data.get('address'))) == "<class 'list'>":
@@ -309,7 +292,7 @@ class RoomViewSets(ModelViewSet):
                 data1['address'] = data.get('room_address')[0]
             else:
                 data1['address'] = data.get('address')
-        if str(type(data.get('postcode'))) == "<class 'list'>":
+        if str(type(data.get('postcode'))) == "<class 'list'>" and data.get('postcode') != ['']:
             data1['postcode'] = int(data.get('postcode')[0])
         else:
             data1['postcode'] = int(data.get('postcode'))
@@ -317,7 +300,7 @@ class RoomViewSets(ModelViewSet):
         if data.get('commonInfo'):
             for index in range(len(data.get('commonInfo'))):
                 if data.get('commonInfo')[index] == 'true':
-                    data1['commonInfo'].append(index-1)
+                    data1['commonInfo'].append(index - 1)
         if data.get('name'):
             if str(type(data.get('name'))) == "<class 'list'>":
                 data1['name'] = data.get('name')[0]
@@ -333,16 +316,112 @@ class RoomViewSets(ModelViewSet):
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data.get('ownerPhone')
-        if data.get('buildingFloorNum'):
-            if str(type(data.get('buildingFloorNum'))) == "<class 'list'>":
-                data1['buildingFloorNum'] = data.get('buildingFloorNum')[0]
-            else:
-                data1['buildingFloorNum'] = data.get('buildingFloorNum')
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(self, request, args, kwargs)
+
+    def list(self, request, *args, **kwargs):
+        # URL의 파라미터들을 사전형 배열로 받는다.
+        data1 = dict(request.GET)
+        # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
+        if not data1:
+            return super().list(self, request, args, kwargs)
+        # 검색 조건으로 기본 쿼리를 만든다.
+        query = Q()  # 메인 쿼리로, 최종 결과를 낼 때 사용한다.
+        # 주소에 대한 검색을 수행하는 쿼리를 만든다.
+        if data1.get('address'):
+            query_address = Q()  # 주소에 대한 쿼리이다.
+            for ad in data1.get('address'):
+                query_address.add(Q(address__contains=ad), Q.OR)
+            query.add(query_address, Q.AND)
+        # 건축년도에 대한 검색을 수행하는 쿼리를 만든다.
+        if data1.get('builtFrom') or data1.get('builtTo'):
+            query_built_year = Q()  # 건축년도에 대한 쿼리이다.
+            built_from = 0
+            built_to = 2023
+            if data1.get('builtFrom'):
+                built_from = data1.get('builtFrom')[0]
+            if data1.get('builtTo'):
+                built_to = data1.get('builtTo')[0]
+            query_built_year = Q(builtYear__range=(int(built_from), int(built_to)))
+            query.add(query_built_year, Q.AND)
+        # N = len(CommonInfo.objects.all())
+        N = 10
+        if data1.get('commonInfo'):
+            query_common_info = Q()  # 공통 정보에 대한 쿼리이다.
+            for info in data1.get('commonInfo'):  # 입력된 공통 정보 번호를 검색 조건에 추가한다.
+                query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
+            query.add(query_common_info, Q.AND)
+        if data1.get('postcode'):
+            postcode = Q()
+            postcode = data1.get('postcode')[0]
+            postcode = postcode.replace('/', '')
+            query_postcode = Q(postcode=postcode)
+            query.add(query_postcode, Q.AND)
+        # 최종 검색을 한다.
+        searched = Room.objects.filter(query)
+        # 검색 결과를 반환한다.
+        return Response(self.get_serializer(searched, many=True).data)
+
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, args, kwargs)
+
+    def update(self, request, *args, **kwargs):
+        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
+        instance = self.get_object()
+        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
+        data1 = self.get_serializer(instance).data
+        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
+        data2 = dict(request.data)
+        # data1에서 입력받은 값들만 변환한다.
+
+        if data2.get('address'):
+            if str(type(data2.get('address'))) == "<class 'list'>":
+                data1['address'] = data2.get('address')[0]
+            else:
+                data1['address'] = data2.get('address')
+        elif data2.get('room_address'):
+            if str(type(data2.get('room_address'))) == "<class 'list'>":
+                data1['address'] = data2.get('room_address')[0]
+            else:
+                data1['address'] = data2.get('address')
+        if str(type(data2.get('postcode'))) == "<class 'list'>":
+            data1['postcode'] = int(data2.get('postcode')[0])
+        else:
+            data1['postcode'] = int(data2.get('postcode'))
+        data1['commonInfo'] = []
+        if data2.get('commonInfo'):
+            for index in range(len(data2.get('commonInfo'))):
+                if data2.get('commonInfo')[index] == 'true':
+                    data1['commonInfo'].append(index - 1)
+        if data2.get('name'):
+            if str(type(data2.get('name'))) == "<class 'list'>":
+                data1['name'] = data2.get('name')[0]
+            else:
+                data1['name'] = data2.get('name')
+        if data2.get('builtYear'):
+            if str(type(data2.get('builtYear'))) == "<class 'list'>":
+                data1['builtYear'] = data2.get('builtYear')[0]
+            else:
+                data1['builtYear'] = data2.get('builtYear')
+        if data2.get('ownerPhone'):
+            if str(type(data2.get('ownerPhone'))) == "<class 'list'>":
+                data1['ownerPhone'] = data2.get('ownerPhone')[0]
+            else:
+                data1['ownerPhone'] = data2.get('ownerPhone')
+        # 갱신된 인스턴스를 직렬화한다.
+        serializer = self.get_serializer(instance, data=data1)
+        # 시리얼라이저의 유효 여부를 검사한다.
+        serializer.is_valid(raise_exception=True)
+        # 모델에 갱신된 인스턴스 정보를 저장한다.
+        self.perform_update(serializer)
+        # 갱신이 성공했음을 반환한다.
+        return Response(serializer.data)
 
 
     def retrieve(self, request, *args, **kwargs):
@@ -401,8 +480,6 @@ class RoomViewSets(ModelViewSet):
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
         # data1에서 입력받은 값들만 변환한다.
-        print('er', data1)
-        print(data2)
 
         if data2.get('address'):
             if str(type(data2.get('address'))) == "<class 'list'>":
@@ -418,12 +495,11 @@ class RoomViewSets(ModelViewSet):
             data1['postcode'] = int(data2.get('postcode')[0])
         else:
             data1['postcode'] = int(data2.get('postcode'))
-        t = []
+        data1['commonInfo'] = []
         if data2.get('commonInfo'):
             for index in range(len(data2.get('commonInfo'))):
                 if data2.get('commonInfo')[index] == 'true':
-                    t.append(index - 1)
-        data1['commonInfo'] = t
+                    data1['commonInfo'].append(index - 1)
         if data2.get('name'):
             if str(type(data2.get('name'))) == "<class 'list'>":
                 data1['name'] = data2.get('name')[0]
@@ -451,7 +527,6 @@ class RoomViewSets(ModelViewSet):
         # 모델에 갱신된 인스턴스 정보를 저장한다.
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
-        print(serializer.data)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
@@ -659,6 +734,7 @@ class ReviewImageViewSets(ModelViewSet):
     queryset = ReviewImage.objects.all()
     serializer_class = ReviewImageSerializer
 
+
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
         instance = self.get_object()
@@ -688,6 +764,19 @@ class ReviewImageViewSets(ModelViewSet):
 class RoomImageViewSets(ModelViewSet):
     queryset = RoomImage.objects.all()
     serializer_class = RoomImageSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        print('rrrrrrrr', request.data)
+        data1 = {}
+        data1['roomId'] = int(request.data.get('roomId'))
+        print('werwegfdhufkjejsdv', data1)
+        serializer = self.get_serializer(data=data1)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
