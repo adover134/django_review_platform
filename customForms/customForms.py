@@ -10,7 +10,7 @@ class ReviewWriteForm(forms.Form):
     postcode = forms.CharField(widget=customFields.NonStickyTextInputField())
     checking = forms.IntegerField()
     deposit = forms.IntegerField()
-    monthly = forms.IntegerField(required=None)
+    monthly = forms.IntegerField()
     area = forms.FloatField()
     room_area = forms.CharField(widget=customFields.NonStickyTextInputField())
     proof = forms.IntegerField()

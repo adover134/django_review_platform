@@ -468,7 +468,6 @@ def review_write(request):
                 data1['roomId'] = room[0].get('id')
             # 해당 원룸이 없다면 만든다.
             else:
-                print('Noneewrwejrklwe')
                 room_data = {}
                 room_data['address'] = str(data['address'][0])
                 room_data['postcode'] = int(data['postcode'][0])
@@ -478,7 +477,7 @@ def review_write(request):
             data1['uId'] = str(user.id)
             data1['rent'] = int(data['checking'][0])
             data1['deposit'] = int(data['deposit'][0])
-            if data1.get('rent') == '1':
+            if data.get('monthly'):
                 data1['monthlyRent'] = int(data['monthly'][0])
             area_kind = data['room_area'][0]
             if area_kind == 'room_area':
