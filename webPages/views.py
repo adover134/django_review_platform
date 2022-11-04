@@ -473,7 +473,6 @@ def review_write(request):
                 data1['roomId'] = room[0].get('id')
             # 해당 원룸이 없다면 만든다.
             else:
-                print('Noneewrwejrklwe')
                 room_data = {}
                 room_data['address'] = str(data['address'][0])
                 room_data['postcode'] = int(data['postcode'][0])
@@ -483,7 +482,7 @@ def review_write(request):
             data1['uId'] = str(user.id)
             data1['rent'] = int(data['checking'][0])
             data1['deposit'] = int(data['deposit'][0])
-            if data1.get('rent') == '1':
+            if data1.get('rent') == 1:
                 data1['monthlyRent'] = int(data['monthly'][0])
             area_kind = data['room_area'][0]
             if area_kind == 'room_area':
@@ -499,7 +498,7 @@ def review_write(request):
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
-                img_name = handle_uploaded_file(image, str(img.get('id')))
+                img_name = handle_uploaded_file(image, 'reviewImage', str(img.get('id')))
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
         cont['review_id'] = str(review_id)
