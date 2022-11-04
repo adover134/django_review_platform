@@ -118,7 +118,6 @@ class RoomImage(models.Model):
 
 
     def delete(self):
-        print(self.image)
         delete_review_image(self.image)
         return models.Model.delete(self)
 
