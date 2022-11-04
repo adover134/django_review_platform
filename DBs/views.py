@@ -100,15 +100,15 @@ class ReviewViewSets(ModelViewSet):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
-        if not data1:
+        if not data1 or data1 == {}:
             queryset = self.filter_queryset(self.get_queryset())
 
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = ReviewSerializer(page, context={'request': request}, many=True)
+                serializer = ReviewSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
-
-            serializer = ReviewSerializer(queryset, context={'request': request}, many=True)
+            serializer = ReviewSerializer(queryset, many=True)
+            print('s', serializer)
             return Response(serializer.data)
         # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
@@ -384,6 +384,8 @@ class RoomViewSets(ModelViewSet):
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
         # data1에서 입력받은 값들만 변환한다.
+        print('er', data1)
+        print(data2)
 
         if data2.get('address'):
             if str(type(data2.get('address'))) == "<class 'list'>":
@@ -399,11 +401,12 @@ class RoomViewSets(ModelViewSet):
             data1['postcode'] = int(data2.get('postcode')[0])
         else:
             data1['postcode'] = int(data2.get('postcode'))
-        data1['commonInfo'] = []
+        t = []
         if data2.get('commonInfo'):
             for index in range(len(data2.get('commonInfo'))):
                 if data2.get('commonInfo')[index] == 'true':
-                    data1['commonInfo'].append(index - 1)
+                    t.append(index - 1)
+        data1['commonInfo'] = t
         if data2.get('name'):
             if str(type(data2.get('name'))) == "<class 'list'>":
                 data1['name'] = data2.get('name')[0]
@@ -431,6 +434,7 @@ class RoomViewSets(ModelViewSet):
         # 모델에 갱신된 인스턴스 정보를 저장한다.
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
+        print(serializer.data)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
