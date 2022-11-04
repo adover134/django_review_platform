@@ -12,12 +12,16 @@ img{
     float: left;
     padding-right:20%;
 }
-
 .image-preview{
     width: 50%;
     height: 100%;
     display: flex;
     float: left;
+    overflow-x:scroll;
+}
+.image-preview>div{
+  flex:0 0 60%;
+  flex-wrap:nowrap;
 }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
