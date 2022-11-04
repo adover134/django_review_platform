@@ -47,38 +47,121 @@
   border:3px solid transparent;
   border-radius:12px;
 }
-input[type="range"] {
-    overflow: hidden;
-    height:75%;
-    -webkit-appearance: none;
-    width: 100%;
-    background: transparent;
-    border-radius: 5px;
-
-}
-input[type="range"]:focus {
-	outline: none;
+.box {
+  width: 500px;
+  height: 300px;
+  background-color: #ecf0f1;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    border-radius: 5px;
-    border: 2px solid #B3B3B3;
+.slider {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+.slider2 {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
 }
 
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border-radius: 5px;
-    width: 8%;
-    height: 100%;
-    background: #FFDA6A;
-    outline:2px solid #2C1A4D;
-    box-shadow: 1px 1px 5px #B3B3B3;
-    cursor: pointer;
-    box-shadow: -100vw 0 0 100vw #B3B3B3;
+
+input[type='range'] {
+  width: calc(100% - 2rem);
+  top: 1rem;
+  left: 1rem;
+  position: absolute;
+  border: none;
+  pointer-events: none;
+  z-index: 10;
+  appearance: none;
+  opacity: 0;
 }
+
+input[type='range']::-webkit-slider-thumb {
+  pointer-events: all;
+  /* appearance, background-color는 지워도 됨 */
+  appearance:none;
+  background-color: red;
+  width: 2.5rem;
+  height: 1.5rem;
+}
+
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 0.5rem;
+  background-color: #bdc3c7;
+  border-radius: 0.5rem;
+}
+.track2 {
+  position: relative;
+  width: 100%;
+  height: 0.5rem;
+  background-color: #bdc3c7;
+  border-radius: 0.5rem;
+}
+
+.range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #2c3e50;
+  border-radius: 0.5rem;
+}
+.range2 {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #2c3e50;
+  border-radius: 0.5rem;
+}
+
+.thumb {
+  position: absolute;
+  top: 0;
+  transform: translateY(-0.25rem);
+  width: 1rem;
+  height: 1rem;
+  background-color: black;
+  border-radius: 50%;
+}
+
+.thumb2 {
+  position: absolute;
+  top: 0;
+  transform: translateY(-0.25rem);
+  width: 1rem;
+  height: 1rem;
+  background-color: black;
+  border-radius: 50%;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+.left2 {
+  left: 0;
+}
+
+.right2 {
+  right: 0;
+}
+
 datalist {
   display: inline-flex;
   writing-mode: horizontal-tb;
@@ -146,7 +229,7 @@ datalist {
   margin-top:3.8125%;
   margin-bottom:7.8125%;
   width:93.75%;
-  height:90%;
+  height:100%;
 }
 #submit-div{
   width:22.06%;

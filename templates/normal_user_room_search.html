@@ -17,6 +17,7 @@
                 <div id="common_info_selects">
                     <label><input type="checkbox" name="color" value="blue">주차장</label>
                     <label><input type="checkbox" name="color" value="red">엘레베이터</label>
+                    <label><input type="checkbox" name="color" value="green">CCTV</label>
                     <label></label>
                 </div>
             </div>
@@ -32,34 +33,48 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <label class = "label">학교와의 거리(km) <input style ="margin-top:3%;" type="range" id="proof" list="tickmarks1" class="range" min="100" max="1000" step="100"></label>
-            </div>
-            <div style="width:100%;">
-            <datalist id="tickmarks1">
-                <option value="0.1" label = "0.1"></option>
-                <option value="0.2" label = "0.2"></option>
-                <option value="0.3" label = "0.3"></option>
-                <option value="0.4" label = "0.4"></option>
-                <option value="0.5" label = "0.5"></option>
-                <option value="0.6" label = "0.6"></option>
-                <option value="0.7" label = "0.7"></option>
-                <option value="0.8" label = "0.8"></option>
-                <option value="0.9" label = "0.9"></option>
-                <option value="1" label = "1"></option>
-            </datalist>
+            <form>학교와의 거리(km)
+              <div class="slider">
+                <input type="range" id="input-left" min="100" max="1000" value="100" step="100" />
+                <input type="range" id="input-right" min="100" max="1000" value="1000" step="100" />
+                <div class="track">
+                  <div class="range"></div>
+                  <div class="thumb left"></div>
+                  <div class="thumb right"></div>
                 </div>
-            <br><div>
-                <label class = "label">주변 편의시설 수 <input style ="margin-top:3%;" type="range" list="tickmarks2" class="range" min="0" max="5" step="1"></label>
-            </div>
-            <datalist id="tickmarks2">
-                <option value="0" label = "0"></option>
-                <option value="1" label = "1"></option>
-                <option value="2" label = "2"></option>
-                <option value="3" label = "3"></option>
-                <option value="4" label = "4"></option>
-                <option value="5" label = "5"></option>
-            </datalist>
+                  <datalist id="tickmarks1" style = "margin-top:5%; margin-right: 13%;">
+                    <option value="100" label = "0.1"></option>
+                    <option value="200" label = "0.2"></option>
+                    <option value="300" label = "0.3"></option>
+                    <option value="400" label = "0.4"></option>
+                    <option value="500" label = "0.5"></option>
+                    <option value="600" label = "0.6"></option>
+                    <option value="700" label = "0.7"></option>
+                    <option value="800" label = "0.8"></option>
+                    <option value="900" label = "0.9"></option>
+                    <option value="1000" label = " 1 "></option>
+                </datalist>
+              </div>
+                <form>주변 편의시설 수
+                  <div class="slider2">
+                    <input type="range" id="input-left2" min="0" max="5" value="0" step="1"/>
+                    <input type="range" id="input-right2" min="0" max="5" value="5" step="1"/>
+                    <div class="track2">
+                      <div class="range2"></div>
+                      <div class="thumb left2"></div>
+                      <div class="thumb right2"></div>
+                    </div>
+                      <datalist id="tickmarks2" style = "margin-top:5%;">
+                        <option value="0" label = "0"></option>
+                        <option value="1" label = "1"></option>
+                        <option value="2" label = "2"></option>
+                        <option value="3" label = "3"></option>
+                        <option value="4" label = "4"></option>
+                        <option value="5" label = "5"></option>
+                    </datalist>
+                  </div>
+                </form>
+            </form>
             <div id="text_form">
                 <div id="search_address">검색 텍스트</div>
                 <div id="address_filter">
