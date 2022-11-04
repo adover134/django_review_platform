@@ -64,7 +64,8 @@ class ReviewViewSets(ModelViewSet):
         data1['uId'] = int(data.get('uId'))
         data1['rent'] = int(data.get('rent'))
         data1['deposit'] = int(data.get('deposit'))
-        data1['monthlyRent'] = int(data.get('monthlyRent'))
+        if data1.get('rent') == '1':
+            data1['monthlyRent'] = int(data.get('monthlyRent'))
         data1['roomSize'] = float(data.get('roomSize'))
         data1['soundproof'] = int(data.get('proof'))
         data1['lighting'] = int(data.get('sunshine'))
