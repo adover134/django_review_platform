@@ -59,12 +59,13 @@ class ReviewViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
+        print(data)
         data1['reviewTitle'] = data.get('reviewTitle')
         data1['roomId'] = int(data.get('roomId'))
         data1['uId'] = int(data.get('uId'))
         data1['rent'] = int(data.get('rent'))
         data1['deposit'] = int(data.get('deposit'))
-        if data1.get('rent') == '1':
+        if data1.get('rent') == 1:
             data1['monthlyRent'] = int(data.get('monthlyRent'))
         data1['roomSize'] = float(data.get('roomSize'))
         data1['soundproof'] = int(data.get('proof'))
@@ -245,10 +246,11 @@ class ReviewViewSets(ModelViewSet):
         # 기존 데이터를 직렬화한다.
         data = self.get_serializer(instance).data
         for i in data.get('includedIcon'):
-            requests.delete(i)
+            requests.delete('http://127.0.0.1:8000/db/icon/'+str(i)+'/')
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
+        print(update_data)
         data1 = data
         data1['reviewTitle'] = update_data.get('reviewTitle')
         data1['roomId'] = int(update_data.get('roomId'))
