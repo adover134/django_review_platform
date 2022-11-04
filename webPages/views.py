@@ -463,7 +463,6 @@ def review_write(request):
         form = customForms.TextReviewWriteForm(request.POST, request.FILES)
         data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
-        print('werwerwer', images)
         cont = {}
         if form.is_valid():
             data1['reviewTitle'] = data['title']
@@ -507,7 +506,6 @@ def review_write(request):
 
 
 def handle_uploaded_file(f, kind, name):
-    print('static/images/'+kind+'/')
     with open('static/images/'+kind+'/' + name + '.png', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
@@ -536,7 +534,6 @@ def normal_user_room_write(request):
                 room = requests.post('http://127.0.0.1:8000/db/room/', data=data)
                 room_id = json.loads(room.text).get('id')
                 for image in images:
-                    print('rewrwerwerwerw\n\nwerwewffrjkldf\n\nsefef', room_id)
                     img = json.loads(
                         requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room_id}).text)
                     img_name = handle_uploaded_file(image, 'roomImage', str(img.get('id')))

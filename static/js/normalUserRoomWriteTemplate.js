@@ -62,35 +62,6 @@ window.onload = function(){
         }).open();
     }
     document.getElementById("id_address").addEventListener("click", map);
-    function getImageFiles(e){
-        const uploadFiles = [];
-        const files = e.currentTarget.files;
-        const imagePreview = document.getElementById('image-preview');
-
-        [...files].forEach(file => {
-            uploadFiles.push(file);
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const preview = createElement(e, file);
-                imagePreview.appendChild(preview);
-            };
-
-          reader.readAsDataURL(file);
-        });
-    }
-
-    function createElement(e, file) {
-      const divs = document.createElement('div');
-      const img = document.createElement('img');
-      img.setAttribute('src', e.target.result);
-      img.setAttribute('data-file', file.name);
-      divs.appendChild(img);
-
-      return divs;
-    }
-    const realUpload = document.querySelector('.real-upload');
-    realUpload.addEventListener('change', getImageFiles);
     roomChangePage();
     if(window.location.pathname==='/normal_user_room_change/'){
         document.getElementById('id_address').readOnly=true;

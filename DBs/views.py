@@ -59,12 +59,13 @@ class ReviewViewSets(ModelViewSet):
         data = copy.deepcopy(request.data)
         # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
+        print(data)
         data1['reviewTitle'] = data.get('reviewTitle')
         data1['roomId'] = int(data.get('roomId'))
         data1['uId'] = int(data.get('uId'))
         data1['rent'] = int(data.get('rent'))
         data1['deposit'] = int(data.get('deposit'))
-        if data1.get('rent') == '1':
+        if data1.get('rent') == 1:
             data1['monthlyRent'] = int(data.get('monthlyRent'))
         data1['roomSize'] = float(data.get('roomSize'))
         data1['soundproof'] = int(data.get('proof'))
@@ -100,15 +101,15 @@ class ReviewViewSets(ModelViewSet):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
-        if not data1:
+        if not data1 or data1 == {}:
             queryset = self.filter_queryset(self.get_queryset())
 
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = ReviewSerializer(page, context={'request': request}, many=True)
+                serializer = ReviewSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
-
-            serializer = ReviewSerializer(queryset, context={'request': request}, many=True)
+            serializer = ReviewSerializer(queryset, many=True)
+            print('s', serializer)
             return Response(serializer.data)
         # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
@@ -128,7 +129,22 @@ class ReviewViewSets(ModelViewSet):
         else:
             # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
             if data1.get('date'):
-                query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
+                date_value = data1.get('date')[0]
+                date_value = date_value.replace('/', '')
+                today = datetime.date.today()
+                from_date = None
+
+                match date_value:
+                    case '1week':
+                        from_date = today - datetime.timedelta(days=6)
+                    case '2weeks':
+                        from_date = today - datetime.timedelta(days=13)
+                    case '1month':
+                        from_date = today - datetime.timedelta(days=30)
+                    case '':
+                        from_date = today - datetime.timedelta(days=364)
+
+                query_date = Q(reviewDate__range=[from_date, today])
                 query.add(query_date, Q.AND)
             # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
             if data1.get('recommend'):
@@ -234,6 +250,7 @@ class ReviewViewSets(ModelViewSet):
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
+        print(update_data)
         data1 = data
         data1['reviewTitle'] = update_data.get('reviewTitle')
         data1['roomId'] = int(update_data.get('roomId'))
@@ -384,6 +401,8 @@ class RoomViewSets(ModelViewSet):
         # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
         data2 = dict(request.data)
         # data1에서 입력받은 값들만 변환한다.
+        print('er', data1)
+        print(data2)
 
         if data2.get('address'):
             if str(type(data2.get('address'))) == "<class 'list'>":
@@ -399,11 +418,12 @@ class RoomViewSets(ModelViewSet):
             data1['postcode'] = int(data2.get('postcode')[0])
         else:
             data1['postcode'] = int(data2.get('postcode'))
-        data1['commonInfo'] = []
+        t = []
         if data2.get('commonInfo'):
             for index in range(len(data2.get('commonInfo'))):
                 if data2.get('commonInfo')[index] == 'true':
-                    data1['commonInfo'].append(index - 1)
+                    t.append(index - 1)
+        data1['commonInfo'] = t
         if data2.get('name'):
             if str(type(data2.get('name'))) == "<class 'list'>":
                 data1['name'] = data2.get('name')[0]
@@ -431,6 +451,7 @@ class RoomViewSets(ModelViewSet):
         # 모델에 갱신된 인스턴스 정보를 저장한다.
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
+        print(serializer.data)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
