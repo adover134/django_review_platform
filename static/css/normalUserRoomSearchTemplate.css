@@ -8,7 +8,7 @@
   width: 88.54%;
   height: 68.687%;
   margin-left: 5.73%;
-  margin-top: 3.02%;
+  margin-top: 13.02%;
 }
 
 #room_search_filter {
@@ -16,7 +16,7 @@
   width: 100%;
 }
 
-#common_info_ {
+#common_info_form {
   position: relative;
   margin-top: 13.235%;
   margin-left: 2.94%;
@@ -55,57 +55,12 @@
   border-radius: 12px;
 }
 
-input[type=range] {
-  overflow: hidden;
-  height: 75%;
-  -webkit-appearance: none;
-  width: 100%;
-  background: transparent;
-  border-radius: 5px;
-}
-
-input[type=range]:focus {
-  outline: none;
-}
-
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  border-radius: 5px;
-  border: 2px solid #B3B3B3;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  border-radius: 5px;
-  width: 8%;
-  height: 100%;
-  background: #FFDA6A;
-  outline: 2px solid #2C1A4D;
-  box-shadow: 1px 1px 5px #B3B3B3;
-  cursor: pointer;
-  box-shadow: -100vw 0 0 100vw #B3B3B3;
-}
-
-datalist {
-  display: inline-flex;
-  writing-mode: horizontal-tb;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.label {
-  float: left;
-  width: 100%;
-}
-
 #common_info_selects::-webkit-scrollbar-track {
   background-color: #FFFFFF;
 }
 
 #built_year_form {
-  margin-top: 2.71%;
+  margin-top: 14.71%;
   width: 94.12%;
   height: 16.18%;
   margin-left: 2.94%;
@@ -149,8 +104,8 @@ datalist {
 
 #text_form {
   margin-top: 6.11%;
-  width: 100%;
-  height: 50.65%;
+  width: 94.12%;
+  height: 17.65%;
 }
 
 #search_address {
@@ -160,22 +115,22 @@ datalist {
 }
 
 #address_filter {
-  width: 100%;
-  height: 50%;
+  height: 75%;
+  padding-left: 3.125%;
 }
 
 #address2 {
   padding: 0;
-  margin-top: 3.8125%;
+  margin-top: 7.8125%;
   margin-bottom: 7.8125%;
   width: 93.75%;
-  height: 90%;
+  height: 44.44%;
 }
 
 #submit-div {
   width: 22.06%;
   height: 4.41%;
-  margin-top: 0%;
+  margin-top: 27.94%;
   margin-left: 74.12%;
 }
 
