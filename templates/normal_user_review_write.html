@@ -126,31 +126,14 @@
                     images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
                 {% endfor %}
                 document.getElementsByClassName('image-preview')[0].innerHTML = images
-
-                {% if review.rent %}
-                    document.getElementsByName('checking')[{{review.rent}}].checked = true;
-                {% endif %}
-                {% if review.deposit %}
-                    document.getElementById('id_deposit').value= {{ review.deposit }};
-                {% endif %}
-                {% if review.monthlyRent %}
-                    document.getElementById('monthly').value= {{ review.monthlyRent }}
-                {% endif %}
-                {% if review.roomSize %}
+                document.getElementsByName('checking')[{{review.rent}}].checked = true;
+                document.getElementById('id_deposit').value= {{ review.deposit }};
+                document.getElementById('monthly').value= {{ review.monthlyRent }}
                 document.getElementById('id_roomSize').value= {{ review.roomSize }}
-                {% endif %}
-                {% if review.humidity %}
                 document.getElementById('humidity').value= {{ review.humidity }}
-                {% endif %}
-                {% if review.soundproof %}
-                document.getElementById('proof').value= {{ review.soundproof }}
-                {% endif %}
-                {% if review.lighting %}
-                document.getElementById('sunshine').value= {{ review.lighting }}
-                {% endif %}
-                {% if review.leanliness %}
-                document.getElementById('clean').value= {{ review.cleanliness }}
-                {% endif %}
+                document.getElementById('proof').value= {{ review.proof }}
+                document.getElementById('sunshine').value= {{ review.sunshine }}
+                document.getElementById('clean').value= {{ review.clean }}
 
                 {% for sentence in review.reviewSentence %}
                     text += "{{ sentence }}\n"

@@ -30,6 +30,6 @@ for (i=1960;i<=2022;i++)
 window.onload=function() {
     a = new URLSearchParams(window.location.search).get('address');
     if (a){
-        document.getElementById('address2').value = a;
+        document.getElementById('search_address').value = a;
     }
 }

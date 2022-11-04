@@ -17,6 +17,7 @@
                 <div id="common_info_selects">
                     <label><input type="checkbox" name="color" value="blue">주차장</label>
                     <label><input type="checkbox" name="color" value="red">엘레베이터</label>
+                    <label><input type="checkbox" name="color" value="blue">CCTV</label>
                     <label></label>
                 </div>
             </div>
@@ -61,7 +62,7 @@
                 <option value="5" label = "5"></option>
             </datalist>
             <div id="text_form">
-                <div id="search_address">검색 텍스트</div>
+                <div>검색 텍스트</div>
                 <div id="address_filter">
                     <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address">
                 </div>
@@ -144,8 +145,6 @@
                 a=(o.offsetHeight/16).toString()+'rem';
                 o.style.fontSize=a;
             });
-            a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
-            document.getElementById('search_address').style.fontSize=a;
         }
         window.onload = function()
         {
@@ -186,8 +185,6 @@
                 a=(o.offsetHeight/16).toString()+'rem';
                 o.style.fontSize=a;
             });
-            a=(document.getElementById('search_address').offsetHeight/16).toString()+'rem';
-            document.getElementById('search_address').style.fontSize=a;
         }
     </script>
 {% endblock %}
