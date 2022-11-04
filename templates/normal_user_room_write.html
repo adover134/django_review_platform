@@ -5,40 +5,40 @@
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
-    <form style ="width:100%;height:10%;" action="#" method="post" enctype="multipart/form-data">
+    <form id="room" style ="width:100%;height:100%;" action="#" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-        <div style ="width:100%;height:100%; margin-top:4%;margin-left:4%; ">
-            <div style ="float:left;width:65%;height:100%;display:inline-block;">
-            <div style="background-color: #A23355 ; float: left;color: white; height:60%; width: 15% ;display:inline-block;text-align:center; margin: 0 auto" id="review_address">주소</div>
-                    <input id="id_address" style="width:85%; height:60%;border-color: #A23355;flex:1" name="address" required>
-                </div>
-            <div style ="width:35%;height:100%;display:inline-block;">
-                <div style="background-color: #A23355 ; float:left;color: white; height:60%; width: 20% ;display:inline-block;text-align: center; margin: 0 auto" id="review_postcode">우편번호</div>
-                    <input id="id_postcode" style="float: left; border-color: #A23355; width:60%; height:60%;" name="postcode" required>
-                </div>
-        </div>
-        <div style =" margin-top:4%; margin-left:4%;width:100%; height:85%;">
-            <div style ="width:48%; height:100%; display: inline-block;float:left;">
-            <div style ="width:100%;height:45%;display: inline-block;">
-                <span style ="margin-left:1%;font-weight: 700; font-size:25px;">원룸 정보</span>
-                <br><label style ="margin-top:2.5%;margin-left: 5%;width:20%;"><input type="checkbox" name = "checking" style="margin-right:5%;" value="">주차장</label>
-                <label style ="width:40%;margin-left: 2.5%;"><input type="checkbox" name = "checking" style="margin-right:5%;" value="">엘레베이터</label>
-                <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">원룸 이름 &nbsp; <input name="name" style="height:25px;" type ="text"></label>
-                <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">건축 연도 &nbsp; <input name="builtYear" style ="width:20%;height:25px;text-align: center;"type="number" minlength="1900" maxlength="2022" >&nbsp;년도</label>
-                <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">건물 높이 &nbsp; <input name="buildhigh" style ="width:15%;height:25px;text-align: center;"type ="number" minlength="-1" maxlength="10">&nbsp;층</label>
+        <div id="tr1">
+                <div style="background-color: #A23355 ; color: white; height:100%; width: 10.61% ;
+                        text-align: center; margin: 0 auto" id="room_address">주소</div>
+                <input id="id_address" style="float: right; border-color: #A23355; height:100%;
+                        flex:1" name="room_address" required>
+                <div style="background-color: #A23355 ; color: white; height:100%; width: 10.61% ;
+                        text-align: center; margin: 0 auto" id="postcode">우편번호</div>
+                <input id="id_postcode" style="float: right; border-color: #A23355; width:20%; height:100%;" name="postcode" required>
             </div>
+        <div id="tr2">
+            <div style ="width:48%; height:100%; display: inline-block;float:left;">
+                <div style ="width:100%;height:45%;display: inline-block;">
+                    <span style ="margin-left:1%;font-weight: 700; font-size:25px;">원룸 정보</span>
+                    <br><label style ="margin-top:2.5%;margin-left: 5%;width:20%;"><input id="commonInfo0" type="checkbox" name = "commonInfo" style="margin-right:5%;">주차장</label>
+                    <label style ="width:40%;margin-left: 2.5%;"><input type="checkbox" id="commonInfo1"  name = "commonInfo" style="margin-right:5%;">엘레베이터</label>
+                    <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">원룸 이름 &nbsp; <input id="id_name" name="name" style="height:25px;" type ="text"></label>
+                    <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">건축 연도 &nbsp; <input id="id_builtYear" name="builtYear" style ="width:20%;height:25px;text-align: center;"type="number" minlength="1900" maxlength="2022" >&nbsp;년도</label>
+                    <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">건물 높이 &nbsp; <input id="id_buildingFloorNum" name="buildingFloorNum" style ="width:15%;height:25px;text-align: center;"type ="number" minlength="-1" maxlength="10">&nbsp;층</label>
+                </div>
                 <div style ="width:100%;height:55%;">
                     <span style ="margin-left:1%;font-weight: 700; font-size:25px; display: inline-block;">임대인 정보</span>
-                    <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">연락처 &nbsp;<input name="ownerPhone" style =" margin-left:3%;width:40%; height:25px;text-align: center;"type ="tel"></label>
+                    <br><label style ="width:100%;margin-left: 2.5%;margin-top:2.5%;">연락처 &nbsp;<input id="id_ownerPhone" name="ownerPhone" style =" margin-left:3%;width:40%; height:25px;text-align: center;"type ="tel"></label>
                 </div>
             </div>
-            <div style ="width:48%; height:100%; display: inline-block;">
+            <div style ="width:48%; height:100%;">
                 <div style ="padding-top: 3.038%; width:80%;height:70%;">
                     <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
                 </div>
                     <div style="float: right">
                         <input style ="width:60%;" type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
-                                    <button type="submit">원룸 등록</button>
+                        <input id="room_submit" value="원룸 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                        color: white">
                     </div>
             </div>
         </div>
@@ -80,11 +80,22 @@
             if(window.location.pathname==='/normal_user_room_change/'){
                 document.getElementById('id_address').value= "{{ room.address }}"
                 document.getElementById('id_postcode').value= "{{ room.postcode }}"
-                document.getElementById('id_name').value= "{{ room.name }}"
-                document.getElementById('id_builtYear').value= "{{ room.builtYear }}"
-                document.getElementById('id_buildingFloorNum').value= "{{ room.buildingFloorNum }}"
-                document.getElementById('id_ownerPhone').value= "{{ room.ownerPhone }}"
+                {% if room.name %}
+                    document.getElementById('id_name').value= "{{ room.name }}"
+                {% endif %}
+                {% if room.builtYear %}
+                    document.getElementById('id_builtYear').value= "{{ room.builtYear }}"
+                {% endif %}
+                {% if room.buildingFloorNum %}
+                    document.getElementById('id_buildingFloorNum').value= "{{ room.buildingFloorNum }}"
+                {% endif %}
+                {% if room.ownerPhone %}
+                    document.getElementById('id_ownerPhone').value= "{{ room.ownerPhone }}"
+                {% endif %}
                 let images = ''
+                var commonInfo = {{room.commonInfo}};
+                for (i=0;i<commonInfo.length;i++)
+                    document.getElementById('commonInfo'+commonInfo[i].toString()).checked=true;
                 {% for img in room.roomImage %}
                     images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
                 {% endfor %}
