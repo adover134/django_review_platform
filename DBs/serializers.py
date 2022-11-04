@@ -141,7 +141,7 @@ class ReviewSerializerString(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
 
     commonInfo = serializers.ListField(
-        child=serializers.IntegerField()
+        child=serializers.IntegerField(),
     )
     roomImage = serializers.StringRelatedField(
         many=True,

@@ -6,9 +6,15 @@
   padding: 1.5% 6.25% 1.5% 6.25%;
 }
 #tr2{
+    display:inline-block;
     height: 89.39%;
-    width: 100%;
+    width: 50%;
     padding: 3.03% 6.25% 3.03% 6.25%;
+}
+#tr3{
+    display:inline-block;
+    height: 89.39%;
+    width: 45%;
 }
 img{
     width:100%;
@@ -18,11 +24,19 @@ img{
     padding-right:20%;
 }
 
-.image-preview{
-    width: 50%;
-    height: 100%;
+#image-preview{
+    width: 100%;
+    height: 20%;
+    margin-top:60%;
     display: flex;
     float: left;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+}
+#image-preview > div{
+    height: 100%;
+    display:inline-block;
+    flex:0 0 30%;
 }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
