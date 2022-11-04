@@ -95,7 +95,7 @@
                 let images = ''
                 var commonInfo = {{room.commonInfo}};
                 for (i=0;i<commonInfo.length;i++)
-                    document.getElementById('commonInfo'+(commonInfo[i]-1).toString()).checked=true;
+                    document.getElementById('commonInfo'+commonInfo[i].toString()).checked=true;
                 {% for img in room.roomImage %}
                     images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
                 {% endfor %}

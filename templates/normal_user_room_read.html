@@ -85,53 +85,12 @@
                 });
         </script>
     </div>
-    <div id ="mid"style = "display:inline-block; font-weight:700;text-align:center;outline:2px solid #B3B3B3; width:70%; height:15.1%;">
-        {% if room.name  %}
-            <span>원룸 이름: {{ room.name }}</span>
-        {% else %}
-            <span>원룸 이름</span>
-        {% endif %}
-        <br><strong><span>주소:</span><span>{{ room.address }}</span></strong>
-        <span> / </span>
-        <strong><span>우편 번호:</span><span>{{ room.postcode }}</span></strong>
-        {% if room.buildingFloorNum %}
-            <br><span>층수: {{ room.buildingFloorNum }}</span>
-        {% else %}
-            <br><span>층수: 입력 필요</span>
-        {% endif %}
-        <span> / </span>
-        {% if room.builtYear  %}
-            <span>건축 연도: {{ room.builtYear }}</span>
-        {% else %}
-            <span>건축 연도: 입력 필요</span>
-        {% endif %}
-        <br><span>공통 시설 :</span>
+    <div id ="mid"style = "text-align:center;outline:2px solid #B3B3B3;width:100%; height:11.1%;">
+        <strong><span>주소:</span><span>{{ room.address }}</span></strong>
+        <br>{{ room.builtYear }}
         {% if room.commonInfo %}
-            <span  id="common_info"></span>
-            <script>
-                var commmonInfoList = ['주차장', '엘리베이터']
-                var commonInfo = {{ room.commonInfo }};
-                var text = "";
-                for (i = 0;i<commonInfo.length;i++)
-                {
-                    if (text.length > 0)
-                        text = text + ', '+commmonInfoList[commonInfo[i]-1];
-                    else
-                        text = text + commmonInfoList[commonInfo[i]-1];
-                }
-                document.getElementById('common_info').innerText = text;
-            </script>
-        {% else %}
-            <span id="common_info"> 입력 안 됨.</span>
+            {{ room.commonInfo }}
         {% endif %}
-        {% if room.ownerPhone  %}
-            <br><span>방주인 연락처 :{{ room.ownerPhone }}</span>
-        {% else %}
-            <br><span>방주인 연락처: 입력필요</span>
-        {% endif %}
-    </div>
-    <div style="display:inline-block; width:25%;">
-        <a href="/normal_user_room_change/?roomId={{room.id}}">수정</a>
     </div>
     <div style="width:100%; height:56%;">
         <div style="width:100%; height:56%;"></div><div id="reviews_div">
