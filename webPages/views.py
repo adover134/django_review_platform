@@ -178,6 +178,7 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
+    print(review)
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -493,7 +494,7 @@ def review_write(request):
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
-                img_name = handle_uploaded_file(image, str(img.get('id')))
+                img_name = handle_uploaded_file(image, 'reviewImage', str(img.get('id')))
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
         cont['review_id'] = str(review_id)
@@ -517,17 +518,32 @@ def normal_user_room_write(request):
     user = request.user
     if request.method == 'POST':
         data = dict(request.POST)
+        print(data)
         images = request.FILES.getlist('images')
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         if form.is_valid():
             # 우편번호로 원룸 존재 체크
             # 이미 등록된 원룸인 경우
+            data1 = {}
+            data1['address'] = data.get('room_address')[0]
+            data1['postcode'] = data.get('postcode')[0]
+            if data.get('name')[0] != '':
+                data1['name'] = data.get('name')[0]
+            if data.get('buildingFloorNum')[0] != '':
+                data1['buildingFloorNum'] = data.get('buildingFloorNum')[0]
+            if data.get('builtYear')[0] != '':
+                data1['builtYear'] = data.get('builtYear')[0]
+            data1['commonInfo'] = data.get('commonInfo')[0]
+            if data.get('ownerPhone')[0] != '':
+                data1['ownerPhone'] = data.get('ownerPhone')[0]
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
             if room:
                 return Response(room[0].get('id')) # 해당 우편번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
-                room = requests.post('http://127.0.0.1:8000/db/room/', data=data)
+                print(data1)
+                room = requests.post('http://127.0.0.1:8000/db/room/', data=data1)
                 room_id = json.loads(room.text).get('id')
+                print('werewjiowejisdfklsdfjlfwjie \n\n::\n\n::werwewwerererwe', room_id)
                 for image in images:
                     img = json.loads(
                         requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room_id}).text)
