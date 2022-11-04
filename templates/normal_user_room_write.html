@@ -33,7 +33,7 @@
             </div>
             <div style ="width:48%; height:100%;">
                 <div style ="padding-top: 3.038%; width:80%;height:70%;">
-                    <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
+                    <div class="image-preview"></div> {# 업로드한 이미지 띄우는 부분 #}
                 </div>
                     <div style="float: right">
                         <input style ="width:60%;" type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
@@ -64,13 +64,13 @@
         }
 
         function createElement(e, file) {
-          const li = document.createElement('li');
+          const div = document.createElement('div');
           const img = document.createElement('img');
           img.setAttribute('src', e.target.result);
           img.setAttribute('data-file', file.name);
-          li.appendChild(img);
+          div.appendChild(img);
 
-          return li;
+          return div;
         }
         var text = '';
         const realUpload = document.querySelector('.real-upload');
