@@ -7,7 +7,11 @@
 <div id="reviewinfo" >
     <div style ="margin:20px;">
         <div style="width:24.7%; height:245px; margin-right:20px; display: inline-block;float:left;">
+            {% if room.roomImage %}
                 <img src="{% static 'images/roomImage/' %}{{room.roomImage|first}}" style="width:100%; height:100%;">
+            {% else %}
+                <img src="{% static 'images/iconImage/no-photo.png' %}" style="width:100%; height:100%;">
+            {% endif %}
         </div>
         <div id="mapDiv" style = "display:inline-block;"></div>
         <script>
@@ -47,42 +51,27 @@
             {# 지도에 원룸 위치 표시 #}
             var geocoder = new kakao.maps.services.Geocoder();
 
-            $.ajax({
-                url: 'http://127.0.0.1:8000/db/room/',
-                method: "GET",
-                dataType: "json"
-            })
-                .done(function (json) {
-                    $.each(json, function (key, value) {
-                        // 주소로 좌표를 검색합니다
-                        geocoder.addressSearch(value.address, function (result, status) {
+            geocoder.addressSearch("{{ room.address }}", function (result, status) {
 
-                            // 정상적으로 검색이 완료됐으면
-                            if (status === kakao.maps.services.Status.OK) {
-                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                                // 결과값으로 받은 위치를 마커로 표시합니다
-                                var marker = new kakao.maps.Marker({
-                                    map: map,
-                                    position: coords
-                                });
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords
+                    });
 
-                                var room_info = ''
-                                if (value.name !== null)
-                                    room_info = value.name
-                                else
-                                    room_info = value.address
-
-                                // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                var infowindow = new kakao.maps.InfoWindow({
-                                    content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
-                                });
-
-                                infowindow.open(map, marker);
-                            }
-                        })
-                    })
-                });
+                    map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
+                    marker.setMap(map);
+                    // 마커 클릭시 위도,경도를 검색으로 한 카카오맵 페이지 이동
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        window.open(
+                            'https://map.kakao.com/link/map/'+ result[0].y+','+result[0].x
+                        )
+                    });
+                }
+            });
         </script>
     </div>
     <div id ="mid"style = "text-align:center;outline:2px solid #B3B3B3;width:100%; height:11.1%;">

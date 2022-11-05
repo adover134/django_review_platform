@@ -86,15 +86,21 @@ def normal_user_review_search(request):
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
         context['address'] = data.get('address')[0]
-    for i in range(3):
-        if data.get('icons'):
-            for c in data.get('icons'):
-                review_search_url = review_search_url+'&'+'commonInfo='+c
+    if data.get('icons'):
+        context['icons'] = []
+        for c in data.get('icons'):
+            review_search_url = review_search_url+'&'+'commonInfo='+c
+            context['icons'].append([c])
     if data.get('sorted'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
         context['sorted'] = data.get('sorted')[0]
+    if data.get('date'):
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'date=' + data.get('date')[0]
+        context['date'] = data.get('date')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
@@ -103,7 +109,8 @@ def normal_user_review_search(request):
     for r in paged_review:
         t.append(list(set(r.get('includedIcon'))))
     context['paged_review'] = paged_review
-    context['icons'] = t
+    # context['icons'] = t
+    print('context: ', context)
 
     return render(request, 'normal_user_review_search.html', context)
 
@@ -120,8 +127,9 @@ def normal_user_review_read(request):
 
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
-    address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
-    review['address'] = address
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text)
+    review['roomName'] = room.get('name')
+    review['address'] = room.get('address')
     icon_urls = review.get('includedIcon')
 
     sorted = ''
