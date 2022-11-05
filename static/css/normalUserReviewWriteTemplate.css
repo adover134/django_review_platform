@@ -17,11 +17,6 @@
   padding: 3.03% 6.25% 3.03% 6.25%;
 }
 
-#mainDiv {
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-
 li {
   list-style: none;
 }

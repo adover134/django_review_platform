@@ -64,8 +64,8 @@ window.onload = function(){
     d.disabled=true;
     c.style.display='none';
     d.style.display='none';
-    // document.getElementById('writtenStart').appendChild(c);
-    // document.getElementById('writtenEnd').appendChild(d);
+    document.getElementById('writtenStart').appendChild(c);
+    document.getElementById('writtenEnd').appendChild(d);
     var i;
     for (i=1960;i<=2022;i++)
     {
@@ -75,7 +75,7 @@ window.onload = function(){
         b.value=i;
         a.innerText=i;
         b.innerText=i;
-        // document.getElementById('writtenStart').appendChild(a);
-        // document.getElementById('writtenEnd').appendChild(b);
+        document.getElementById('writtenStart').appendChild(a);
+        document.getElementById('writtenEnd').appendChild(b);
     }
 }

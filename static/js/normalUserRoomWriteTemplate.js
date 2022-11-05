@@ -1,23 +1,27 @@
-$("#text_review").submit(review_submit);
-function review_submit(e) {
+$("#room").submit(room_submit);
+function room_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
-    document.getElementById('review_sentence1').value = document.getElementById('review_sentence').innerText
     // serialize the data for sending the form data.
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
-    if (window.location.pathname==='/normal_user_review_change/') {
+    var checkbox = $("#room").find("input[type=checkbox]");
+    console.log(checkbox);
+    $.each(checkbox, function(key, val) {
+        form.append($(val).attr('name'), $(this).is(':checked'))
+    });
+    if (window.location.pathname==='/normal_user_room_change/') {
         // var reviewForm = new FormData($('text_review')[0])
         $.ajax({
             type: 'POST',
-            url: "/normal_user_review_update/?id="+URLSearch.get('id'),
+            url: "/normal_user_room_update/?roomId="+URLSearch.get('roomId'),
             async: false,
             data: form,
             processData: false,
             contentType: false,
             success: function (response) {
                 // on successfull creating object
-                window.location.replace('/normal_user_review_read/?id='+response['review_id']);
+                window.location.replace('/normal_user_room_read/?roomId='+response);
             },
             error: function (response) {
                 // alert the error if any error occured
@@ -28,26 +32,15 @@ function review_submit(e) {
     // make POST ajax call
         $.ajax({
             type: 'POST',
-            url: "/normal_user_review_write/",
+            url: "/normal_user_room_write/",
             async: false,
             data: form,
             processData: false,
             contentType: false,
             success: function (response) {
                 // on successfull creating object
-                if(Object.keys(response).includes('room_id'))
-                {
-                    if(confirm('정보가 없는 원룸입니다. 정보를 입력해 주실래요?')){
-                        window.location.replace('/normal_user_review_read/?id='+response['review_id']);
-                        //window.location.replace('/normal_user_room_change/?id='+response['room_id']);
-                    }
-                    else
-                        window.location.replace('/normal_user_review_read/?id='+response['review_id']);
-                }
-                else
-                {
-                    window.location.replace('/normal_user_review_read/?id='+response['review_id']);
-                }
+                console.log(response);
+                window.location.replace('/normal_user_room_read/?roomId='+response);
             },
             error: function (response) {
                 // alert the error if any error occured
@@ -69,21 +62,10 @@ window.onload = function(){
         }).open();
     }
     document.getElementById("id_address").addEventListener("click", map);
-    reviewChangePage();
-    if(window.location.pathname==='/normal_user_review_change/'){
+    roomChangePage();
+    if(window.location.pathname==='/normal_user_room_change/'){
         document.getElementById('id_address').readOnly=true;
         document.getElementById('id_postcode').readOnly=true;
         document.getElementById('id_address').removeEventListener("click", map);
-    }
-}
-function toggleChk(){
-    var checking = document.getElementsByName('checking');
-    if (checking[1].checked===true){
-        document.getElementById('monthly').parentElement.style.display='block';
-        document.getElementById('monthly').required=true;
-    }
-    else{
-        document.getElementById('monthly').parentElement.style.display='none';
-        document.getElementById('monthly').required=false;
     }
 }

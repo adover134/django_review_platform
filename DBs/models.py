@@ -17,12 +17,12 @@ class User(AbstractUser):
 
 class Room(models.Model):
     address = models.TextField()
-    postcode = models.IntegerField(null=True)
-    name = models.TextField(null=True)
-    buildingFloorNum = models.IntegerField(null=True)
-    builtYear = models.IntegerField(null=True)
-    commonInfo = models.JSONField(null=True)
-    ownerPhone = models.TextField(null=True)
+    postcode = models.IntegerField(null=True, blank=True)
+    name = models.TextField(null=True, blank=True)
+    buildingFloorNum = models.IntegerField(null=True, blank=True)
+    builtYear = models.IntegerField(null=True, blank=True)
+    commonInfo = models.JSONField(null=True, blank=True)
+    ownerPhone = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = 'Room'
@@ -117,6 +117,17 @@ class RoomImage(models.Model):
         return self.image
 
 
+    def delete(self):
+        print(self.image)
+        delete_review_image(self.image)
+        return models.Model.delete(self)
+
+
 def delete_review_image(image):
     if os.path.exists('static/images/reviewImage'+image):
         os.remove('static/images/reviewImage'+image)
+
+
+def delete_room_image(image):
+    if os.path.exists('static/images/roomImage' + image):
+        os.remove('static/images/roomImage' + image)

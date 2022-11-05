@@ -13,6 +13,10 @@ class ReviewWriteForm(forms.Form):
     monthly = forms.IntegerField()
     area = forms.FloatField()
     room_area = forms.CharField(widget=customFields.NonStickyTextInputField())
+    proof = forms.IntegerField()
+    sunshine = forms.IntegerField()
+    clean = forms.IntegerField()
+    humidity = forms.IntegerField()
     images = forms.ImageField(label='room_images', widget=customFields.NonStickyImageField(attrs={'multiple': True, 'autocomplete': 'off'}), required=False)
 
 
@@ -26,10 +30,11 @@ class TextReviewWriteForm(ReviewWriteForm):
 class RoomWriteForm(forms.Form):
     room_address = forms.CharField(widget=customFields.NonStickyTextInputField())
     postcode = forms.IntegerField(widget=customFields.NonStickyTextInputField())
-    name = forms.CharField(widget=customFields.NonStickyTextInputField())
-    builtYear = forms.IntegerField(widget=customFields.NonStickyTextInputField())
-    # commonInfo = forms.
-    ownerPhone = forms.CharField(widget=customFields.NonStickyTextInputField())
+    name = forms.CharField(required=False, widget=customFields.NonStickyTextInputField())
+    builtYear = forms.IntegerField(required=False, widget=customFields.NonStickyTextInputField())
+    buildingFloorNum = forms.IntegerField(required=False, widget=customFields.NonStickyTextInputField())
+    commonInfo = forms.JSONField(required=False)
+    ownerPhone = forms.CharField(required=False, widget=customFields.NonStickyTextInputField())
 
 
 class UserInfoForm(forms.Form):
