@@ -60,8 +60,11 @@
                     // 결과값으로 받은 위치를 마커로 표시합니다
                     var marker = new kakao.maps.Marker({
                         map: map,
-                        position: coords
+                        position: coords,
+                        clickable: true
                     });
+
+                    marker.setMap(map);
 
                     var room_info = ''
                     if ("{{ review.roomName }}" !== 'None')
@@ -78,8 +81,13 @@
                     });
 
                     infowindow.open(map, marker)
-                    }
-                });
+
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        // 마커 위에 인포윈도우를 표시합니다
+                        window.location.href="{{ roomRead }}?roomId={{ review.roomId }}"
+                    });
+                }
+            });
 
             {% if icons == None %}
                 var icons = null;
