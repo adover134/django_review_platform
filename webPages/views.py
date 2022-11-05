@@ -127,8 +127,9 @@ def normal_user_review_read(request):
 
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
-    address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
-    review['address'] = address
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text)
+    review['roomName'] = room.get('name')
+    review['address'] = room.get('address')
     icon_urls = review.get('includedIcon')
 
     sorted = ''
