@@ -96,6 +96,11 @@ def normal_user_review_search(request):
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
         context['sorted'] = data.get('sorted')[0]
+    if data.get('date'):
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'date=' + data.get('date')[0]
+        context['date'] = data.get('date')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
