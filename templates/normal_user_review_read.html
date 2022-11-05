@@ -64,6 +64,7 @@
                         clickable: true
                     });
 
+                    map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
                     marker.setMap(map);
 
                     var room_info = ''
@@ -226,7 +227,7 @@
             </div>
             <div id="rec_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                    추천 {{review.recommendedOn|length}}
+                    추천 <span id="recommend_num">{{review.recommendedOn|length}}</span>
                 </div>
             </div>
             <div id="rep_icon">
@@ -234,12 +235,14 @@
             </div>
             <div id="rep_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                    신고 {{review.reportedOn|length}}
+                    신고 <span id="report_num">{{review.reportedOn|length}}</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+    <br>
+    <div>해당 리뷰와 같은 주소의 다른 리뷰</div>
 <br>
 <script>var is_writer = {{is_writer}};</script>
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
