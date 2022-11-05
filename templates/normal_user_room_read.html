@@ -60,6 +60,12 @@
 
                     map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
                     marker.setMap(map);
+                    // 마커 클릭시 위도,경도를 검색으로 한 카카오맵 페이지 이동
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        window.open(
+                            'https://map.kakao.com/link/map/'+ result[0].y+','+result[0].x
+                        )
+                    });
                 }
             });
         </script>
