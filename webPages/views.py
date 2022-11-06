@@ -399,6 +399,7 @@ def room_search(request):
 
     return render(request, 'normal_user_room_search.html', data)
 # 리뷰 열람 페이지
+
     # 해당 리뷰 정보를 받는다.
     # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
     # 리뷰 정보와 리뷰 리스트를 context로 반환

@@ -33,6 +33,45 @@
                     </div>
                 </div>
             </div>
+            <div id="distance">
+                <div id="distance_title">
+                    학교까지 거리(100m)
+                </div><br>
+                <div class="sliders_control">
+                    <input name="distance_from" id="fromSlider1" type="range" value="1" min="1" max="10" step="1"/>
+                    <input name="distance_to" id="toSlider1" type="range" value="10" min="1" max="10" step="1"/>
+                </div>
+                <div class="form_control">
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="fromInput1" value="1" min="1" max="10"/>
+                    </div>
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="toInput1" value="10" min="1" max="10"/>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div id="convNum">
+                <div id="convNum_title">
+                    300미터 이내 편의점 수
+                </div><br>
+                <div class="sliders_control">
+                    <input name="convNum_from" id="fromSlider2" type="range" value="1" min="1" max="10" step="1"/>
+                    <input name="convNum_to" id="toSlider2" type="range" value="10" min="1" max="10" step="1"/>
+                </div>
+                <div class="form_control">
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="fromInput2" value="1" min="1" max="10"/>
+                    </div>
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="toInput2" value="10" min="1" max="10"/>
+                    </div>
+                </div>
+            </div>
             <div id="text_form">
                 <div id="search_address">검색할 주소</div>
                 <div id="address_filter">
