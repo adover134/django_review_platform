@@ -20,35 +20,6 @@ class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
-
-    def update(self, request, *args, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서, 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
-
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
-
 
 class ReviewViewSets(ModelViewSet):
     queryset = Review.objects.all()
@@ -200,13 +171,6 @@ class ReviewViewSets(ModelViewSet):
         # 검색된 값을 반환한다.
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        return Response(ReviewSerializerLink(instance, context={'request': request}).data)
-
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
-
     def update(self, request, *args, **kwargs):
         # 리뷰 번호와 일치하는 리뷰 데이터를 가져온다.
         instance = self.get_object()
@@ -252,10 +216,6 @@ class ReviewViewSets(ModelViewSet):
         # 성공 응답코드를 반환한다.
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoomViewSets(ModelViewSet):
@@ -306,8 +266,6 @@ class RoomViewSets(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
 
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
@@ -352,8 +310,6 @@ class RoomViewSets(ModelViewSet):
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
@@ -408,9 +364,6 @@ class RoomViewSets(ModelViewSet):
         return Response(serializer.data)
 
 
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
-
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
@@ -453,8 +406,6 @@ class RoomViewSets(ModelViewSet):
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
@@ -513,8 +464,6 @@ class RoomViewSets(ModelViewSet):
         # 갱신이 성공했음을 반환한다.
         return Response(serializer.data)
 
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
 
 
 class IconViewSets(ModelViewSet):
@@ -692,11 +641,6 @@ class ReviewImageViewSets(ModelViewSet):
         self.perform_update(serializer)
         # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoomImageViewSets(ModelViewSet):
