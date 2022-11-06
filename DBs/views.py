@@ -127,7 +127,22 @@ class ReviewViewSets(ModelViewSet):
         else:
             # 작성일의 시작점과 끝점을 받았다면 해당 기간 동안 작성된 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
             if data1.get('date'):
-                query_date = Q(reviewDate__range=[int(data1['date'][0]), int(data1['date'][1])])
+                date_value = data1.get('date')[0]
+                date_value = date_value.replace('/', '')
+                today = datetime.date.today()
+                from_date = None
+
+                match date_value:
+                    case '1week':
+                        from_date = today - datetime.timedelta(days=6)
+                    case '2weeks':
+                        from_date = today - datetime.timedelta(days=13)
+                    case '1month':
+                        from_date = today - datetime.timedelta(days=30)
+                    case '':
+                        from_date = today - datetime.timedelta(days=364)
+
+                query_date = Q(reviewDate__range=[from_date, today])
                 query.add(query_date, Q.AND)
             # 최소 추천 수를 받았다면 그 이상의 추천을 갖는 리뷰만 찾는 쿼리를 만든다.
             if data1.get('recommend'):
