@@ -136,7 +136,7 @@ def normal_user_review_read(request):
     icons.append([])
     if icon_urls:
         for i in range(len(icon_urls)):
-            icon = json.loads(requests.get(icon_urls[i]).text)
+            icon = json.loads(requests.get('http://127.0.0.1:8000/db/icon/'+icon_urls[i]).text)
             match icon.get('iconKind'):
                 case '0':
                     icons[0].append(i)
