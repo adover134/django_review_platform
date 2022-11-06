@@ -20,35 +20,6 @@ class UserViewSets(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
-
-    def update(self, request, *args, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서, 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
-
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
-
 
 class ReviewViewSets(ModelViewSet):
     queryset = Review.objects.all()
@@ -112,7 +83,6 @@ class ReviewViewSets(ModelViewSet):
         # 검색 조건을 쿼리로 만들어 저장할 변수와 검색 결과를 저장할 변수를 만든다.
         query = Q()
         searched = None
-        room_search_flag = False
 
         # 회원 닉네임을 받았다면 해당하는 회원의 리뷰만 찾는 쿼리를 만들어 최종 쿼리에 더한다.
         if data1.get('uId'):
@@ -168,51 +138,18 @@ class ReviewViewSets(ModelViewSet):
                         else:
                             break
                     query.add(query_report, Q.AND)
-            # 아이콘 정보로 조회하는 쿼리를 만들어 추가한다.
-            if data1.get('icon'):
-                query_icon = Q()
-                query.add(query_icon, Q.AND)
-            # 원룸에 대한 정보를 검색하기 위한 URL
-            roomRetrieveURL = 'http://127.0.0.1:8000/db/room/?'
             # 주소 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
             if data1.get('address'):
-                roomRetrieveURL = roomRetrieveURL + 'address=' + data1.get('address')[0]
-            if data1.get('postcode'):
-                if roomRetrieveURL[-1] != '?':
-                    roomRetrieveURL = roomRetrieveURL + '&'
-                roomRetrieveURL = roomRetrieveURL + 'postcode=' + data1.get('postcode')[0]
-            # 건축년도에 대한 정보가 들어왔다면 URL 끝에 해당 정보를 붙인다.
-            if data1.get('builtFrom'):
-                if roomRetrieveURL[-1] != '?':
-                    roomRetrieveURL = roomRetrieveURL + '&'
-                roomRetrieveURL = roomRetrieveURL + 'builtFrom=' + data1.get('builtFrom')[0]
-            if data1.get('builtTo'):
-                if roomRetrieveURL[-1] != '?':
-                    roomRetrieveURL = roomRetrieveURL + '&'
-                roomRetrieveURL = roomRetrieveURL + 'builtTo=' + data1.get('builtTo')[0]
-            # 공통 정보에 대한 사항이 들어왔다면 URL 끝에 해당 정보를 붙인다.
-            if data1.get('commonInfo'):
-                for info in data1.get('commonInfo'):
-                    if roomRetrieveURL[-1] != '?':
-                        roomRetrieveURL = roomRetrieveURL + '&'
-                    roomRetrieveURL = roomRetrieveURL + 'commonInfo=' + info
-            # 완성된 URL로 해당하는 원룸들의 정보를 받는다.
-            if roomRetrieveURL[-1] != '?':
-                room_data = json.loads(requests.get(roomRetrieveURL).text)
-                room_search_flag = True
-            # 해당하는 원룸들에 대한 리뷰들을 검색하는 쿼리를 만든다.
-                if len(room_data) > 0:
-                    query_room = Q()
-                    for r in room_data:
-                        query_room.add(Q(roomId=r['id']), Q.OR)
-                    query.add(query_room, Q.AND)
+                query_room = Q()
+                query_room.add(Q(roomId__address__contains=str(data1.get('address')[0])), Q.AND)
+                query.add(query_room, Q.AND)
+        print(query)
 
         # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         # 위의 로직에서 원룸 데이터에 대한 검색조건이 query_room에 담긴다.
         # 그다음에는 해당하는 원룸 ID로 Review.obects.filter()를 써야한다.
-        if query == Q() and room_search_flag == True:
+        if query == Q():
             searched = None
-
         else:
             searched = Review.objects.filter(query)
             # 정렬조건
@@ -227,16 +164,12 @@ class ReviewViewSets(ModelViewSet):
                         searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
                     case '3': # 정확도순(아이콘 많은 순)
                         searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
-
+        print(searched)
+        if data1.get('icons'):
+            icon_queryset = (searched.filter(includedIcon__iconKind__in=data1.get('icons')).annotate(total=Count('id')).order_by('total')).filter(total=len(data1.get('icons')))
+            return Response(ReviewSerializer(icon_queryset, many=True, context={'request': request}).data)
         # 검색된 값을 반환한다.
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        return Response(ReviewSerializerLink(instance, context={'request': request}).data)
-
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
         # 리뷰 번호와 일치하는 리뷰 데이터를 가져온다.
@@ -283,10 +216,6 @@ class ReviewViewSets(ModelViewSet):
         # 성공 응답코드를 반환한다.
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoomViewSets(ModelViewSet):
@@ -337,12 +266,11 @@ class RoomViewSets(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
 
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
+        print('werwerwerewrwerewrwerwe', data1)
         # 별도의 검색조건이 없다면 모델의 모든 값을 반환한다.
         if not data1:
             return super().list(self, request, args, kwargs)
@@ -366,14 +294,13 @@ class RoomViewSets(ModelViewSet):
             query_built_year = Q(builtYear__range=(int(built_from), int(built_to)))
             query.add(query_built_year, Q.AND)
         # N = len(CommonInfo.objects.all())
-        N = 10
         if data1.get('commonInfo'):
             query_common_info = Q()  # 공통 정보에 대한 쿼리이다.
             for info in data1.get('commonInfo'):  # 입력된 공통 정보 번호를 검색 조건에 추가한다.
                 query_common_info.add(Q(commonInfo__contains=(int(info))), Q.AND)
             query.add(query_common_info, Q.AND)
         if data1.get('postcode'):
-            postcode = Q()
+            query_postcode = Q()
             postcode = data1.get('postcode')[0]
             postcode = postcode.replace('/', '')
             query_postcode = Q(postcode=postcode)
@@ -383,8 +310,6 @@ class RoomViewSets(ModelViewSet):
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
@@ -439,9 +364,6 @@ class RoomViewSets(ModelViewSet):
         return Response(serializer.data)
 
 
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(self, request, args, kwargs)
-
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
@@ -484,8 +406,6 @@ class RoomViewSets(ModelViewSet):
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, args, kwargs)
 
     def update(self, request, *args, **kwargs):
         # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
@@ -544,8 +464,6 @@ class RoomViewSets(ModelViewSet):
         # 갱신이 성공했음을 반환한다.
         return Response(serializer.data)
 
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(self, request, args, kwargs)
 
 
 class IconViewSets(ModelViewSet):
@@ -585,27 +503,6 @@ class IconViewSets(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
-    def update(self, request, *args, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서, 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
 
 
 class RecommendViewSets(ModelViewSet):
@@ -745,11 +642,6 @@ class ReviewImageViewSets(ModelViewSet):
         # 갱신이 성공했음을 반환한다.
         return Response("Update Success!")
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class RoomImageViewSets(ModelViewSet):
     queryset = RoomImage.objects.all()
@@ -757,10 +649,8 @@ class RoomImageViewSets(ModelViewSet):
 
 
     def create(self, request, *args, **kwargs):
-        print('rrrrrrrr', request.data)
         data1 = {}
         data1['roomId'] = int(request.data.get('roomId'))
-        print('werwegfdhufkjejsdv', data1)
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

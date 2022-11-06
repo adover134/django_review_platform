@@ -70,18 +70,12 @@ def infoCheck(request):
 def normal_user_review_search(request):
     context = {}
 
+    print('uurrll', request.get_full_path)
+
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
-    if data.get('builtFrom'):
-        review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
-        context['builtFrom'] = data.get('builtFrom')[0]
-    if data.get('builtTo'):
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url+'&'
-        review_search_url = review_search_url+'builtTo='+data.get('builtTo')[0]
-        context['builtTo'] = data.get('builtTo')[0]
-    if data.get('address'):
+    if data.get('address') and data.get('address') != '':
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
@@ -89,14 +83,14 @@ def normal_user_review_search(request):
     if data.get('icons'):
         context['icons'] = []
         for c in data.get('icons'):
-            review_search_url = review_search_url+'&'+'commonInfo='+c
+            review_search_url = review_search_url+'&'+'icons='+c
             context['icons'].append([c])
     if data.get('sorted'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
         context['sorted'] = data.get('sorted')[0]
-    if data.get('date'):
+    if data.get('date') and data.get('date') != '':
         if review_search_url[-1] != '?':
             review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'date=' + data.get('date')[0]
@@ -109,8 +103,6 @@ def normal_user_review_search(request):
     for r in paged_review:
         t.append(list(set(r.get('includedIcon'))))
     context['paged_review'] = paged_review
-    # context['icons'] = t
-    print('context: ', context)
 
     return render(request, 'normal_user_review_search.html', context)
 
