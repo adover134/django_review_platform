@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from DBs.models import User, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
+from DBs.models import User, Review, Room, Icon, Recommend, Report, ReviewImage, RoomImage
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -171,13 +171,6 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = '__all__'
-
-
-class CommonInfoSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CommonInfo
         fields = '__all__'
 
 

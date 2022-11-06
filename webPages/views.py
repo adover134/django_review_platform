@@ -53,12 +53,12 @@ def infoCheck(request):
     }
     userForm = customForms.UserInfoForm(initial=initial)
 
+    user_review_url = 'http://127.0.0.1:8000/db/review/?uId=' + str(user.id)
+
     if 'sorted' in request.GET:
         sorted = request.GET['sorted'] #파라미터로 넘어오는 정렬순을 나타내는 데이터
-        reviews = json.loads(requests.get(
-            'http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '&' + 'sorted=' + sorted + '/').text)  # 로그인 한 회원이 작성한 리뷰 데이터 정렬한 목록
-    else:
-        reviews = json.loads(requests.get('http://127.0.0.1:8000/db/review/?uId=' + str(user.id) + '/').text) # 로그인 한 회원이 작성한 리뷰 데이터 목록
+        user_review_url = user_review_url + '&sorted=' + sorted
+    reviews = json.loads(requests.get(user_review_url + '/').text) # 로그인 한 회원이 작성한 리뷰 데이터 목록
 
     #paginator
     paginator = Paginator(reviews, 5)
@@ -70,31 +70,31 @@ def infoCheck(request):
 def normal_user_review_search(request):
     context = {}
 
+    print('uurrll', request.get_full_path)
+
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
-    if data.get('builtFrom'):
-        review_search_url = review_search_url+'builtFrom='+data.get('builtFrom')[0]
-        context['builtFrom'] = data.get('builtFrom')[0]
-    if data.get('builtTo'):
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url+'&'
-        review_search_url = review_search_url+'builtTo='+data.get('builtTo')[0]
-        context['builtTo'] = data.get('builtTo')[0]
-    if data.get('address'):
+    if data.get('address') and data.get('address') != '':
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
         context['address'] = data.get('address')[0]
-    for i in range(3):
-        if data.get('icons'):
-            for c in data.get('icons'):
-                review_search_url = review_search_url+'&'+'commonInfo='+c
+    if data.get('icons'):
+        context['icons'] = []
+        for c in data.get('icons'):
+            review_search_url = review_search_url+'&'+'icons='+c
+            context['icons'].append([c])
     if data.get('sorted'):
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'sorted='+data.get('sorted')[0]
         context['sorted'] = data.get('sorted')[0]
+    if data.get('date') and data.get('date') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'date=' + data.get('date')[0]
+        context['date'] = data.get('date')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
@@ -103,7 +103,6 @@ def normal_user_review_search(request):
     for r in paged_review:
         t.append(list(set(r.get('includedIcon'))))
     context['paged_review'] = paged_review
-    context['icons'] = t
 
     return render(request, 'normal_user_review_search.html', context)
 
@@ -120,8 +119,9 @@ def normal_user_review_read(request):
 
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
-    address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
-    review['address'] = address
+    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text)
+    review['roomName'] = room.get('name')
+    review['address'] = room.get('address')
     icon_urls = review.get('includedIcon')
 
     sorted = ''
@@ -136,7 +136,7 @@ def normal_user_review_read(request):
     icons.append([])
     if icon_urls:
         for i in range(len(icon_urls)):
-            icon = json.loads(requests.get(icon_urls[i]).text)
+            icon = json.loads(requests.get('http://127.0.0.1:8000/db/icon/'+icon_urls[i]).text)
             match icon.get('iconKind'):
                 case '0':
                     icons[0].append(i)
@@ -346,34 +346,6 @@ def get_reviews_by_roomId(roomId, sorted): # 파라미터: 원룸 아이디
     return reviews
 
 
-# 특정 원룸 클릭시 리뷰목록과 함께 나오는 페이지
-def room_with_reviews_display(request):
-    roomId = request.GET['roomId'] #파라미터로 넘어오는 원룸 아이디 데이터
-    sorted = ''
-    room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-
-    if 'sorted' in request.GET:
-        sorted = request.GET.get('sorted')
-
-    reviews = get_reviews_by_roomId(roomId, sorted)
-
-    #paginator
-    paginator = Paginator(reviews, 5)
-    page = request.GET.get('page')
-    paged_review = None
-    if page:
-        paged_review = paginator.get_page(page)
-    else:
-        paged_review = paginator.get_page(1)
-
-    data = {
-        'room': room,
-        'reviews': paged_review,
-    }
-
-    return render(request, 'normal_user_room_read.html', data)
-
-
 @login_required(login_url='/loginPage/')
 def check_user_reviews(request):
     # 정렬 파라미터 존재 조건
@@ -395,6 +367,7 @@ def check_user_reviews(request):
 def room_read(request):
     roomId = request.GET.get('roomId') #파라미터로 넘어오는 원룸 아이디 데이터
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+
     sorted = ''
 
     if 'sorted' in request.GET:

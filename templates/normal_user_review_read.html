@@ -32,62 +32,64 @@
                 alert("아이콘 클릭 이벤트 발생")
             }
 
-                document.getElementById('mapDiv').style.width = '71%';
-                document.getElementById('mapDiv').style.height = '90.7%';
-                document.getElementById('mapDiv').style.minWidth = '71%';
-                var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
-                    mapOption = {
-                        center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
-                        level: 5 // 지도의 확대 레벨
-                    };
+            document.getElementById('mapDiv').style.width = '71%';
+            document.getElementById('mapDiv').style.height = '90.7%';
+            document.getElementById('mapDiv').style.minWidth = '71%';
+            var mapContainer = document.getElementById('mapDiv') // 지도를 표시할 div
+            var mapOption = {
+                center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
+                level: 5 // 지도의 확대 레벨
+            };
 
                 // 지도 생성
-                function resizeMap() {
-                    var mapContainer = document.getElementById('map');
-                    mapContainer.style.width = document.getElementById('mainDiv').style.width;
-                }
+            function resizeMap() {
+                var mapContainer = document.getElementById('map');
+                mapContainer.style.width = document.getElementById('mainDiv').style.width;
+            }
 
-                var map = new kakao.maps.Map(mapContainer, mapOption);
+            var map = new kakao.maps.Map(mapContainer, mapOption);
 
-                {# 지도에 원룸 위치 표시 #}
-                var geocoder = new kakao.maps.services.Geocoder();
+            {# 지도에 원룸 위치 표시 #}
+            var geocoder = new kakao.maps.services.Geocoder();
 
-                $.ajax({
-                    url: 'http://127.0.0.1:8000/db/room/',
-                    method: "GET",
-                    dataType: "json"
-                })
-                    .done(function (json) {
-                        $.each(json, function (key, value) {
-                            // 주소로 좌표를 검색합니다
-                            geocoder.addressSearch(value.address, function (result, status) {
+            geocoder.addressSearch("{{ review.address }}", function (result, status) {
 
-                                // 정상적으로 검색이 완료됐으면
-                                if (status === kakao.maps.services.Status.OK) {
-                                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                                    // 결과값으로 받은 위치를 마커로 표시합니다
-                                    var marker = new kakao.maps.Marker({
-                                        map: map,
-                                        position: coords
-                                    });
-
-                                    var room_info = ''
-                                    if (value.name !== null)
-                                        room_info = value.name
-                                    else
-                                        room_info = value.address
-
-                                    // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                    var infowindow = new kakao.maps.InfoWindow({
-                                        content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
-                                    });
-
-                                    infowindow.open(map, marker);
-                                }
-                            })
-                        })
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords,
+                        clickable: true
                     });
+
+                    map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
+                    marker.setMap(map);
+
+                    var room_info = ''
+                    if ("{{ review.roomName }}" !== 'None')
+                        room_info = "{{ review.roomName }}"
+                    else
+                        room_info = "{{ review.address }}"
+
+                    var infowindow = new kakao.maps.InfoWindow({
+                        content: `<div style="width:150px; text-align:center; padding:6px 0; cursor: pointer" ` +
+                            `onclick="window.location.href=`+
+                            `'{{ roomRead }}?roomId=` +
+                            {{ review.roomId }} +
+                            `'" >`+ room_info + `</div>`
+                    });
+
+                    infowindow.open(map, marker)
+
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        // 마커 위에 인포윈도우를 표시합니다
+                        window.location.href="{{ roomRead }}?roomId={{ review.roomId }}"
+                    });
+                }
+            });
+
             {% if icons == None %}
                 var icons = null;
             {% else %}
@@ -113,6 +115,7 @@
             {% else %}
                 let userloggedin=true;
             {% endif %}
+
             var reviewNum = {{review.id}};
             var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
             var recommendImg = "{% static 'images/iconImage/recommend.png' %}";
@@ -224,7 +227,7 @@
             </div>
             <div id="rec_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                    추천 {{review.recommendedOn|length}}
+                    추천 <span id="recommend_num">{{review.recommendedOn|length}}</span>
                 </div>
             </div>
             <div id="rep_icon">
@@ -232,12 +235,14 @@
             </div>
             <div id="rep_button">
                 <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                    신고 {{review.reportedOn|length}}
+                    신고 <span id="report_num">{{review.reportedOn|length}}</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+    <br>
+    <div>해당 리뷰와 같은 주소의 다른 리뷰</div>
 <br>
 <script>var is_writer = {{is_writer}};</script>
 <link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">

@@ -7,7 +7,7 @@
 <div id="reviewinfo" >
     <div style ="margin:20px;">
         <div style="width:24.7%; height:245px; margin-right:20px; display: inline-block;float:left;">
-                <img src="{% static 'images/roomImage/' %}{{room.roomImage|first}}" style="width:100%; height:100%;">
+            <img src="{% static 'images/roomImage/' %}{{room.roomImage|first|defaultRoomImage}}" style="width:100%; height:100%;">
         </div>
         <div id="mapDiv" style = "display:inline-block;"></div>
         <script>
@@ -47,42 +47,27 @@
             {# 지도에 원룸 위치 표시 #}
             var geocoder = new kakao.maps.services.Geocoder();
 
-            $.ajax({
-                url: 'http://127.0.0.1:8000/db/room/',
-                method: "GET",
-                dataType: "json"
-            })
-                .done(function (json) {
-                    $.each(json, function (key, value) {
-                        // 주소로 좌표를 검색합니다
-                        geocoder.addressSearch(value.address, function (result, status) {
+            geocoder.addressSearch("{{ room.address }}", function (result, status) {
 
-                            // 정상적으로 검색이 완료됐으면
-                            if (status === kakao.maps.services.Status.OK) {
-                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                                // 결과값으로 받은 위치를 마커로 표시합니다
-                                var marker = new kakao.maps.Marker({
-                                    map: map,
-                                    position: coords
-                                });
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords
+                    });
 
-                                var room_info = ''
-                                if (value.name !== null)
-                                    room_info = value.name
-                                else
-                                    room_info = value.address
-
-                                // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                var infowindow = new kakao.maps.InfoWindow({
-                                    content: '<div style="width:150px;text-align:center;padding:6px 0;">' + room_info + '</div>'
-                                });
-
-                                infowindow.open(map, marker);
-                            }
-                        })
-                    })
-                });
+                    map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
+                    marker.setMap(map);
+                    // 마커 클릭시 위도,경도를 검색으로 한 카카오맵 페이지 이동
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        window.open(
+                            'https://map.kakao.com/link/map/'+ result[0].y+','+result[0].x
+                        )
+                    });
+                }
+            });
         </script>
     </div>
     <div id ="mid"style = "text-align:center;outline:2px solid #B3B3B3;width:100%; height:11.1%;">
@@ -98,15 +83,10 @@
                 <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
                     <div style="display: inline-block;padding-right: 2%;">
                         <select id="sort_select_box" name="sort_select_box" onchange="sort()">
-                            <option value="1">최신 순</option>
-                            {#            현재 주소에서 &sorted=1 파라미터 붙을때#}
-                            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=1 #}
-                            <option value="2">추천 순</option>
-                            {#            현재 주소에서 &sorted=2 파라미터 붙을때#}
-                            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=2 #}
-                            <option value="3">정확도 순</option>
-                            {#            현재 주소에서 &sorted=3 파라미터 붙을때#}
-                            {#            ex) http://127.0.0.1:8000/room_with_reviews_display/?roomId=1&sorted=3 #}
+                            <option value=''>정렬 순</option>
+                            <option value="1" {% if sorted == '1' %}selected{% endif %}>최신 순</option>
+                            <option value="2" {% if sorted == '2' %}selected{% endif %}>추천 순</option>
+                            <option value="3" {% if sorted == '3' %}selected{% endif %}>정확도 순</option>
                         </select>
                     </div>
                     <div>
@@ -146,6 +126,20 @@
         </div>
     </div>
 </div>
+    <script>
+        $("select[name=sort_select_box]").change(function(){
+            var currentUrl = location.pathname
+
+            console.log(currentUrl)
+            console.log($(this).val()); //value값 가져오기 => (1,2,3)
+            console.log($("select[name=sort_select_box] option:selected").text()); //text값 가져오기 => (최신순, 추천순, )
+
+            var sorted_value = $(this).val()
+            const urlSearch = new URLSearchParams(location.search);
+            urlSearch.set('sorted', sorted_value)
+            window.open(location.pathname + '?' + urlSearch, '_self');
+        });
+    </script>
 <link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
 <script type="text/javascript" src="{% static 'js/normalUserRoomReadTemplate.js' %}"></script>
 {% endblock %}
