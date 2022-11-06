@@ -38,8 +38,7 @@ function review_submit(e) {
                 if(Object.keys(response).includes('room_id'))
                 {
                     if(confirm('정보가 없는 원룸입니다. 정보를 입력해 주실래요?')){
-                        window.location.replace('/normal_user_review_read/?id='+response['review_id']);
-                        //window.location.replace('/normal_user_room_change/?id='+response['room_id']);
+                        window.location.replace('/normal_user_room_change/?roomId='+response['room_id']);
                     }
                     else
                         window.location.replace('/normal_user_review_read/?id='+response['review_id']);

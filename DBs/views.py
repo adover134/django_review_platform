@@ -11,8 +11,8 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, CommonInfoSerializer, ReviewImageSerializer, RoomImageSerializer, ReviewSerializerLink
-from DBs.models import User, Review, Room, Icon, Recommend, Report, CommonInfo, ReviewImage, RoomImage
+from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, ReviewImageSerializer, RoomImageSerializer, ReviewSerializerLink
+from DBs.models import User, Review, Room, Icon, Recommend, Report, ReviewImage, RoomImage
 from DBs.services import sentence_split, review_to_icons
 
 
@@ -229,7 +229,7 @@ class ReviewViewSets(ModelViewSet):
         # 기존 데이터를 직렬화한다.
         data = self.get_serializer(instance).data
         for i in data.get('includedIcon'):
-            requests.delete(i)
+            requests.delete('http://127.0.0.1:8000/db/icon/'+str(i)+'/')
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
@@ -703,31 +703,6 @@ class ReportViewSets(ModelViewSet):
         requests.put('http://127.0.0.1:8000/db/user/' + str(u_id) + '/', data=user)
         # 신고 데이터 삭제
         return super().destroy(self, request, args, kwargs)
-
-
-class CommonInfoViewSets(ModelViewSet):
-    queryset = CommonInfo.objects.all()
-    serializer_class = CommonInfoSerializer
-
-    def update(self, request, *args, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서, 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
 
 
 class ReviewImageViewSets(ModelViewSet):
