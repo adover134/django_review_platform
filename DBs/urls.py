@@ -9,7 +9,6 @@ router.register('room', views.RoomViewSets)
 router.register('icon', views.IconViewSets)
 router.register('recommend', views.RecommendViewSets)
 router.register('report', views.ReportViewSets)
-router.register('commonInfo', views.CommonInfoViewSets)
 router.register('reviewImage', views.ReviewImageViewSets)
 router.register('roomImage', views.RoomImageViewSets)
 urlpatterns = [

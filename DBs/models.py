@@ -83,13 +83,6 @@ class Report(models.Model):
         db_table = 'Report'
 
 
-class CommonInfo(models.Model):
-    commonInfoName = models.TextField()
-
-    class Meta:
-        db_table = 'CommonInfo'
-
-
 class ReviewImage(models.Model):
     reviewId = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additionalImage')
     image = models.TextField(null=True)
