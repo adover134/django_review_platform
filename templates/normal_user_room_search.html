@@ -1,5 +1,5 @@
 {% extends 'normal_user_base.html' %}
-{% load static %}
+{% load index static %}
 {% block left_side_bar %}
     <link rel="stylesheet" href="{% static 'css/normalUserRoomSearchTemplate.css' %}">
 
@@ -56,13 +56,7 @@
                 <div class="room" onclick="window.location.replace('{{roomRead}}?roomId={{room.id}}')"
                      style="cursor: pointer">
                     <div class="image">
-                        {% if room.roomImage %}
-                            {% for roomImg in room.roomImage %}
-                                <img src="{% static 'images/' %}{{ roomImg }}">
-                            {% endfor %}
-                            {% else %}
-                                <img src="{% static 'images/iconImage/no-photo.png' %}" style="width:100%; height:100%;">
-                        {% endif %}
+                        <img src="{% static 'images/roomImage/' %}{{room.roomImage|first|defaultRoomImage}}" style="width:100%; height:100%;">
                     </div>
                     <div class="info">
                         <div class="room_address">

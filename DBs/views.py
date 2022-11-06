@@ -369,7 +369,6 @@ class IconViewSets(ModelViewSet):
     def create(self, request, *args, **kwargs):
         # 입력값을 data로 저장한다.
         data = copy.deepcopy(request.data)
-        # 입력값 중 아이콘에 대한 것을 제외하고 data1으로 저장한다.
         data1 = {}
         if str(type(data.get('reviewId'))) == "<class 'str'>":
             data1['reviewId'] = data.get('reviewId')
@@ -404,13 +403,6 @@ class RecommendViewSets(ModelViewSet):
     queryset = Recommend.objects.all()
     serializer_class = RecommendSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
     def list(self, request, *args, **kwargs):
         # URL의 파라미터들을 사전형 배열로 받는다.
         data1 = dict(request.GET)
@@ -423,25 +415,6 @@ class RecommendViewSets(ModelViewSet):
             result = Recommend.objects.filter(f)
             return Response(result[0].id)
 
-    def update(self, request, *args, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서, 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
 
 
 class ReportViewSets(ModelViewSet):
@@ -460,25 +433,6 @@ class ReportViewSets(ModelViewSet):
             result = Report.objects.filter(f)
             return Response(result[0].id)
 
-    def update(self, request, *args, **kwargs):
-        # URL의 lookup 필드에 해당하는 값으로 모델에서 인스턴스를 꺼낸다.
-        instance = self.get_object()
-        # 인스턴스의 값들을 해당하는 모델에 대한 시리얼라이저로 직렬화한다.
-        data1 = self.get_serializer(instance).data
-        # request로 받은 데이터를 dictionary 값으로 변수에 넣는다.
-        data2 = dict(request.data)
-        # data1에서, 입력받은 값들만 변환한다.
-        for key in data1:
-            if data2.get(key):  # 입력받은 값의 키들 중, data1에 있는 키가 있다면 해당 값만 바꿔준다.
-                data1[key] = data2[key][0]
-        # 갱신된 인스턴스를 직렬화한다.
-        serializer = self.get_serializer(instance, data=data1)
-        # 시리얼라이저의 유효 여부를 검사한다.
-        serializer.is_valid(raise_exception=True)
-        # 모델에 갱신된 인스턴스 정보를 저장한다.
-        self.perform_update(serializer)
-        # 갱신이 성공했음을 반환한다.
-        return Response("Update Success!")
 
     def destroy(self, request, *args, **kwargs):
         # lookup 필드를 통해 해당하는 신고 인스턴스 획득
@@ -541,16 +495,6 @@ class ReviewImageViewSets(ModelViewSet):
 class RoomImageViewSets(ModelViewSet):
     queryset = RoomImage.objects.all()
     serializer_class = RoomImageSerializer
-
-
-    def create(self, request, *args, **kwargs):
-        data1 = {}
-        data1['roomId'] = int(request.data.get('roomId'))
-        serializer = self.get_serializer(data=data1)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
     def update(self, request, *args, **kwargs):
