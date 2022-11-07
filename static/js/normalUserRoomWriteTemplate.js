@@ -1,3 +1,5 @@
+
+
 $("#room").submit(room_submit);
 function room_submit(e) {
     // preventing from page reload and default actions
@@ -6,10 +8,12 @@ function room_submit(e) {
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
     var checkbox = $("#room").find("input[type=checkbox]");
-    console.log(checkbox);
     $.each(checkbox, function(key, val) {
         form.append($(val).attr('name'), $(this).is(':checked'))
     });
+
+    changeWords();
+
     if (window.location.pathname==='/normal_user_room_change/') {
         // var reviewForm = new FormData($('text_review')[0])
         $.ajax({
@@ -20,7 +24,7 @@ function room_submit(e) {
             processData: false,
             contentType: false,
             success: function (response) {
-                // on successfull creating object
+                // on successful creating object
                 window.location.replace('/normal_user_room_read/?roomId='+response);
             },
             error: function (response) {
