@@ -351,7 +351,7 @@ class RoomViewSets(ModelViewSet):
                 data1['name'] = data2.get('name')[0]
             else:
                 data1['name'] = data2.get('name')
-        if data2.get('builtYear'):
+        if data2.get('builtYear' and data2.get('builtYear') != ['']):
             if str(type(data2.get('builtYear'))) == "<class 'list'>":
                 data1['builtYear'] = data2.get('builtYear')[0]
             else:
@@ -361,6 +361,11 @@ class RoomViewSets(ModelViewSet):
                 data1['ownerPhone'] = data2.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data2.get('ownerPhone')
+        if data2.get('buildingFloorNum') and data2.get('buildingFloorNum') != ['']:
+            if str(type(data2.get('buildingFloorNum'))) == "<class 'list'>":
+                data1['buildingFloorNum'] = data2.get('buildingFloorNum')[0]
+            else:
+                data1['buildingFloorNum'] = data2.get('buildingFloorNum')
         # 갱신된 인스턴스를 직렬화한다.
         serializer = self.get_serializer(instance, data=data1)
         # 시리얼라이저의 유효 여부를 검사한다.

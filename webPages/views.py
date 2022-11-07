@@ -15,11 +15,14 @@ from webPages.config import KAKAO_JAVA_KEY
 
 def main(request):
     review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
-
+    latest_reviews = review_data.get('latest_reviews')
+    popular_reviews = review_data.get('popular_reviews')
+    print(latest_reviews)
+    print(popular_reviews)
     data = {
         'javakey': KAKAO_JAVA_KEY,
-        'latest_reviews': review_data.get('latest_reviews'),
-        'popular_reviews': review_data.get('popular_reviews'),
+        'latest_reviews': latest_reviews,
+        'popular_reviews': popular_reviews,
     }
     return render(request, 'normal_user_main.html', data)
 
@@ -279,6 +282,7 @@ def normal_user_room_update(request):
         images = request.FILES.getlist('images')
         if form.is_valid():
             room = json.loads(requests.put('http://127.0.0.1:8000/db/room/'+request.GET.get('roomId')+'/', data=data).text)
+            print(room)
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room.get('id')}).text)

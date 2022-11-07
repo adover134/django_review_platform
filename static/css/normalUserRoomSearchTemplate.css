@@ -15,7 +15,7 @@
   border-radius: 8px;
 }
 
-#mainDiv::-webkit-scrollbar-track {
+#leftSideMenu::-webkit-scrollbar-track {
   background-color: #FFFFFF;
 }
 
