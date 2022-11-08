@@ -426,17 +426,13 @@ def room_search(request):
             room_search_url = room_search_url+'builtTo='+data.get('builtTo')[0]
     if data.get('sorted'):
         if room_search_url[-1] != '?':
-            review_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'&'
         room_search_url = room_search_url+'sorted='+data.get('sorted')[0]
         context['sorted'] = data.get('sorted')[0]
     room_list = json.loads(requests.get(room_search_url).text)
-    print('rweoiiewjoiwjiowjoijwierjiwower', room_list)
     paginator = Paginator(room_list, 5)
     page = request.GET.get('page')
     paged_room = paginator.get_page(page)
-    t = []
-    for r in paged_room:
-        t.append(list(set(r.get('includedIcon'))))
     context['rooms'] = paged_room
 
     return render(request, 'normal_user_room_search.html', context)
@@ -534,7 +530,6 @@ def normal_user_room_write(request):
     user = request.user
     if request.method == 'POST':
         data = dict(request.POST)
-        print(data)
         images = request.FILES.getlist('images')
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         if form.is_valid():
