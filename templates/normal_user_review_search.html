@@ -89,6 +89,89 @@
                     </script>
                 </div>
             </div>
+            <div id="scores">
+                <div id="score_filters">항목 별 점수 범위</div>
+                <script>
+                    a=(document.getElementById('score_filters').offsetHeight/16).toString()+'rem';
+                    document.getElementById('score_filters').style.fontSize=a;
+                </script>
+                <div id="humidity">습도</div>
+                <script>
+                    a=(document.getElementById('humidity').offsetHeight/16).toString()+'rem';
+                    document.getElementById('humidity').style.fontSize=a;
+                </script>
+                <div class="sliders_control">
+                    <input name="humidity_from" id="humidityFromSlider" type="range" value="1" min="1" max="5" step="1"/>
+                    <input name="humidity_to" id="humidityToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                </div>
+                <div class="form_control">
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최소</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="humidityFromInput" value="1" min="1" max="5"/>
+                    </div>
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최대</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="humidityToInput" value="5" min="1" max="5"/>
+                    </div>
+                </div>
+                <div id="soundproof">방음</div>
+                <script>
+                    a=(document.getElementById('soundproof').offsetHeight/16).toString()+'rem';
+                    document.getElementById('soundproof').style.fontSize=a;
+                </script>
+                <div class="sliders_control">
+                    <input name="soundproof_from" id="soundproofFromSlider" type="range" value="1" min="1" max="5" step="1"/>
+                    <input name="soundproof_to" id="soundproofToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                </div>
+                <div class="form_control">
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="soundproofFromInput" value="1" min="1" max="5"/>
+                    </div>
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="soundproofToInput" value="5" min="1" max="5"/>
+                    </div>
+                </div>
+                <div id="lighting">채광</div>
+                <script>
+                    a=(document.getElementById('lighting').offsetHeight/16).toString()+'rem';
+                    document.getElementById('lighting').style.fontSize=a;
+                </script>
+                <div class="sliders_control">
+                    <input name="lighting_from" id="lightingFromSlider" type="range" value="1" min="1" max="5" step="1"/>
+                    <input name="lighting_to" id="lightingToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                </div>
+                <div class="form_control">
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="lightingFromInput" value="1" min="1" max="5"/>
+                    </div>
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="lightingToInput" value="5" min="1" max="5"/>
+                    </div>
+                </div>
+                <div id="cleanliness">청결도</div>
+                <script>
+                    a=(document.getElementById('cleanliness').offsetHeight/16).toString()+'rem';
+                    document.getElementById('cleanliness').style.fontSize=a;
+                </script>
+                <div class="sliders_control">
+                    <input name="cleanliness_from" id="cleanlinessFromSlider" type="range" value="1" min="1" max="5" step="1"/>
+                    <input name="cleanliness_to" id="cleanlinessToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                </div>
+                <div class="form_control">
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="cleanlinessFromInput" value="1" min="1" max="5"/>
+                    </div>
+                    <div class="form_control_container">
+                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="cleanlinessToInput" value="5" min="1" max="5"/>
+                    </div>
+                </div>
+            </div>
             <div id="text_form">
                 <div id="search_address" >검색할 주소</div>
                 <script>

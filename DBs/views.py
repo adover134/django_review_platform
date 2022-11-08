@@ -142,6 +142,46 @@ class ReviewViewSets(ModelViewSet):
                 query_room = Q()
                 query_room.add(Q(roomId__address__contains=str(data1.get('address')[0])), Q.AND)
                 query.add(query_room, Q.AND)
+            if data1.get('humidity_from') or data1.get('humidity_to'):
+                query_humidity = Q()  # 건축년도에 대한 쿼리이다.
+                humidity_from = 1
+                humidity_to = 5
+                if data1.get('humidity_from'):
+                    humidity_from = data1.get('humidity_from')[0]
+                if data1.get('humidity_to'):
+                    humidity_to = data1.get('humidity_to')[0]
+                query_humidity = Q(humidity__range=(int(humidity_from), int(humidity_to)))
+                query.add(query_humidity, Q.AND)
+            if data1.get('soundproof_from') or data1.get('soundproof_to'):
+                query_soundproof = Q()  # 건축년도에 대한 쿼리이다.
+                soundproof_from = 0
+                soundproof_to = 2023
+                if data1.get('soundproof_from'):
+                    soundproof_from = data1.get('soundproof_from')[0]
+                if data1.get('soundproof_to'):
+                    soundproof_to = data1.get('soundproof_to')[0]
+                query_soundproof = Q(soundproof__range=(int(soundproof_from), int(soundproof_to)))
+                query.add(query_soundproof, Q.AND)
+            if data1.get('lighting_from') or data1.get('lighting_to'):
+                query_lighting = Q()  # 건축년도에 대한 쿼리이다.
+                lighting_from = 0
+                lighting_to = 2023
+                if data1.get('lighting_from'):
+                    lighting_from = data1.get('lighting_from')[0]
+                if data1.get('lighting_to'):
+                    lighting_to = data1.get('lighting_to')[0]
+                query_lighting = Q(lighting__range=(int(lighting_from), int(lighting_to)))
+                query.add(query_lighting, Q.AND)
+            if data1.get('cleanliness_from') or data1.get('builtTo'):
+                query_cleanliness = Q()  # 건축년도에 대한 쿼리이다.
+                cleanliness_from = 0
+                cleanliness_to = 2023
+                if data1.get('cleanliness_from'):
+                    cleanliness_from = data1.get('cleanliness_from')[0]
+                if data1.get('cleanliness_to'):
+                    cleanliness_to = data1.get('cleanliness_to')[0]
+                query_cleanliness = Q(cleanliness__range=(int(cleanliness_from), int(cleanliness_to)))
+                query.add(query_cleanliness, Q.AND)
 
         # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         # 위의 로직에서 원룸 데이터에 대한 검색조건이 query_room에 담긴다.
@@ -310,7 +350,6 @@ class RoomViewSets(ModelViewSet):
                 built_to = data1.get('builtTo')[0]
             query_built_year = Q(builtYear__range=(int(built_from), int(built_to)))
             query.add(query_built_year, Q.AND)
-        # N = len(CommonInfo.objects.all())
         if data1.get('commonInfo'):
             query_common_info = Q()  # 공통 정보에 대한 쿼리이다.
             for info in data1.get('commonInfo'):  # 입력된 공통 정보 번호를 검색 조건에 추가한다.
@@ -323,9 +362,7 @@ class RoomViewSets(ModelViewSet):
             query_postcode = Q(postcode=postcode)
             query.add(query_postcode, Q.AND)
         # 최종 검색을 한다.
-        print(query)
         searched = Room.objects.filter(query)
-        print(searched)
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 

@@ -75,6 +75,7 @@ def normal_user_review_search(request):
 
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
+    print('welkrjwelkfsdjlktwejklfsdjlfwejlrw', data)
     review_search_url = review_search_url+'?'
     if data.get('address') and data.get('address') != '':
         if review_search_url[-1] != '?':
@@ -96,6 +97,46 @@ def normal_user_review_search(request):
             review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'date=' + data.get('date')[0]
         context['date'] = data.get('date')[0]
+    if data.get('humidity_from') and data.get('humidity_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'humidity_from=' + data.get('humidity_from')[0]
+        context['humidity_from'] = data.get('humidity_from')[0]
+    if data.get('humidity_to') and data.get('humidity_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'humidity_to=' + data.get('humidity_to')[0]
+        context['humidity_to'] = data.get('humidity_to')[0]
+    if data.get('soundproof_from') and data.get('soundproof_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'soundproof_from=' + data.get('soundproof_from')[0]
+        context['soundproof_from'] = data.get('soundproof_from')[0]
+    if data.get('soundproof_to') and data.get('soundproof_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'soundproof_to=' + data.get('soundproof_to')[0]
+        context['soundproof_to'] = data.get('soundproof_to')[0]
+    if data.get('lighting_from') and data.get('lighting_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'lighting_from=' + data.get('lighting_from')[0]
+        context['lighting_from'] = data.get('lighting_from')[0]
+    if data.get('lighting_to') and data.get('lighting_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'lighting_to=' + data.get('lighting_to')[0]
+        context['lighting_to'] = data.get('lighting_to')[0]
+    if data.get('cleanliness_from') and data.get('cleanliness_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'cleanliness_from=' + data.get('cleanliness_from')[0]
+        context['cleanliness_from'] = data.get('cleanliness_from')[0]
+    if data.get('cleanliness_to') and data.get('cleanliness_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'cleanliness_to=' + data.get('cleanliness_to')[0]
+        context['cleanliness_to'] = data.get('cleanliness_to')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
