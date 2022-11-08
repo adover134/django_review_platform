@@ -80,10 +80,30 @@
         const realUpload = document.querySelector('.real-upload');
         realUpload.addEventListener('change', getImageFiles);
 
-        var school_x;
-        var school_y;
-        var room_x;
-        var room_y;
+        var polyline = new kakao.maps.Polyline({});
+        var path = [];
+
+        var tmpPoint;
+
+        var geocoder = new kakao.maps.services.Geocoder();
+        const addressSearch = address => {
+            return new Promise((resolve, reject) => {
+                geocoder.addressSearch(address, function(result, status) {
+                    if (status === kakao.maps.services.Status.OK) {
+                        resolve({"lat": result[0].y, "lng": result[0].x});
+                    } else {
+                        reject(status);
+                    }
+                });
+            }).then((value) => {
+                tmpPoint = new kakao.maps.LatLng(value.lat, value.lng);
+                console.log(tmpPoint);
+                path.push(tmpPoint);
+            });
+        };
+
+        addressSearch('충청북도 청주시 서원구 충대로 1');
+
         {#  리뷰 작성/수정 구분  #}
         function roomChangePage(){
             if(window.location.pathname==='/normal_user_room_change/'){
@@ -112,39 +132,6 @@
                 document.getElementById('room_submit').value = '원룸 수정'
             }
         }
-
-        function send(x, y){
-            school_x=x;
-            school_y=y;
-        }
-
-        function send2(x, y){
-            room_x=x;
-            room_y=y;
-        }
-        function tryit(x, y){
-            console.log(school_x);
-        }
-
-        var geocoder = new kakao.maps.services.Geocoder();
-
-        var callback1 = function(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-                send(result[0].x, result[0].y);
-                console.log(result);
-                console.log(school_x);
-            }
-        };
-        var callback2 = function(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-                send2(result[0].x, result[0].y);
-                console.log(result);
-                tryit();
-            }
-        };
-
-        geocoder.addressSearch('충청북도 청주시 서원구 충대로 1', callback1);
-        geocoder.addressSearch('충청북도 청주시 서원구 충대로 1', callback2);
     </script>
     <link rel="stylesheet" href="{% static 'css/normalUserRoomWriteTemplate.css' %}">
     <script type="text/javascript" src="{% static 'js/normalUserRoomWriteTemplate.js' %}"></script>

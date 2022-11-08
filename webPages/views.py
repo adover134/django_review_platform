@@ -281,8 +281,8 @@ def normal_user_room_update(request):
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         images = request.FILES.getlist('images')
         if form.is_valid():
+            print('testetsetsetsetsetsetsetest', data)
             room = json.loads(requests.put('http://127.0.0.1:8000/db/room/'+request.GET.get('roomId')+'/', data=data).text)
-            print(room)
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room.get('id')}).text)
