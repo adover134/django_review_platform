@@ -24,6 +24,7 @@ class Room(models.Model):
     commonInfo = models.JSONField(null=True, blank=True)
     ownerPhone = models.TextField(null=True, blank=True)
     distance = models.IntegerField(null=True, blank=True) # 100미터 단위, 학교 도서관까지 거리
+    convNum = models.IntegerField(null=True, blank=True) # 반경 100미터 이내 편의점 수
 
     class Meta:
         db_table = 'Room'

@@ -291,11 +291,14 @@ class RoomViewSets(ModelViewSet):
                 data1['builtYear'] = data.get('builtYear')[0]
             else:
                 data1['builtYear'] = data.get('builtYear')
-        print('kwelrjweklrjweklrjweklrjweklr', type(data.get('distance')))
         if str(type(data.get('distance'))) == "<class 'list'>" and data.get('distance') != ['']:
             data1['distance'] = int(data.get('distance')[0])
         else:
             data1['distance'] = int(data.get('distance'))
+        if str(type(data.get('convNum'))) == "<class 'list'>" and data.get('convNum') != ['']:
+            data1['convNum'] = int(data.get('convNum')[0])
+        else:
+            data1['convNum'] = int(data.get('convNum'))
         if data.get('ownerPhone'):
             if str(type(data.get('ownerPhone'))) == "<class 'list'>":
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
@@ -320,7 +323,6 @@ class RoomViewSets(ModelViewSet):
         if not data1:
             return super().list(self, request, args, kwargs)
         # 검색 조건으로 기본 쿼리를 만든다.
-        print('werwerwerwerwerwerwerwerwerwdrwrfsdfewrdfsdrw', data1)
         query = Q()  # 메인 쿼리로, 최종 결과를 낼 때 사용한다.
         # 주소에 대한 검색을 수행하는 쿼리를 만든다.
         if data1.get('address'):
@@ -339,6 +341,17 @@ class RoomViewSets(ModelViewSet):
                 distance_to = data1.get('distance_to')[0]
             query_distance = Q(distance__range=(int(distance_from), int(distance_to)))
             query.add(query_distance, Q.AND)
+        # 반경 300미터 이내의 편의점 수에 대한 검색을 수행하는 쿼리를 만든다.
+        if data1.get('distance_from') or data1.get('distance_to'):
+            query_convNum = Q()  # 건축년도에 대한 쿼리이다.
+            convNum_from = 1
+            convNum_to = 10
+            if data1.get('convNum_from'):
+                convNum_from = data1.get('convNum_from')[0]
+            if data1.get('convNum_to'):
+                convNum_to = data1.get('convNum_to')[0]
+            query_convNum = Q(convNum__range=(int(convNum_from), int(convNum_to)))
+            query.add(query_convNum, Q.AND)
         # 건축년도에 대한 검색을 수행하는 쿼리를 만든다.
         if data1.get('builtFrom') or data1.get('builtTo'):
             query_built_year = Q()  # 건축년도에 대한 쿼리이다.
