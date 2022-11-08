@@ -10,7 +10,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
 from customForms import customForms
-from webPages.config import KAKAO_JAVA_KEY
+from webPages.config import KAKAO_JAVA_KEY, SOCIAL_AUTH_KAKAO_KEY
 
 
 def main(request):
@@ -456,6 +456,15 @@ def room_search(request):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'distance_to='+data.get('distance_to')[0]
+    if data.get('convNum_from') or data.get('convNum_to'):
+        if data.get('convNum_from'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'convNum_from='+data.get('convNum_from')[0]
+        if data.get('convNum_to'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'convNum_to='+data.get('convNum_to')[0]
     if data.get('builtFrom') or data.get('builtTo'):
         if data.get('builtFrom'):
             if room_search_url[-1] != '?':
@@ -568,9 +577,25 @@ def normal_user_room_write_page(request):
 
 @api_view(['POST'])
 def normal_user_room_write(request):
-    user = request.user
     if request.method == 'POST':
         data = dict(request.POST)
+
+        addr = data.get('room_address')[0]
+        url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + addr
+        headers = {'Authorization': 'KakaoAK '+SOCIAL_AUTH_KAKAO_KEY}
+        result = json.loads(str(requests.get(url, headers=headers).text))
+
+        url = 'https://dapi.kakao.com/v2/local/search/keyword.json'
+        params = {'query': '편의점', 'x': result['documents'][0].get('x'), 'y': result['documents'][0].get('y'), 'radius': 200}
+        headers = {'Authorization': 'KakaoAK '+SOCIAL_AUTH_KAKAO_KEY}
+        total = requests.get(url, params=params, headers=headers).json()['documents']
+        t = []
+        conv = 0
+        for i in range(1, len(total)):
+            if (total[i]['category_name'].find('가정,생활 > 편의점') == 0):
+                conv = conv+1
+            t.append(total[i]['place_name'])
+        print(set(t))
         images = request.FILES.getlist('images')
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         if form.is_valid():
@@ -590,9 +615,11 @@ def normal_user_room_write(request):
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
             if data.get('distance')[0] != '':
                 data1['distance'] = data.get('distance')[0]
+            data1['convNum'] = conv
+
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
             if room:
-                return Response(room[0].get('id')) # 해당 우편번호 리턴
+                return Response(room[0].get('id')) # 해당 원룸번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
                 print(data1)
                 room = requests.post('http://127.0.0.1:8000/db/room/', data=data1)
