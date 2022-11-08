@@ -73,8 +73,6 @@ def infoCheck(request):
 def normal_user_review_search(request):
     context = {}
 
-    print('uurrll', request.get_full_path)
-
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
@@ -281,7 +279,6 @@ def normal_user_room_update(request):
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         images = request.FILES.getlist('images')
         if form.is_valid():
-            print('testetsetsetsetsetsetsetest', data)
             room = json.loads(requests.put('http://127.0.0.1:8000/db/room/'+request.GET.get('roomId')+'/', data=data).text)
             for image in images:
                 img = json.loads(
@@ -395,13 +392,54 @@ def room_read(request):
 
 
 def room_search(request):
-    rooms = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
+    context = {}
 
-    data = {
-        'rooms': rooms
-    }
+    room_search_url = 'http://127.0.0.1:8000/db/room/'
+    data = dict(request.GET)
+    room_search_url = room_search_url+'?'
+    if data.get('address') and data.get('address') != '':
+        if room_search_url[-1] != '?':
+            room_search_url = room_search_url+'&'
+        room_search_url = room_search_url+'address='+data.get('address')[0]
+        context['address'] = data.get('address')[0]
+    if data.get('postcode'):
+        if room_search_url[-1] != '?':
+            room_search_url = room_search_url+'&'
+        room_search_url = room_search_url+'postcode='+data.get('postcode')[0]
+    if data.get('distance_from') or data.get('distance_to'):
+        if data.get('distance_from'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'distance_from='+data.get('distance_from')[0]
+        if data.get('distance_to'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'distance_to='+data.get('distance_to')[0]
+    if data.get('builtFrom') or data.get('builtTo'):
+        if data.get('builtFrom'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'builtFrom='+data.get('builtFrom')[0]
+        if data.get('builtTo'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'builtTo='+data.get('builtTo')[0]
+    if data.get('sorted'):
+        if room_search_url[-1] != '?':
+            review_search_url = room_search_url+'&'
+        room_search_url = room_search_url+'sorted='+data.get('sorted')[0]
+        context['sorted'] = data.get('sorted')[0]
+    room_list = json.loads(requests.get(room_search_url).text)
+    print('rweoiiewjoiwjiowjoijwierjiwower', room_list)
+    paginator = Paginator(room_list, 5)
+    page = request.GET.get('page')
+    paged_room = paginator.get_page(page)
+    t = []
+    for r in paged_room:
+        t.append(list(set(r.get('includedIcon'))))
+    context['rooms'] = paged_room
 
-    return render(request, 'normal_user_room_search.html', data)
+    return render(request, 'normal_user_room_search.html', context)
 # 리뷰 열람 페이지
 
     # 해당 리뷰 정보를 받는다.
@@ -514,6 +552,8 @@ def normal_user_room_write(request):
             data1['commonInfo'] = data.get('commonInfo')[0]
             if data.get('ownerPhone')[0] != '':
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
+            if data.get('distance')[0] != '':
+                data1['distance'] = data.get('distance')[0]
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
             if room:
                 return Response(room[0].get('id')) # 해당 우편번호 리턴
