@@ -142,7 +142,6 @@ class ReviewViewSets(ModelViewSet):
                 query_room = Q()
                 query_room.add(Q(roomId__address__contains=str(data1.get('address')[0])), Q.AND)
                 query.add(query_room, Q.AND)
-        print(query)
 
         # 쿼리로 검색한다. 만약 원룸 검색 결과가 아예 없었다면 검색 결과를 None으로 처리한다.
         # 위의 로직에서 원룸 데이터에 대한 검색조건이 query_room에 담긴다.
@@ -252,11 +251,21 @@ class RoomViewSets(ModelViewSet):
                 data1['builtYear'] = data.get('builtYear')[0]
             else:
                 data1['builtYear'] = data.get('builtYear')
+        print('kwelrjweklrjweklrjweklrjweklr', type(data.get('distance')))
+        if str(type(data.get('distance'))) == "<class 'list'>" and data.get('distance') != ['']:
+            data1['distance'] = int(data.get('distance')[0])
+        else:
+            data1['distance'] = int(data.get('distance'))
         if data.get('ownerPhone'):
             if str(type(data.get('ownerPhone'))) == "<class 'list'>":
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data.get('ownerPhone')
+        if data.get('buildingFloorNum') and data.get('buildingFloorNum') != ['']:
+            if str(type(data.get('buildingFloorNum'))) == "<class 'list'>":
+                data1['buildingFloorNum'] = data.get('buildingFloorNum')[0]
+            else:
+                data1['buildingFloorNum'] = data.get('buildingFloorNum')
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -271,6 +280,7 @@ class RoomViewSets(ModelViewSet):
         if not data1:
             return super().list(self, request, args, kwargs)
         # 검색 조건으로 기본 쿼리를 만든다.
+        print('werwerwerwerwerwerwerwerwerwdrwrfsdfewrdfsdrw', data1)
         query = Q()  # 메인 쿼리로, 최종 결과를 낼 때 사용한다.
         # 주소에 대한 검색을 수행하는 쿼리를 만든다.
         if data1.get('address'):
@@ -313,7 +323,9 @@ class RoomViewSets(ModelViewSet):
             query_postcode = Q(postcode=postcode)
             query.add(query_postcode, Q.AND)
         # 최종 검색을 한다.
+        print(query)
         searched = Room.objects.filter(query)
+        print(searched)
         # 검색 결과를 반환한다.
         return Response(self.get_serializer(searched, many=True).data)
 
@@ -361,6 +373,10 @@ class RoomViewSets(ModelViewSet):
                 data1['ownerPhone'] = data2.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data2.get('ownerPhone')
+        if str(type(data2.get('distance'))) == "<class 'list'>" and data2.get('distance') != ['']:
+            data1['distance'] = int(data2.get('distance')[0])
+        else:
+            data1['distance'] = int(data2.get('distance'))
         if data2.get('buildingFloorNum') and data2.get('buildingFloorNum') != ['']:
             if str(type(data2.get('buildingFloorNum'))) == "<class 'list'>":
                 data1['buildingFloorNum'] = data2.get('buildingFloorNum')[0]
