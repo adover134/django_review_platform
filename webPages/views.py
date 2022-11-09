@@ -160,6 +160,10 @@ def normal_user_review_read(request):
 
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
+
+    if not review.get('id'):
+        return redirect('/normal_user_review_search/')
+
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text)
     review['roomName'] = room.get('name')
     review['address'] = room.get('address')
@@ -237,6 +241,8 @@ def normal_user_review_read(request):
 def normal_user_review_change(request):
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
+    if not review.get('id'):
+        return redirect('/normal_user_review_search/')
     roomId = review['roomId']
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
 
@@ -306,7 +312,8 @@ def normal_user_room_change(request):
     context = {
         'room': room
     }
-
+    if not room.get('id'):
+        return redirect('/normal_user_room_search/')
     return render(request, 'normal_user_room_write.html', context)
 
 
@@ -407,7 +414,8 @@ def check_user_reviews(request):
 def room_read(request):
     roomId = request.GET.get('roomId') #파라미터로 넘어오는 원룸 아이디 데이터
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-
+    if not room.get('id'):
+        return redirect('/normal_user_room_search/')
     sorted = ''
 
     if 'sorted' in request.GET:
@@ -503,10 +511,6 @@ def room_search(request):
 
 def introduction(request):
     return render(request, 'introduction.html')
-
-
-def testing(request):
-    return render(request, 'test.html')
 
 
 @api_view(['POST'])
