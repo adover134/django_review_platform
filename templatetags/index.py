@@ -41,9 +41,6 @@ def page(paginator, value):
 
 @register.filter
 def check_active(user):
-    print(user.penaltyDate)
-    print(type(user.penaltyDate))
-    print(user.penaltyDate+relativedelta(day=3, days=30))
     if user.uActive == 1:
         state = str(user.penaltyDate+relativedelta(days=7))+'까지 신고 불가'
     elif user.uActive == 2:
@@ -61,16 +58,9 @@ def sets(lists):
 
 
 @register.filter
-def defaultImage(image):
-    if image is not None and os.path.isfile('static/images/reviewImage/'+image):
-        return image
-    else:
-        return 'no-photo.png'
-
-
-@register.filter
-def defaultRoomImage(image):
-    if image is not None and os.path.isfile('static/images/roomImage/'+image):
+def defaultImage(image, s):
+    path = os.path.join('static/images/', s)
+    if image is not None and os.path.isfile(os.path.join('static/images/'+s+'Image/', image)):
         return image
     else:
         return 'no-photo.png'

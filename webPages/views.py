@@ -3,6 +3,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 import requests
 import json
+import math
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -11,14 +12,13 @@ from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
 from customForms import customForms
 from webPages.config import KAKAO_JAVA_KEY, SOCIAL_AUTH_KAKAO_KEY
+from webPages.GeoUtil import GeoUtil
 
 
 def main(request):
     review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
     latest_reviews = review_data.get('latest_reviews')
     popular_reviews = review_data.get('popular_reviews')
-    print(latest_reviews)
-    print(popular_reviews)
     data = {
         'javakey': KAKAO_JAVA_KEY,
         'latest_reviews': latest_reviews,
@@ -75,7 +75,6 @@ def normal_user_review_search(request):
 
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
-    print('welkrjwelkfsdjlktwejklfsdjlfwejlrw', data)
     review_search_url = review_search_url+'?'
     if data.get('address') and data.get('address') != '':
         if review_search_url[-1] != '?':
@@ -220,7 +219,6 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
-    print(review)
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -534,6 +532,28 @@ def review_write(request):
                 room_data = {}
                 room_data['address'] = str(data['address'][0])
                 room_data['postcode'] = int(data['postcode'][0])
+
+                url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + str(data['address'][0])
+                headers = {'Authorization': 'KakaoAK ' + SOCIAL_AUTH_KAKAO_KEY}
+                result = json.loads(str(requests.get(url, headers=headers).text))
+                room_x = float(result['documents'][0].get('x'))
+                room_y = float(result['documents'][0].get('y'))
+                url2 = 'https://dapi.kakao.com/v2/local/search/address.json?query=충청북도 청주시 서원구 충대로 1'
+                headers = {'Authorization': 'KakaoAK ' + SOCIAL_AUTH_KAKAO_KEY}
+                result2 = json.loads(str(requests.get(url2, headers=headers).text))
+                school_x = float(result2['documents'][0].get('x'))
+                school_y = float(result2['documents'][0].get('y'))
+                room_data['distance'] = math.ceil(GeoUtil.get_harversion_distance(school_x, school_y, room_x, room_y)*10)
+
+                url3 = 'https://dapi.kakao.com/v2/local/search/keyword.json'
+                params = {'query': '편의점', 'x': room_x, 'y': room_y, 'radius': 200}
+                total = requests.get(url3, params=params, headers=headers).json()['documents']
+                conv = 0
+                for i in range(1, len(total)):
+                    if (total[i]['category_name'].find('가정,생활 > 편의점') == 0):
+                        conv = conv + 1
+                room_data['convNum'] = conv
+
                 room = json.loads(requests.post('http://127.0.0.1:8000/db/room/', data=room_data).text)
                 data1['roomId'] = room.get('id')
                 cont['room_id'] = room.get('id')
@@ -585,17 +605,15 @@ def normal_user_room_write(request):
         headers = {'Authorization': 'KakaoAK '+SOCIAL_AUTH_KAKAO_KEY}
         result = json.loads(str(requests.get(url, headers=headers).text))
 
-        url = 'https://dapi.kakao.com/v2/local/search/keyword.json'
+        url2 = 'https://dapi.kakao.com/v2/local/search/keyword.json'
         params = {'query': '편의점', 'x': result['documents'][0].get('x'), 'y': result['documents'][0].get('y'), 'radius': 200}
-        headers = {'Authorization': 'KakaoAK '+SOCIAL_AUTH_KAKAO_KEY}
-        total = requests.get(url, params=params, headers=headers).json()['documents']
+        total = requests.get(url2, params=params, headers=headers).json()['documents']
         t = []
         conv = 0
         for i in range(1, len(total)):
             if (total[i]['category_name'].find('가정,생활 > 편의점') == 0):
                 conv = conv+1
             t.append(total[i]['place_name'])
-        print(set(t))
         images = request.FILES.getlist('images')
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         if form.is_valid():
@@ -621,10 +639,8 @@ def normal_user_room_write(request):
             if room:
                 return Response(room[0].get('id')) # 해당 원룸번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
-                print(data1)
                 room = requests.post('http://127.0.0.1:8000/db/room/', data=data1)
                 room_id = json.loads(room.text).get('id')
-                print('werewjiowejisdfklsdfjlfwjie \n\n::\n\n::werwewwerererwe', room_id)
                 for image in images:
                     img = json.loads(
                         requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room_id}).text)
