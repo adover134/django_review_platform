@@ -37,18 +37,23 @@ $(document).ready(function(){
                     <div style = "float:right; height:100%;">추천 수 : {{ popular_review.recommendedOn|length }}</div>
                 </div>
                 <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
-                    <img class="left-side-room-img" style="height:100%;" src="{% static 'images/reviewImage/' %}{{ popular_review.representiveImage|defaultImage }}">
+                    <img class="left-side-room-img" style="height:100%;" src="{% static 'images/reviewImage/' %}{{ popular_review.representiveImage|defaultImage:'review' }}">
                 </div>
                 {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
                 <div style="text-align:center; color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')">{{ popular_review.reviewTitle }}</div>
 
                 <div style = "display:flex; justify-content:center; height:45%;width:100%;">
                     <div style="width:70%;">
-                        <span>리뷰 내용 : {{ popular_review.reviewSentence }}</span>
+                        <span>
+                            {{popular_review.totalReview|slice:"0:60"}}
+                            {% if popular_review.totalReview|length > 60 %}
+                                ...
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
-                <div style = "height:10%;">
-                    <div style="height:100%; display:flex; align-items:center;">
+                <div style = "display:flex; justify-content:center; height:10%;">
+                    <div style="width:70%; height:100%; display:flex; align-items:center;">
                         {% for popular_icon in popular_review.includedIcon %}
                             <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}.png">
                         {% endfor %}
@@ -71,14 +76,19 @@ $(document).ready(function(){
                     <div style = "float:right; height:100%;">추천 수 : {{ latest_review.recommendedOn|length }}</div>
                 </div>
                 <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
-                    <img class="left-side-room-img" style="height:100%;" src="{% static 'images/reviewImage/' %}{{ latest_review.representiveImage|defaultImage }}">
+                    <img class="left-side-room-img" style="height:100%;" src="{% static 'images/reviewImage/' %}{{ latest_review.representiveImage|defaultImage:'review' }}">
                 </div>
                 {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
                 <div style="text-align:center; color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{latest_review.id}}')">{{ latest_review.reviewTitle }}</div>
 
                 <div style = "display:flex; justify-content:center; height:45%;width:100%;">
                     <div style="width:70%;">
-                        <span>리뷰 내용 : {{ latest_review.reviewSentence }}</span>
+                        <span>
+                            {{ latest_review.totalReview|slice:"0:60" }}
+                            {% if latest_review.totalReview|length > 60 %}
+                                ...
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
                 <div style = "height:10%;">

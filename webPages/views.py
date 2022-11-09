@@ -3,6 +3,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 import requests
 import json
+import math
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -10,16 +11,18 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.core.paginator import Paginator
 from customForms import customForms
-from webPages.config import KAKAO_JAVA_KEY
+from webPages.config import KAKAO_JAVA_KEY, SOCIAL_AUTH_KAKAO_KEY
+from webPages.GeoUtil import GeoUtil
 
 
 def main(request):
     review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
-
+    latest_reviews = review_data.get('latest_reviews')
+    popular_reviews = review_data.get('popular_reviews')
     data = {
         'javakey': KAKAO_JAVA_KEY,
-        'latest_reviews': review_data.get('latest_reviews'),
-        'popular_reviews': review_data.get('popular_reviews'),
+        'latest_reviews': latest_reviews,
+        'popular_reviews': popular_reviews,
     }
     return render(request, 'normal_user_main.html', data)
 
@@ -70,8 +73,6 @@ def infoCheck(request):
 def normal_user_review_search(request):
     context = {}
 
-    print('uurrll', request.get_full_path)
-
     review_search_url = 'http://127.0.0.1:8000/db/review/'
     data = dict(request.GET)
     review_search_url = review_search_url+'?'
@@ -95,6 +96,46 @@ def normal_user_review_search(request):
             review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'date=' + data.get('date')[0]
         context['date'] = data.get('date')[0]
+    if data.get('humidity_from') and data.get('humidity_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'humidity_from=' + data.get('humidity_from')[0]
+        context['humidity_from'] = data.get('humidity_from')[0]
+    if data.get('humidity_to') and data.get('humidity_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'humidity_to=' + data.get('humidity_to')[0]
+        context['humidity_to'] = data.get('humidity_to')[0]
+    if data.get('soundproof_from') and data.get('soundproof_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'soundproof_from=' + data.get('soundproof_from')[0]
+        context['soundproof_from'] = data.get('soundproof_from')[0]
+    if data.get('soundproof_to') and data.get('soundproof_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'soundproof_to=' + data.get('soundproof_to')[0]
+        context['soundproof_to'] = data.get('soundproof_to')[0]
+    if data.get('lighting_from') and data.get('lighting_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'lighting_from=' + data.get('lighting_from')[0]
+        context['lighting_from'] = data.get('lighting_from')[0]
+    if data.get('lighting_to') and data.get('lighting_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'lighting_to=' + data.get('lighting_to')[0]
+        context['lighting_to'] = data.get('lighting_to')[0]
+    if data.get('cleanliness_from') and data.get('cleanliness_from') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'cleanliness_from=' + data.get('cleanliness_from')[0]
+        context['cleanliness_from'] = data.get('cleanliness_from')[0]
+    if data.get('cleanliness_to') and data.get('cleanliness_to') != '':
+        if review_search_url[-1] != '?':
+            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + 'cleanliness_to=' + data.get('cleanliness_to')[0]
+        context['cleanliness_to'] = data.get('cleanliness_to')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
     page = request.GET.get('page')
@@ -178,7 +219,6 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
-    print(review)
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -391,13 +431,59 @@ def room_read(request):
 
 
 def room_search(request):
-    rooms = json.loads(requests.get('http://127.0.0.1:8000/db/room/').text)
+    context = {}
 
-    data = {
-        'rooms': rooms
-    }
+    room_search_url = 'http://127.0.0.1:8000/db/room/'
+    data = dict(request.GET)
+    room_search_url = room_search_url+'?'
+    if data.get('address') and data.get('address') != '':
+        if room_search_url[-1] != '?':
+            room_search_url = room_search_url+'&'
+        room_search_url = room_search_url+'address='+data.get('address')[0]
+        context['address'] = data.get('address')[0]
+    if data.get('postcode'):
+        if room_search_url[-1] != '?':
+            room_search_url = room_search_url+'&'
+        room_search_url = room_search_url+'postcode='+data.get('postcode')[0]
+    if data.get('distance_from') or data.get('distance_to'):
+        if data.get('distance_from'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'distance_from='+data.get('distance_from')[0]
+        if data.get('distance_to'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'distance_to='+data.get('distance_to')[0]
+    if data.get('convNum_from') or data.get('convNum_to'):
+        if data.get('convNum_from'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'convNum_from='+data.get('convNum_from')[0]
+        if data.get('convNum_to'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'convNum_to='+data.get('convNum_to')[0]
+    if data.get('builtFrom') or data.get('builtTo'):
+        if data.get('builtFrom'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'builtFrom='+data.get('builtFrom')[0]
+        if data.get('builtTo'):
+            if room_search_url[-1] != '?':
+                room_search_url = room_search_url+'&'
+            room_search_url = room_search_url+'builtTo='+data.get('builtTo')[0]
+    if data.get('sorted'):
+        if room_search_url[-1] != '?':
+            room_search_url = room_search_url+'&'
+        room_search_url = room_search_url+'sorted='+data.get('sorted')[0]
+        context['sorted'] = data.get('sorted')[0]
+    room_list = json.loads(requests.get(room_search_url).text)
+    paginator = Paginator(room_list, 5)
+    page = request.GET.get('page')
+    paged_room = paginator.get_page(page)
+    context['rooms'] = paged_room
 
-    return render(request, 'normal_user_room_search.html', data)
+    return render(request, 'normal_user_room_search.html', context)
 # 리뷰 열람 페이지
 
     # 해당 리뷰 정보를 받는다.
@@ -446,6 +532,28 @@ def review_write(request):
                 room_data = {}
                 room_data['address'] = str(data['address'][0])
                 room_data['postcode'] = int(data['postcode'][0])
+
+                url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + str(data['address'][0])
+                headers = {'Authorization': 'KakaoAK ' + SOCIAL_AUTH_KAKAO_KEY}
+                result = json.loads(str(requests.get(url, headers=headers).text))
+                room_x = float(result['documents'][0].get('x'))
+                room_y = float(result['documents'][0].get('y'))
+                url2 = 'https://dapi.kakao.com/v2/local/search/address.json?query=충청북도 청주시 서원구 충대로 1'
+                headers = {'Authorization': 'KakaoAK ' + SOCIAL_AUTH_KAKAO_KEY}
+                result2 = json.loads(str(requests.get(url2, headers=headers).text))
+                school_x = float(result2['documents'][0].get('x'))
+                school_y = float(result2['documents'][0].get('y'))
+                room_data['distance'] = math.ceil(GeoUtil.get_harversion_distance(school_x, school_y, room_x, room_y)*10)
+
+                url3 = 'https://dapi.kakao.com/v2/local/search/keyword.json'
+                params = {'query': '편의점', 'x': room_x, 'y': room_y, 'radius': 200}
+                total = requests.get(url3, params=params, headers=headers).json()['documents']
+                conv = 0
+                for i in range(1, len(total)):
+                    if (total[i]['category_name'].find('가정,생활 > 편의점') == 0):
+                        conv = conv + 1
+                room_data['convNum'] = conv
+
                 room = json.loads(requests.post('http://127.0.0.1:8000/db/room/', data=room_data).text)
                 data1['roomId'] = room.get('id')
                 cont['room_id'] = room.get('id')
@@ -489,10 +597,23 @@ def normal_user_room_write_page(request):
 
 @api_view(['POST'])
 def normal_user_room_write(request):
-    user = request.user
     if request.method == 'POST':
         data = dict(request.POST)
-        print(data)
+
+        addr = data.get('room_address')[0]
+        url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + addr
+        headers = {'Authorization': 'KakaoAK '+SOCIAL_AUTH_KAKAO_KEY}
+        result = json.loads(str(requests.get(url, headers=headers).text))
+
+        url2 = 'https://dapi.kakao.com/v2/local/search/keyword.json'
+        params = {'query': '편의점', 'x': result['documents'][0].get('x'), 'y': result['documents'][0].get('y'), 'radius': 200}
+        total = requests.get(url2, params=params, headers=headers).json()['documents']
+        t = []
+        conv = 0
+        for i in range(1, len(total)):
+            if (total[i]['category_name'].find('가정,생활 > 편의점') == 0):
+                conv = conv+1
+            t.append(total[i]['place_name'])
         images = request.FILES.getlist('images')
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         if form.is_valid():
@@ -510,14 +631,16 @@ def normal_user_room_write(request):
             data1['commonInfo'] = data.get('commonInfo')[0]
             if data.get('ownerPhone')[0] != '':
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
+            if data.get('distance')[0] != '':
+                data1['distance'] = data.get('distance')[0]
+            data1['convNum'] = conv
+
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
             if room:
-                return Response(room[0].get('id')) # 해당 우편번호 리턴
+                return Response(room[0].get('id')) # 해당 원룸번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
-                print(data1)
                 room = requests.post('http://127.0.0.1:8000/db/room/', data=data1)
                 room_id = json.loads(room.text).get('id')
-                print('werewjiowejisdfklsdfjlfwjie \n\n::\n\n::werwewwerererwe', room_id)
                 for image in images:
                     img = json.loads(
                         requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room_id}).text)

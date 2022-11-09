@@ -6,10 +6,16 @@ function room_submit(e) {
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
     var checkbox = $("#room").find("input[type=checkbox]");
-    console.log(checkbox);
+
     $.each(checkbox, function(key, val) {
         form.append($(val).attr('name'), $(this).is(':checked'))
     });
+
+    console.log(path);
+    polyline.setPath(path);
+
+    form.append('distance', parseInt(polyline.getLength()/100));
+
     if (window.location.pathname==='/normal_user_room_change/') {
         // var reviewForm = new FormData($('text_review')[0])
         $.ajax({
@@ -20,7 +26,7 @@ function room_submit(e) {
             processData: false,
             contentType: false,
             success: function (response) {
-                // on successfull creating object
+                // on successful creating object
                 window.location.replace('/normal_user_room_read/?roomId='+response);
             },
             error: function (response) {
@@ -55,6 +61,8 @@ window.onload = function(){
             oncomplete: function(data) { //선택시 입력값 세팅
                 document.getElementById("id_address").value = data.address; // 주소 넣기
                 document.getElementById("id_postcode").value = data.zonecode; // 우편번호 넣기
+                room = addressSearch(data.address);
+                console.log(room);
                 document.getElementById('id_address').readOnly=true;
                 document.getElementById('id_postcode').readOnly=true;
                 document.getElementById('id_address').removeEventListener("click", map);
@@ -66,6 +74,7 @@ window.onload = function(){
     if(window.location.pathname==='/normal_user_room_change/'){
         document.getElementById('id_address').readOnly=true;
         document.getElementById('id_postcode').readOnly=true;
+        addressSearch(document.getElementById('id_address').value);
         document.getElementById('id_address').removeEventListener("click", map);
     }
 }
