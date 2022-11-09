@@ -291,14 +291,16 @@ class RoomViewSets(ModelViewSet):
                 data1['builtYear'] = data.get('builtYear')[0]
             else:
                 data1['builtYear'] = data.get('builtYear')
-        if str(type(data.get('distance'))) == "<class 'list'>" and data.get('distance') != ['']:
-            data1['distance'] = int(data.get('distance')[0])
-        else:
-            data1['distance'] = int(data.get('distance'))
-        if str(type(data.get('convNum'))) == "<class 'list'>" and data.get('convNum') != ['']:
-            data1['convNum'] = int(data.get('convNum')[0])
-        else:
-            data1['convNum'] = int(data.get('convNum'))
+        if data.get('distance'):
+            if str(type(data.get('distance'))) == "<class 'list'>" and data.get('distance') != ['']:
+                data1['distance'] = int(data.get('distance')[0])
+            else:
+                data1['distance'] = int(data.get('distance'))
+        if data.get('convNum'):
+            if str(type(data.get('convNum'))) == "<class 'list'>" and data.get('convNum') != ['']:
+                data1['convNum'] = int(data.get('convNum')[0])
+            else:
+                data1['convNum'] = int(data.get('convNum'))
         if data.get('ownerPhone'):
             if str(type(data.get('ownerPhone'))) == "<class 'list'>":
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
