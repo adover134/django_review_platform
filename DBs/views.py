@@ -609,8 +609,8 @@ def getMainPageReview(request):
     popular_data = reviews.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')[:4]
 
     data = {
-        'latest_reviews': ReviewSerializerString(latest_data, context={'request': request}, many=True).data,
-        'popular_reviews': ReviewSerializerString(popular_data, context={'request': request}, many=True).data,
+        'latest_reviews': ReviewSerializer(latest_data, context={'request': request}, many=True).data,
+        'popular_reviews': ReviewSerializer(popular_data, context={'request': request}, many=True).data,
     }
 
     return Response(data)

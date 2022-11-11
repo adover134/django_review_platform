@@ -24,6 +24,7 @@ def main(request):
         'latest_reviews': latest_reviews,
         'popular_reviews': popular_reviews,
     }
+    print(popular_reviews[0])
     return render(request, 'normal_user_main.html', data)
 
 
@@ -73,9 +74,8 @@ def infoCheck(request):
 def normal_user_review_search(request):
     context = {}
 
-    review_search_url = 'http://127.0.0.1:8000/db/review/'
+    review_search_url = 'http://127.0.0.1:8000/db/review/?'
     data = dict(request.GET)
-    review_search_url = review_search_url+'?'
     if data.get('address') and data.get('address') != '':
         if review_search_url[-1] != '?':
             review_search_url = review_search_url+'&'
@@ -321,11 +321,7 @@ def normal_user_review_update(request):
 def normal_user_room_change(request):
     roomId = request.GET.get('roomId')
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-    images = []
-    for img in room.get('roomImage'):
-        images.append(json.loads(requests.get(img).text).get('image'))
     context = {
-        'images': images,
         'room': room
     }
     if not room.get('id'):
