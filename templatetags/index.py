@@ -1,6 +1,7 @@
 from django import template
 import json
 import os
+import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from webPages.config import KAKAO_JAVA_KEY
@@ -59,8 +60,10 @@ def sets(lists):
 
 @register.filter
 def defaultImage(image, s):
-    path = os.path.join('static/images/', s)
-    if image is not None and os.path.isfile(os.path.join('static/images/'+s+'Image/', image)):
-        return image
+    img = json.loads(requests.get(image).text)
+    print(img)
+    print('waiterjweklrjselkfsdnlkrnwe', os.path.join('static/images/'+s+'Image/', img.get('image')))
+    if image is not None and os.path.isfile(os.path.join('static/images/'+s+'Image/', img.get('image'))):
+        return img.get('image')
     else:
         return 'no-photo.png'

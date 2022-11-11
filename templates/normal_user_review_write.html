@@ -72,10 +72,12 @@
                     <div contenteditable class="fake_textarea" id="review_sentence"></div>
                     <input style="display:none;" name="review_sentence" id="review_sentence1">
                 </div>
-                <div style="padding-top: 3.038%">
-                    <ul class="image-preview"></ul> {# 업로드한 이미지 띄우는 부분 #}
-                    <div style="float: right">
-                        <input type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
+                <div style="padding-top: 3.038%; height:20%; width:100%;">
+                    <div id="image-preview"></div> {# 업로드한 이미지 띄우는 부분 #}
+                    <div id="current-image-preview"></div> {# 기존 이미지 띄우는 부분 #}
+                    <div style="display:flex; justify-content: right; width:100%;">
+                        <input style="display:none;" type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
+                        <div style="display:inline-block; width:50%;" onclick="document.getElementById('images').click()"><span style="border:1px solid black; padding:1%;">사진 추가</span><span id="image_count" style="width:30%; float:right;">사진 0개</span></div>
                         <input id="review_submit" value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
                         color: white">
                     </div>
@@ -84,33 +86,70 @@
         </form>
     </div>
     <script>
+        var new_images = new DataTransfer();
+        var image_names = [];
+
         // 이미지 업로드
+        function removeImage(s, t){
+            image_names = image_names.filter((element) => element !== s);
+            for (i=0;i<new_images.files.length;i++){
+                if (new_images.files[i].name.indexOf(s) !== -1)
+                {
+                    let dataTransfer = new DataTransfer();
+                    let files = new_images.files;
+                    let fileArray = Array.from(files);
+                    fileArray.splice(i, 1);
+                    fileArray.forEach(file => { dataTransfer.items.add(file); });
+                    console.log(dataTransfer.files);
+                    new_images.value='';
+                    new_images = dataTransfer;
+                    break;
+                }
+            }
+            t.parentNode.removeChild(t);
+            document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
+        }
         function getImageFiles(e){
-            const uploadFiles = [];
             const files = e.currentTarget.files;
-            const imagePreview = document.querySelector('.image-preview');
+            const imagePreview = document.querySelector('#image-preview');
 
             [...files].forEach(file => {
-                uploadFiles.push(file);
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const preview = createElement(e, file);
-                    imagePreview.appendChild(preview);
-                };
-
-              reader.readAsDataURL(file);
+                let check=false;
+                for (i=0;i<image_names.length;i=i+1)
+                {
+                    if (image_names[i].indexOf(file.name) !== -1)
+                    {
+                        check=true;
+                        break;
+                    }
+                }
+                if (check===false)
+                {
+                    new_images.items.add(file);
+                    image_names.push(file.name);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const preview = createElement(e, file);
+                        imagePreview.appendChild(preview);
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
+            document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
         }
 
         function createElement(e, file) {
-          const li = document.createElement('li');
+          const divs = document.createElement('div');
           const img = document.createElement('img');
+          divs.style.display='inline-block';
+          divs.style.width='30%';
+          divs.style.height='100%';
+          divs.setAttribute('onClick', 'removeImage("{{image}}".slice(2), this)');
           img.setAttribute('src', e.target.result);
           img.setAttribute('data-file', file.name);
-          li.appendChild(img);
+          divs.appendChild(img);
 
-          return li;
+          return divs;
         }
         var text = '';
         const realUpload = document.querySelector('.real-upload');
@@ -125,7 +164,6 @@
                 {% for img in review.additionalImage %}
                     images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
                 {% endfor %}
-                document.getElementsByClassName('image-preview')[0].innerHTML = images
                 {% if review.rent %}
                     document.getElementsByName('checking')[{{review.rent}}].checked = true;
                 {% endif %}
@@ -154,6 +192,21 @@
                 {% for sentence in review.reviewSentence %}
                     text += "{{ sentence }}\n"
                 {% endfor %}
+
+                {% for image in images %}
+                    console.log('{{image}}'.slice(2));
+                    image_names.push('{{image}}'.slice(2));
+                    divs2 = document.createElement('div');
+                    img2 = document.createElement('img');
+                    divs2.style.display='inline-block';
+                    divs2.style.width='30%';
+                    divs2.style.height='100%';
+                    divs2.setAttribute('onClick', 'removeImage("{{image}}".slice(2), this)');
+                    img2.setAttribute('src', '{% static "images/reviewImage/" %}{{image}}');
+                    divs2.appendChild(img2);
+                    document.querySelector('#image-preview').appendChild(divs2);
+                {% endfor %}
+                document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
                 document.getElementById('review_sentence').innerText = text
                 document.getElementById('review_submit').value = '리뷰 수정'
             }
