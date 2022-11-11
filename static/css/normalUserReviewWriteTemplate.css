@@ -29,11 +29,56 @@ img {
   padding-right: 20%;
 }
 
-.image-preview {
-  width: 50%;
+#image-preview {
+  position: relative;
+  display: inline-block;
+  width: 49%;
   height: 100%;
-  display: flex;
-  float: left;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+#image-preview::-webkit-scrollbar {
+  width: 9px;
+}
+
+#image-preview::-webkit-scrollbar-thumb {
+  width: 3px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 12px;
+}
+
+#image-preview::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+#current-image-preview {
+  position: relative;
+  display: inline-block;
+  width: 49%;
+  height: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+#current-image-preview::-webkit-scrollbar {
+  width: 9px;
+}
+
+#current-image-preview::-webkit-scrollbar-thumb {
+  width: 3px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 12px;
+}
+
+#current-image-preview::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
 }
 
 input[type=range] {

@@ -122,6 +122,15 @@ window.onload = function()
         else
             o.style.fontSize = b.toString() + 'rem';
     });
+    a=document.getElementById('other_reviews_title')
+    let ort1 = a.offsetHeight / 16;
+    let ort2 = a.offsetWidth - a.offsetHeight;
+    let ort3 = a.innerText;
+    ort2 = (ort2 / ort3.length) / 16;
+    if (ort1 > ort2)
+        a.style.fontSize = ort2.toString() + 'rem';
+    else
+        a.style.fontSize = ort1.toString() + 'rem';
     a=document.getElementById('writer');
     b=(a.offsetHeight/16).toString()+'rem';
     a.style.fontSize=b;
@@ -211,6 +220,15 @@ window.onresize = function()
         else
             o.style.fontSize = b.toString() + 'rem';
     });
+    a=document.getElementById('other_reviews_title')
+    let ort1 = a.offsetHeight / 16;
+    let ort2 = a.offsetWidth - a.offsetHeight;
+    let ort3 = a.innerText;
+    ort2 = (ort2 / ort3.length) / 16;
+    if (ort1 > ort2)
+        a.style.fontSize = ort2.toString() + 'rem';
+    else
+        a.style.fontSize = ort1.toString() + 'rem';
     a=document.getElementById('writer');
     b=(a.offsetHeight/16).toString()+'rem';
     a.style.fontSize=b;

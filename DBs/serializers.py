@@ -24,9 +24,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
-    additionalImage = serializers.StringRelatedField(
+    additionalImage = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
+        view_name='reviewimage-detail'
     )
     includedIcon = serializers.StringRelatedField(
         many=True,
@@ -176,9 +177,10 @@ class RoomSerializer(serializers.ModelSerializer):
     commonInfo = serializers.ListField(
         child=serializers.IntegerField()
     )
-    roomImage = serializers.StringRelatedField(
+    roomImage = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
+        view_name='roomimage-detail'
     )
 
     class Meta:

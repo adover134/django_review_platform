@@ -119,10 +119,10 @@ class RoomImage(models.Model):
 
 
 def delete_review_image(image):
-    if os.path.exists('static/images/reviewImage'+image):
-        os.remove('static/images/reviewImage'+image)
+    if os.path.exists(os.path.join('static/images/reviewImage',image)):
+        os.remove('static/images/reviewImage/'+image)
 
 
 def delete_room_image(image):
-    if os.path.exists('static/images/roomImage' + image):
-        os.remove('static/images/roomImage' + image)
+    if os.path.exists(os.path.join('static/images/roomImage' + image)):
+        os.remove('static/images/roomImage/' + image)

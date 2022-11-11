@@ -130,6 +130,7 @@ div#written_date_selects_div {
   height: 25%;
   line-height: 1;
   margin-bottom: 8%;
+  margin-top: 4%;
 }
 
 #soundproof {
@@ -137,6 +138,7 @@ div#written_date_selects_div {
   height: 25%;
   line-height: 1;
   margin-bottom: 8%;
+  margin-top: 4%;
 }
 
 #lighting {
@@ -144,6 +146,7 @@ div#written_date_selects_div {
   height: 25%;
   line-height: 1;
   margin-bottom: 8%;
+  margin-top: 4%;
 }
 
 #cleanliness {
@@ -151,6 +154,7 @@ div#written_date_selects_div {
   height: 25%;
   line-height: 1;
   margin-bottom: 8%;
+  margin-top: 4%;
 }
 
 .sliders_control {
@@ -201,8 +205,8 @@ input[type=range]::-webkit-slider-thumb:active {
 input[type=number] {
   color: #8a8383;
   width: 50px;
-  height: 30px;
-  font-size: 20px;
+  height: 20px;
+  font-size: 15px;
   border: none;
   -moz-appearance: textfield;
   text-align: center;
@@ -223,6 +227,16 @@ input[type=range] {
   position: absolute;
   background-color: #C6C6C6;
   pointer-events: none;
+}
+
+#scores {
+  margin-top: 10%;
+  margin-left: 2.94%;
+}
+
+#score-filters {
+  height: 27.27%;
+  width: 27%;
 }
 
 #humidityFromSlider {
