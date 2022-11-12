@@ -24,7 +24,7 @@ def main(request):
         'latest_reviews': latest_reviews,
         'popular_reviews': popular_reviews,
     }
-    print(popular_reviews[0])
+    print('wjrklwejflksdjfiweorjfklsdfs', latest_reviews)
     return render(request, 'normal_user_main.html', data)
 
 
@@ -186,8 +186,6 @@ def normal_user_review_read(request):
                 case '3':
                     icons[3].append(i)
 
-    print('testetsetsetsetestsetsetse', icons)
-
     icon = []
     if icons == [[],[],[],[]]:
         icons = None
@@ -197,8 +195,6 @@ def normal_user_review_read(request):
         for i in range(4):
             if len(icons[i]) > 0:
                 icon.append(i)
-
-    print('testetsetsetsetestsetsetse', icon)
 
     # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
     recommended = None
@@ -221,6 +217,7 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
+
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -272,10 +269,6 @@ def normal_user_review_update(request):
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
-            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
-            '''
-
-            '''
             # 원룸 번호를 구한다.
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
@@ -318,7 +311,11 @@ def normal_user_review_update(request):
 def normal_user_room_change(request):
     roomId = request.GET.get('roomId')
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+    images = []
+    for img in room.get('roomImage'):
+        images.append(json.loads(requests.get(img).text).get('image'))
     context = {
+        'images': images,
         'room': room
     }
     if not room.get('id'):

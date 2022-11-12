@@ -60,8 +60,8 @@ def sets(lists):
 
 @register.filter
 def defaultImage(image, s):
+    print('hwelirhwelkfjsdklfsjdlkfse\n\n\nweklrjlkdsf', image)
     img = json.loads(requests.get(image).text)
-    print(img.get('image'))
     print('waiterjweklrjselkfsdnlkrnwe', os.path.join('static/images/'+s+'Image/', img.get('image')))
     if image is not None and os.path.isfile(os.path.join('static/images/'+s+'Image/', img.get('image'))):
         return img.get('image')

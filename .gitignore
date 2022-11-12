@@ -2,5 +2,5 @@ config.py
 
 *.pyc
 DBs/migrations/0001_initial.py
-static/images/reviewImage/*.png
-static/images/roomImage/*.png
+static/images/reviewImage/*
+static/images/roomImage/*
