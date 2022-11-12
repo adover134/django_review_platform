@@ -24,6 +24,7 @@ def main(request):
         'latest_reviews': latest_reviews,
         'popular_reviews': popular_reviews,
     }
+    print('wjrklwejflksdjfiweorjfklsdfs', latest_reviews)
     return render(request, 'normal_user_main.html', data)
 
 
@@ -73,12 +74,9 @@ def infoCheck(request):
 def normal_user_review_search(request):
     context = {}
 
-    review_search_url = 'http://127.0.0.1:8000/db/review/'
+    review_search_url = 'http://127.0.0.1:8000/db/review/?'
     data = dict(request.GET)
-    review_search_url = review_search_url+'?'
     if data.get('address') and data.get('address') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
         context['address'] = data.get('address')[0]
     if data.get('icons'):
@@ -102,47 +100,40 @@ def normal_user_review_search(request):
         review_search_url = review_search_url + 'humidity_from=' + data.get('humidity_from')[0]
         context['humidity_from'] = data.get('humidity_from')[0]
     if data.get('humidity_to') and data.get('humidity_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'humidity_to=' + data.get('humidity_to')[0]
         context['humidity_to'] = data.get('humidity_to')[0]
     if data.get('soundproof_from') and data.get('soundproof_from') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'soundproof_from=' + data.get('soundproof_from')[0]
         context['soundproof_from'] = data.get('soundproof_from')[0]
     if data.get('soundproof_to') and data.get('soundproof_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'soundproof_to=' + data.get('soundproof_to')[0]
         context['soundproof_to'] = data.get('soundproof_to')[0]
     if data.get('lighting_from') and data.get('lighting_from') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'lighting_from=' + data.get('lighting_from')[0]
         context['lighting_from'] = data.get('lighting_from')[0]
     if data.get('lighting_to') and data.get('lighting_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'lighting_to=' + data.get('lighting_to')[0]
         context['lighting_to'] = data.get('lighting_to')[0]
     if data.get('cleanliness_from') and data.get('cleanliness_from') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'cleanliness_from=' + data.get('cleanliness_from')[0]
         context['cleanliness_from'] = data.get('cleanliness_from')[0]
     if data.get('cleanliness_to') and data.get('cleanliness_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'cleanliness_to=' + data.get('cleanliness_to')[0]
         context['cleanliness_to'] = data.get('cleanliness_to')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
-    page = request.GET.get('page')
-    paged_review = paginator.get_page(page)
-    t = []
-    for r in paged_review:
-        t.append(list(set(r.get('includedIcon'))))
+    paged_review = None
+    if data.get('page'):
+        paged_review = paginator.get_page(data.get('page'))
+    else:
+        paged_review =paginator.get_page(1)
     context['paged_review'] = paged_review
 
     return render(request, 'normal_user_review_search.html', context)
@@ -160,10 +151,16 @@ def normal_user_review_read(request):
 
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
+
+    if not review.get('id'):
+        return redirect('/normal_user_review_search/')
+
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text)
     review['roomName'] = room.get('name')
     review['address'] = room.get('address')
     icon_urls = review.get('includedIcon')
+
+    print('wekrlwsd\nwrw\n\nesrwe\n\n;lsssd', icon_urls)
 
     sorted = ''
     if 'sorted' in request.GET:
@@ -177,7 +174,8 @@ def normal_user_review_read(request):
     icons.append([])
     if icon_urls:
         for i in range(len(icon_urls)):
-            icon = json.loads(requests.get('http://127.0.0.1:8000/db/icon/'+icon_urls[i]).text)
+            icon = json.loads(requests.get(icon_urls[i]).text)
+
             match icon.get('iconKind'):
                 case '0':
                     icons[0].append(i)
@@ -219,6 +217,7 @@ def normal_user_review_read(request):
         is_writer = 'true'
     else:
         is_writer = 'false'
+
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
     # paginator
@@ -237,10 +236,17 @@ def normal_user_review_read(request):
 def normal_user_review_change(request):
     review_num = request.GET.get('id')
     review = json.loads(requests.get('http://127.0.0.1:8000/db/review/' + review_num + '/').text)
+    if not review.get('id'):
+        return redirect('/normal_user_review_search/')
     roomId = review['roomId']
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
 
+    images = []
+    for img in review.get('additionalImage'):
+        images.append(json.loads(requests.get(img).text).get('image'))
+
     context = {
+        'images': images,
         'review': review,
         'room': room
     }
@@ -253,7 +259,6 @@ def normal_user_review_change(request):
 def normal_user_review_update(request):
     user = request.user
     review_id = None
-    cont = {}
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
@@ -264,13 +269,7 @@ def normal_user_review_update(request):
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
             room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?address=' + data['address'][0]).text)
-            # 만약 없다면, 임의로 주소만 있는 원룸 객체를 만들어서 저장한다.
-            '''
-
-            '''
             # 원룸 번호를 구한다.
-            if len(room) > 0:
-                cont['room_id'] = room[0].get('id')
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
             data1['rent'] = int(data['checking'][0])
@@ -288,14 +287,23 @@ def normal_user_review_update(request):
             data1['humidity'] = int(data['humidity'][0])
             review = requests.put('http://127.0.0.1:8000/db/review/'+str(request.GET.get('id'))+'/', data=data1)
             review_id = request.GET.get('id')
-            cont['review_id'] = review_id
+            exists_image = json.loads(review.text).get('additionalImage')
+            updated_images = data.get('image_names')[0]
+            # 기존 이미지 중, 수정 페이지에서 지운 것들은 DB에서 삭제
+            exists_image_names = []
+            for image in exists_image:
+                img = json.loads(requests.get(image).text)
+                exists_image_names.append(img.get('image')[2:])
+                if img.get('image')[2:] not in updated_images:
+                    requests.delete(image)
+
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
-                img_name = handle_uploaded_file(image, 'reviewImage', str(img.get('id')))
+                img_name = handle_uploaded_file(image, str(review_id), 'reviewImage', image.name)
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
-        return Response(cont)
+        return Response(review_id)
 
 
 # 리뷰 수정 페이지 GET
@@ -303,10 +311,15 @@ def normal_user_review_update(request):
 def normal_user_room_change(request):
     roomId = request.GET.get('roomId')
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+    images = []
+    for img in room.get('roomImage'):
+        images.append(json.loads(requests.get(img).text).get('image'))
     context = {
+        'images': images,
         'room': room
     }
-
+    if not room.get('id'):
+        return redirect('/normal_user_room_search/')
     return render(request, 'normal_user_room_write.html', context)
 
 
@@ -319,13 +332,25 @@ def normal_user_room_update(request):
         images = request.FILES.getlist('images')
         if form.is_valid():
             room = json.loads(requests.put('http://127.0.0.1:8000/db/room/'+request.GET.get('roomId')+'/', data=data).text)
+
+            room_id = room.get('id')
+            exists_image = room.get('roomImage')
+
+            updated_images = data.get('image_names')[0]
+            # 기존 이미지 중, 수정 페이지에서 지운 것들은 DB에서 삭제
+            exists_image_names = []
+            for image in exists_image:
+                img = json.loads(requests.get(image).text)
+                exists_image_names.append(img.get('image')[2:])
+                if img.get('image')[2:] not in updated_images:
+                    requests.delete(image)
+
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room.get('id')}).text)
-                img_name = handle_uploaded_file(image, 'roomImage', str(img.get('id')))
+                img_name = handle_uploaded_file(image, str(room_id), 'roomImage', image.name)
                 requests.put('http://127.0.0.1:8000/db/roomImage/' + str(img.get('id')) + '/',
                              data={'reviewId': room.get('id'), 'image': img_name})
-            room_id = str(room.get('id'))
             return Response(room_id)
         else:
             return status.HTTP_403_FORBIDDEN
@@ -404,10 +429,11 @@ def check_user_reviews(request):
     return render(request, 'normal_user_review_list.html', {'reviews': paged_review})
 
 
-def room_read(request):
+def normal_user_room_read(request):
     roomId = request.GET.get('roomId') #파라미터로 넘어오는 원룸 아이디 데이터
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
-
+    if not room.get('id'):
+        return redirect('/normal_user_room_search/')
     sorted = ''
 
     if 'sorted' in request.GET:
@@ -505,10 +531,6 @@ def introduction(request):
     return render(request, 'introduction.html')
 
 
-def testing(request):
-    return render(request, 'test.html')
-
-
 @api_view(['POST'])
 def review_write(request):
     user = request.user
@@ -576,18 +598,19 @@ def review_write(request):
             for image in images:
                 img = json.loads(
                     requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
-                img_name = handle_uploaded_file(image, 'reviewImage', str(img.get('id')))
+                img_name = handle_uploaded_file(image, str(review_id), 'reviewImage', image.name)
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
         cont['review_id'] = str(review_id)
         return Response(cont)
 
 
-def handle_uploaded_file(f, kind, name):
-    with open('static/images/'+kind+'/' + name + '.png', 'wb+') as destination:
+def handle_uploaded_file(f, rId,  kind, name):
+    print(rId)
+    with open('static/images/'+kind+'/' + rId + '-' + name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-    return name + '.png'
+    return rId + '-' + name
 
 
 @login_required(login_url='/loginPage/')
@@ -608,12 +631,10 @@ def normal_user_room_write(request):
         url2 = 'https://dapi.kakao.com/v2/local/search/keyword.json'
         params = {'query': '편의점', 'x': result['documents'][0].get('x'), 'y': result['documents'][0].get('y'), 'radius': 200}
         total = requests.get(url2, params=params, headers=headers).json()['documents']
-        t = []
         conv = 0
         for i in range(1, len(total)):
             if (total[i]['category_name'].find('가정,생활 > 편의점') == 0):
                 conv = conv+1
-            t.append(total[i]['place_name'])
         images = request.FILES.getlist('images')
         form = customForms.RoomWriteForm(request.POST, request.FILES)
         if form.is_valid():
@@ -644,7 +665,7 @@ def normal_user_room_write(request):
                 for image in images:
                     img = json.loads(
                         requests.post('http://127.0.0.1:8000/db/roomImage/', data={'roomId': room_id}).text)
-                    img_name = handle_uploaded_file(image, 'roomImage', str(img.get('id')))
+                    img_name = handle_uploaded_file(image, str(room_id), 'roomImage', image.name)
                     requests.put('http://127.0.0.1:8000/db/roomImage/' + str(img.get('id')) + '/',
                                  data={'reviewId': room_id, 'image': img_name})
                 return Response(str(room_id))

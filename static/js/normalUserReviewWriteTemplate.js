@@ -3,9 +3,15 @@ function review_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
     document.getElementById('review_sentence1').value = document.getElementById('review_sentence').innerText
+    let images = document.getElementById('images');
+    images.files = new_images.files;
     // serialize the data for sending the form data.
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
+
+    image_names = JSON.stringify(image_names);
+    form.append('image_names', image_names);
+
     if (window.location.pathname==='/normal_user_review_change/') {
         // var reviewForm = new FormData($('text_review')[0])
         $.ajax({
@@ -17,7 +23,7 @@ function review_submit(e) {
             contentType: false,
             success: function (response) {
                 // on successfull creating object
-                window.location.replace('/normal_user_review_read/?id='+response['review_id']);
+                window.location.replace('/normal_user_review_read/?id='+response);
             },
             error: function (response) {
                 // alert the error if any error occured

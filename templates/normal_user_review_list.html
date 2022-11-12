@@ -14,7 +14,11 @@
             {% for review in paged_review %}
                 <div class="review" style="cursor: default;">
                     <div class="review_image">
-                        <img src="{% static 'images/reviewImage/' %}{{review.representiveImage|defaultImage:'review'}}" style="height:100%; width:100%;">
+                        {% if review.additionalImage|length > 0 %}
+                            <img src="{% static 'images/reviewImage/' %}{{review.additionalImage|first|defaultImage:'review'}}" style="height:100%; width:100%;">
+                        {% else %}
+                            <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%; width:100%;">
+                        {% endif %}
                     </div>
                     <div class="review_info">
                         <div class="review_title" style="color:black; cursor: pointer;">

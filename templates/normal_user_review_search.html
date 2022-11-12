@@ -101,17 +101,17 @@
                     document.getElementById('humidity').style.fontSize=a;
                 </script>
                 <div class="sliders_control">
-                    <input name="humidity_from" id="humidityFromSlider" type="range" value="1" min="1" max="5" step="1"/>
-                    <input name="humidity_to" id="humidityToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                    <input name="humidity_from" id="humidityFromSlider" type="range" {% if humidity_from %}value="{{humidity_from}}"{% else %}value="1"{% endif %} min="1" max="5" step="1"/>
+                    <input name="humidity_to" id="humidityToSlider" type="range" {% if humidity_to %}value="{{humidity_to}}"{% else %}value="5"{% endif %} min="1" max="5" step="1"/>
                 </div>
                 <div class="form_control">
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최소</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="humidityFromInput" value="1" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최소 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="humidityFromInput" {% if humidity_from %}value="{{humidity_from}}"{% else %}value="1"{% endif %} min="1" max="5"/>
                     </div>
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최대</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="humidityToInput" value="5" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최대 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="humidityToInput" {% if humidity_to %}value="{{humidity_to}}"{% else %}value="5"{% endif %} min="1" max="5"/>
                     </div>
                 </div>
                 <div id="soundproof">방음</div>
@@ -120,17 +120,17 @@
                     document.getElementById('soundproof').style.fontSize=a;
                 </script>
                 <div class="sliders_control">
-                    <input name="soundproof_from" id="soundproofFromSlider" type="range" value="1" min="1" max="5" step="1"/>
-                    <input name="soundproof_to" id="soundproofToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                    <input name="soundproof_from" id="soundproofFromSlider" type="range" {% if soundproof_from %}value="{{soundproof_from}}"{% else %}value="1"{% endif %} min="1" max="5" step="1"/>
+                    <input name="soundproof_to" id="soundproofToSlider" type="range" {% if soundproof_to %}value="{{soundproof_to}}"{% else %}value="5"{% endif %} min="1" max="5" step="1"/>
                 </div>
                 <div class="form_control">
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="soundproofFromInput" value="1" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최소 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="soundproofFromInput" {% if soundproof_from %}value="{{soundproof_from}}"{% else %}value="1"{% endif %} min="1" max="5"/>
                     </div>
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="soundproofToInput" value="5" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최대 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="soundproofToInput" {% if soundproof_to %}value="{{soundproof_to}}"{% else %}value="5"{% endif %} min="1" max="5"/>
                     </div>
                 </div>
                 <div id="lighting">채광</div>
@@ -139,17 +139,17 @@
                     document.getElementById('lighting').style.fontSize=a;
                 </script>
                 <div class="sliders_control">
-                    <input name="lighting_from" id="lightingFromSlider" type="range" value="1" min="1" max="5" step="1"/>
-                    <input name="lighting_to" id="lightingToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                    <input name="lighting_from" id="lightingFromSlider" type="range" {% if lighting_from %}value="{{lighting_from}}"{% else %}value="1"{% endif %} min="1" max="5" step="1"/>
+                    <input name="lighting_to" id="lightingToSlider" type="range" {% if lighting_to %}value="{{lighting_to}}"{% else %}value="5"{% endif %} min="1" max="5" step="1"/>
                 </div>
                 <div class="form_control">
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="lightingFromInput" value="1" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최소 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="lightingFromInput" {% if lighting_from %}value="{{lighting_from}}"{% else %}value="1"{% endif %} min="1" max="5"/>
                     </div>
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="lightingToInput" value="5" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최대 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="lightingToInput" {% if lighting_to %}value="{{lighting_to}}"{% else %}value="5"{% endif %} min="1" max="5"/>
                     </div>
                 </div>
                 <div id="cleanliness">청결도</div>
@@ -158,17 +158,17 @@
                     document.getElementById('cleanliness').style.fontSize=a;
                 </script>
                 <div class="sliders_control">
-                    <input name="cleanliness_from" id="cleanlinessFromSlider" type="range" value="1" min="1" max="5" step="1"/>
-                    <input name="cleanliness_to" id="cleanlinessToSlider" type="range" value="5" min="1" max="5" step="1"/>
+                    <input name="cleanliness_from" id="cleanlinessFromSlider" type="range" {% if cleanliness_from %}value="{{cleanliness_from}}"{% else %}value="1"{% endif %} min="1" max="5" step="1"/>
+                    <input name="cleanliness_to" id="cleanlinessToSlider" type="range" {% if cleanliness_to %}value="{{cleanliness_to}}"{% else %}value="5"{% endif %} min="1" max="5" step="1"/>
                 </div>
                 <div class="form_control">
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최소 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="cleanlinessFromInput" value="1" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최소 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="cleanlinessFromInput" {% if cleanliness_from %}value="{{cleanliness_from}}"{% else %}value="1"{% endif %} min="1" max="5"/>
                     </div>
                     <div class="form_control_container">
-                        <div class="form_control_container__time" style="height:50%;">최대 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="cleanlinessToInput" value="5" min="1" max="5"/>
+                        <div class="form_control_container__time" style="height:50%;">최대 점수</div>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="cleanlinessToInput" {% if cleanliness_to %}value="{{cleanliness_to}}"{% else %}value="5"{% endif %} min="1" max="5"/>
                     </div>
                 </div>
             </div>
@@ -185,7 +185,7 @@
             </div>
             <div id="submit-div">
                 <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">적용</a>
-            </div>
+            </div><br><br>
             <script>
                 a=(document.getElementById('submit-div').offsetHeight/16).toString()+'rem';
                 document.getElementById('submit').style.fontSize=a;

@@ -2,10 +2,16 @@ $("#room").submit(room_submit);
 function room_submit(e) {
     // preventing from page reload and default actions
     e.preventDefault();
-    // serialize the data for sending the form data.
+
+    let images = document.getElementById('images');
+    images.files = new_images.files;
+
     var form = new FormData(e.currentTarget);
     const URLSearch = new URLSearchParams(location.search);
     var checkbox = $("#room").find("input[type=checkbox]");
+
+    image_names = JSON.stringify(image_names);
+    form.append('image_names', image_names);
 
     $.each(checkbox, function(key, val) {
         form.append($(val).attr('name'), $(this).is(':checked'))

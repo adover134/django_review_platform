@@ -15,6 +15,15 @@ window.onresize = function(){
         else
             o.style.fontSize=a.toString()+'rem';
     }
+    a=document.getElementById('score_filters');
+    let sf1 = a.offsetHeight / 16;
+    let sf2 = a.offsetWidth - a.offsetHeight;
+    let sf3 = a.innerText;
+    sf2 = (sf2 / sf3.length) / 16;
+    if (sf1 > sf2)
+        a.style.fontSize = sf2.toString() + 'rem';
+    else
+        a.style.fontSize = sf1.toString() + 'rem';
     a = Array.from(document.getElementsByClassName('review_title'));
     a.forEach(function(o){
         b=(o.offsetHeight/16).toString()+'rem';
@@ -46,14 +55,23 @@ window.onload = function(){
     }
     a = Array.from(document.getElementsByClassName('review_title'));
     a.forEach(function(o){
-        b=(o.offsetHeight/16).toString()+'rem';
+        let b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
     a = Array.from(document.getElementsByClassName('review_preview'));
     a.forEach(function(o){
-        b=(o.offsetHeight/16).toString()+'rem';
+        let b=(o.offsetHeight/16).toString()+'rem';
         o.style.fontSize=b;
     });
+    a=document.getElementById('score_filters');
+    let sf1 = a.offsetHeight / 16;
+    let sf2 = a.offsetWidth - a.offsetHeight;
+    let sf3 = a.innerText;
+    sf2 = (sf2 / sf3.length) / 16;
+    if (sf1 > sf2)
+        a.style.fontSize = sf2.toString() + 'rem';
+    else
+        a.style.fontSize = sf1.toString() + 'rem';
     var c = document.createElement("option");
     var d = document.createElement("option");
     c.innerText='최소 연도';
