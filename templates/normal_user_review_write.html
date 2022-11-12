@@ -90,17 +90,22 @@
         var image_names = [];
 
         // 이미지 업로드
-        function removeImage(s, t){
-            image_names = image_names.filter((element) => element !== s);
+        function removeImage(t){
+            current_image_name = null;
+            if (t.childNodes[0].getAttribute('data-file') === null)
+                current_image_name = t.childNodes[0].getAttribute('src').slice(29)
+            else
+                current_image_name = t.childNodes[0].getAttribute('data-file')
+            console.log(current_image_name)
+            image_names = image_names.filter((element) => element !== current_image_name);
             for (i=0;i<new_images.files.length;i++){
-                if (new_images.files[i].name.indexOf(s) !== -1)
+                if (new_images.files[i].name.indexOf(current_image_name) !== -1)
                 {
                     let dataTransfer = new DataTransfer();
                     let files = new_images.files;
                     let fileArray = Array.from(files);
                     fileArray.splice(i, 1);
                     fileArray.forEach(file => { dataTransfer.items.add(file); });
-                    console.log(dataTransfer.files);
                     new_images.value='';
                     new_images = dataTransfer;
                     break;
@@ -144,7 +149,7 @@
           divs.style.display='inline-block';
           divs.style.width='30%';
           divs.style.height='100%';
-          divs.setAttribute('onClick', 'removeImage("{{image}}".slice(2), this)');
+          divs.setAttribute('onClick', 'removeImage(this)');
           img.setAttribute('src', e.target.result);
           img.setAttribute('data-file', file.name);
           divs.appendChild(img);
@@ -194,14 +199,13 @@
                 {% endfor %}
 
                 {% for image in images %}
-                    console.log('{{image}}'.slice(2));
                     image_names.push('{{image}}'.slice(2));
                     divs2 = document.createElement('div');
                     img2 = document.createElement('img');
                     divs2.style.display='inline-block';
                     divs2.style.width='30%';
                     divs2.style.height='100%';
-                    divs2.setAttribute('onClick', 'removeImage("{{image}}".slice(2), this)');
+                    divs2.setAttribute('onClick', 'removeImage(this)');
                     img2.setAttribute('src', '{% static "images/reviewImage/" %}{{image}}');
                     divs2.appendChild(img2);
                     document.querySelector('#image-preview').appendChild(divs2);
