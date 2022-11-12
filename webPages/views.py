@@ -467,37 +467,49 @@ def room_search(request):
             room_search_url = room_search_url+'&'
         room_search_url = room_search_url+'address='+data.get('address')[0]
         context['address'] = data.get('address')[0]
+    if data.get('commonInfo'):
+        context['commonInfo'] = []
+        for c in data.get('commonInfo'):
+            room_search_url = room_search_url + '&' + 'commonInfo=' + c
+            context['commonInfo'].append([c])
     if data.get('postcode'):
         if room_search_url[-1] != '?':
             room_search_url = room_search_url+'&'
         room_search_url = room_search_url+'postcode='+data.get('postcode')[0]
+        context['postcode'] = data.get('postcode')[0]
     if data.get('distance_from') or data.get('distance_to'):
         if data.get('distance_from'):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'distance_from='+data.get('distance_from')[0]
+            context['distance_from'] = data.get('distance_from')[0]
         if data.get('distance_to'):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'distance_to='+data.get('distance_to')[0]
+            context['distance_to'] = data.get('distance_to')[0]
     if data.get('convNum_from') or data.get('convNum_to'):
         if data.get('convNum_from'):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'convNum_from='+data.get('convNum_from')[0]
+            context['convNum_from'] = data.get('convNum_from')[0]
         if data.get('convNum_to'):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'convNum_to='+data.get('convNum_to')[0]
+            context['convNum_to'] = data.get('convNum_to')[0]
     if data.get('builtFrom') or data.get('builtTo'):
         if data.get('builtFrom'):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'builtFrom='+data.get('builtFrom')[0]
+            context['builtFrom'] = data.get('builtFrom')[0]
         if data.get('builtTo'):
             if room_search_url[-1] != '?':
                 room_search_url = room_search_url+'&'
             room_search_url = room_search_url+'builtTo='+data.get('builtTo')[0]
+            context['builtTo'] = data.get('builtTo')[0]
     if data.get('sorted'):
         if room_search_url[-1] != '?':
             room_search_url = room_search_url+'&'
@@ -508,6 +520,7 @@ def room_search(request):
     page = request.GET.get('page')
     paged_room = paginator.get_page(page)
     context['rooms'] = paged_room
+    print('context : ', context)
 
     return render(request, 'normal_user_room_search.html', context)
 # 리뷰 열람 페이지
