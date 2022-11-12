@@ -77,8 +77,6 @@ def normal_user_review_search(request):
     review_search_url = 'http://127.0.0.1:8000/db/review/?'
     data = dict(request.GET)
     if data.get('address') and data.get('address') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url+'&'
         review_search_url = review_search_url+'address='+data.get('address')[0]
         context['address'] = data.get('address')[0]
     if data.get('icons'):
@@ -102,47 +100,40 @@ def normal_user_review_search(request):
         review_search_url = review_search_url + 'humidity_from=' + data.get('humidity_from')[0]
         context['humidity_from'] = data.get('humidity_from')[0]
     if data.get('humidity_to') and data.get('humidity_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'humidity_to=' + data.get('humidity_to')[0]
         context['humidity_to'] = data.get('humidity_to')[0]
     if data.get('soundproof_from') and data.get('soundproof_from') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'soundproof_from=' + data.get('soundproof_from')[0]
         context['soundproof_from'] = data.get('soundproof_from')[0]
     if data.get('soundproof_to') and data.get('soundproof_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'soundproof_to=' + data.get('soundproof_to')[0]
         context['soundproof_to'] = data.get('soundproof_to')[0]
     if data.get('lighting_from') and data.get('lighting_from') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'lighting_from=' + data.get('lighting_from')[0]
         context['lighting_from'] = data.get('lighting_from')[0]
     if data.get('lighting_to') and data.get('lighting_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'lighting_to=' + data.get('lighting_to')[0]
         context['lighting_to'] = data.get('lighting_to')[0]
     if data.get('cleanliness_from') and data.get('cleanliness_from') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'cleanliness_from=' + data.get('cleanliness_from')[0]
         context['cleanliness_from'] = data.get('cleanliness_from')[0]
     if data.get('cleanliness_to') and data.get('cleanliness_to') != '':
-        if review_search_url[-1] != '?':
-            review_search_url = review_search_url + '&'
+        review_search_url = review_search_url + '&'
         review_search_url = review_search_url + 'cleanliness_to=' + data.get('cleanliness_to')[0]
         context['cleanliness_to'] = data.get('cleanliness_to')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
-    page = request.GET.get('page')
-    paged_review = paginator.get_page(page)
-    t = []
-    for r in paged_review:
-        t.append(list(set(r.get('includedIcon'))))
+    paged_review = None
+    if data.get('page'):
+        paged_review = paginator.get_page(data.get('page'))
+    else:
+        paged_review =paginator.get_page(1)
     context['paged_review'] = paged_review
 
     return render(request, 'normal_user_review_search.html', context)
@@ -169,6 +160,8 @@ def normal_user_review_read(request):
     review['address'] = room.get('address')
     icon_urls = review.get('includedIcon')
 
+    print('wekrlwsd\nwrw\n\nesrwe\n\n;lsssd', icon_urls)
+
     sorted = ''
     if 'sorted' in request.GET:
         sorted = request.GET.get('sorted')
@@ -181,7 +174,8 @@ def normal_user_review_read(request):
     icons.append([])
     if icon_urls:
         for i in range(len(icon_urls)):
-            icon = json.loads(requests.get('http://127.0.0.1:8000/db/icon/'+icon_urls[i]).text)
+            icon = json.loads(requests.get(icon_urls[i]).text)
+
             match icon.get('iconKind'):
                 case '0':
                     icons[0].append(i)
@@ -192,6 +186,8 @@ def normal_user_review_read(request):
                 case '3':
                     icons[3].append(i)
 
+    print('testetsetsetsetestsetsetse', icons)
+
     icon = []
     if icons == [[],[],[],[]]:
         icons = None
@@ -201,6 +197,8 @@ def normal_user_review_read(request):
         for i in range(4):
             if len(icons[i]) > 0:
                 icon.append(i)
+
+    print('testetsetsetsetestsetsetse', icon)
 
     # 해당 리뷰에 대해 추천한 사람 중 사용자가 있는지 확인
     recommended = None
@@ -312,7 +310,6 @@ def normal_user_review_update(request):
                 img_name = handle_uploaded_file(image, str(review_id), 'reviewImage', image.name)
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
-            print(review_id)
         return Response(review_id)
 
 
@@ -347,7 +344,6 @@ def normal_user_room_update(request):
             exists_image_names = []
             for image in exists_image:
                 img = json.loads(requests.get(image).text)
-                print('imimimewrwer', img)
                 exists_image_names.append(img.get('image')[2:])
                 if img.get('image')[2:] not in updated_images:
                     requests.delete(image)

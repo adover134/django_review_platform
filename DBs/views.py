@@ -209,6 +209,13 @@ class ReviewViewSets(ModelViewSet):
         # 검색된 값을 반환한다.
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = ReviewSerializerLink(instance, context={'request': request})
+        return Response(serializer.data)
+
+
     def update(self, request, *args, **kwargs):
         # 리뷰 번호와 일치하는 리뷰 데이터를 가져온다.
         instance = self.get_object()
