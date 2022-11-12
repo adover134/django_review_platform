@@ -15,8 +15,16 @@
                     <span style="display:block; height:100%; line-height:1;">공유 시설</span>
                 </div>
                 <div id="common_info_selects">
-                    <label><input type="checkbox" name="color" value="blue">주차장</label>
-                    <label><input type="checkbox" name="color" value="red">엘레베이터</label>
+                    <label>
+                        <input type="checkbox" name="commonInfo" value="1"
+                                {% for i in commonInfo %}
+                                {% if i|first == '1' %}checked{% endif %}{% endfor %}>주차장
+                    </label>
+                    <label>
+                        <input type="checkbox" name="commonInfo" value="2"
+                                {% for i in commonInfo %}
+                                {% if i|first == '2' %}checked{% endif %}{% endfor %}>엘레베이터
+                    </label>
                 </div>
             </div>
             <div id="built_year_form">
@@ -36,17 +44,37 @@
                     학교까지 거리(100m)
                 </div><br>
                 <div class="sliders_control">
-                    <input name="distance_from" id="fromSlider1" type="range" value="2" min="2" max="20" step="2"/>
-                    <input name="distance_to" id="toSlider1" type="range" value="20" min="2" max="20" step="2"/>
+                    <input name="distance_from" id="fromSlider1" type="range" min="2" max="20" step="2"
+                            {% if distance_from %}
+                                value="{{ distance_from }}"
+                            {% else %}
+                                value="2"
+                            {% endif %}/>
+                    <input name="distance_to" id="toSlider1" type="range" min="2" max="20" step="2"
+                            {% if distance_to %}
+                                value="{{ distance_to }}"
+                            {% else %}
+                                value="20"
+                            {% endif %}/>
                 </div>
                 <div class="form_control">
                     <div class="form_control_container">
                         <div class="form_control_container__time" style="height:50%;">최소 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="fromInput1" value="2" min="2" max="20"/>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="fromInput1" min="2" max="20"
+                            {% if distance_from %}
+                                value="{{ distance_from }}"
+                            {% else %}
+                                value="2"
+                            {% endif %}/>
                     </div>
                     <div class="form_control_container">
                         <div class="form_control_container__time" style="height:50%;">최대 거리</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="toInput1" value="20" min="2" max="20"/>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="toInput1" min="2" max="20"
+                            {% if distance_to %}
+                                value="{{ distance_to }}"
+                            {% else %}
+                                value="20"
+                            {% endif %}/>
                     </div>
                 </div>
             </div>
@@ -56,24 +84,44 @@
                     반경 100미터 이내 편의점 수
                 </div><br>
                 <div class="sliders_control">
-                    <input name="convNum_from" id="fromSlider2" type="range" value="1" min="1" max="10" step="1"/>
-                    <input name="convNum_to" id="toSlider2" type="range" value="10" min="1" max="10" step="1"/>
+                    <input name="convNum_from" id="fromSlider2" type="range" min="1" max="10" step="1"
+                            {% if convNum_from %}
+                                value="{{ convNum_from }}"
+                            {% else %}
+                                value="1"
+                            {% endif %}/>
+                    <input name="convNum_to" id="toSlider2" type="range" min="1" max="10" step="1"
+                            {% if convNum_to %}
+                                value="{{ convNum_to }}"
+                            {% else %}
+                                value="10"
+                            {% endif %}/>
                 </div>
                 <div class="form_control">
                     <div class="form_control_container">
                         <div class="form_control_container__time" style="height:50%;">최소 개수</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="fromInput2" value="1" min="1" max="10"/>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="fromInput2" min="1" max="10"
+                                {% if convNum_from %}
+                                    value="{{ convNum_from }}"
+                                {% else %}
+                                    value="1"
+                                {% endif %}/>
                     </div>
                     <div class="form_control_container">
                         <div class="form_control_container__time" style="height:50%;">최대 개수</div>
-                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="toInput2" value="10" min="1" max="10"/>
+                        <input class="form_control_container__time__input" style="height:50%;" readonly type="number" id="toInput2" value="10" min="1" max="10"
+                                {% if convNum_to %}
+                                    value="{{ convNum_to }}"
+                                {% else %}
+                                    value="10"
+                                {% endif %}/>
                     </div>
                 </div>
             </div><br>
             <div id="text_form">
                 <div id="search_address">검색할 주소</div>
                 <div id="address_filter">
-                    <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address">
+                    <input class="form-control" type="search" placeholder="주소 입력" aria-label="Search" id="address2" name="address" value="{{ address }}">
                 </div>
             </div>
             <div id="submit-div">
