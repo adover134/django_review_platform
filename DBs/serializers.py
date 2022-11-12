@@ -77,9 +77,10 @@ class ReviewSerializerLink(serializers.ModelSerializer):
     uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
-    additionalImage = serializers.StringRelatedField(
+    additionalImage = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
+        view_name='reviewimage-detail'
     )
     includedIcon = serializers.HyperlinkedRelatedField(
         many=True,
