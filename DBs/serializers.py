@@ -123,56 +123,6 @@ class ReviewSerializerLink(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReviewSerializerString(serializers.ModelSerializer):
-
-    reviewWriter = serializers.SerializerMethodField()
-    totalReview = serializers.SerializerMethodField()
-    representiveImage = serializers.SerializerMethodField()
-    uEmail = serializers.EmailField(source='uId.email', read_only=True)
-    rAddress = serializers.CharField(source='rId.address', read_only=True)
-
-    additionalImage = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
-    includedIcon = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
-    recommendedOn = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
-    reportedOn = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
-
-
-    # 리뷰 작성자의 이름을 합쳐서 출력
-    def get_reviewWriter(self, obj):
-        return f'{obj.uId.last_name} {obj.uId.first_name}'
-
-
-    def get_representiveImage(self, obj):
-        a = [image.image for image in obj.additionalImage.all()]
-        if len(a) > 0:
-            return a[0]
-        else:
-            return None
-
-
-    def get_totalReview(self, obj):
-        sentence = ''
-        for s in obj.reviewSentence:
-            sentence = sentence+s
-        return sentence
-
-    class Meta:
-        model = Review
-        fields = '__all__'
-
-
 class RoomSerializer(serializers.ModelSerializer):
 
     commonInfo = serializers.ListField(

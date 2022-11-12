@@ -24,7 +24,6 @@ def main(request):
         'latest_reviews': latest_reviews,
         'popular_reviews': popular_reviews,
     }
-    print('wjrklwejflksdjfiweorjfklsdfs', latest_reviews)
     return render(request, 'normal_user_main.html', data)
 
 
@@ -304,13 +303,16 @@ def normal_user_review_update(request):
                 requests.put('http://127.0.0.1:8000/db/reviewImage/' + str(img.get('id')) + '/',
                              data={'reviewId': review_id, 'image': img_name})
         return Response(review_id)
-
+    else:
+        return status.HTTP_403_FORBIDDEN
 
 # 리뷰 수정 페이지 GET
 @login_required(login_url='/loginPage/')
 def normal_user_room_change(request):
     roomId = request.GET.get('roomId')
     room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(roomId)).text) #해당 원룸 데이터
+    if not room.get('id'):
+        return redirect('/normal_user_room_search/')
     images = []
     for img in room.get('roomImage'):
         images.append(json.loads(requests.get(img).text).get('image'))
@@ -318,12 +320,10 @@ def normal_user_room_change(request):
         'images': images,
         'room': room
     }
-    if not room.get('id'):
-        return redirect('/normal_user_room_search/')
     return render(request, 'normal_user_room_write.html', context)
 
 
-# 리뷰 수정 등록 PUT
+# 원룸 수정 POST
 @api_view(['POST'])
 def normal_user_room_update(request):
     if request.method == 'POST':
@@ -441,7 +441,6 @@ def normal_user_room_read(request):
 
     reviews = get_reviews_by_roomId(roomId, sorted)
 
-    #paginator
     paginator = Paginator(reviews, 5)
     page = request.GET.get('page')
     if page:
@@ -510,25 +509,6 @@ def room_search(request):
     context['rooms'] = paged_room
 
     return render(request, 'normal_user_room_search.html', context)
-# 리뷰 열람 페이지
-
-    # 해당 리뷰 정보를 받는다.
-    # 해당 리뷰의 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
-    # 리뷰 정보와 리뷰 리스트를 context로 반환
-
-# 관련 리뷰 반환
-    # 입력 받은 원룸 주소를 기준으로 리뷰들을 구한다.
-    # 구한 리뷰들을 반환한다.
-
-
-# 원룸 열람 페이지
-    # 해당 원룸 정보를 받는다.
-    # 해당 원룸의 주소를 바탕으로 관련 리뷰들을 받는다. (정렬 조건도 보내서)
-    # 원룸 정보와 리뷰 리스트를 context로 반환
-
-
-def introduction(request):
-    return render(request, 'introduction.html')
 
 
 @api_view(['POST'])

@@ -11,7 +11,7 @@ import datetime
 import requests
 import json
 import copy
-from DBs.serializers import UserSerializer, ReviewSerializer, ReviewSerializerString, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, ReviewImageSerializer, RoomImageSerializer, ReviewSerializerLink
+from DBs.serializers import UserSerializer, ReviewSerializer, RoomSerializer, IconSerializer, RecommendSerializer, ReportSerializer, ReviewImageSerializer, RoomImageSerializer, ReviewSerializerLink
 from DBs.models import User, Review, Room, Icon, Recommend, Report, ReviewImage, RoomImage
 from DBs.services import sentence_split, review_to_icons
 
