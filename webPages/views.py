@@ -666,6 +666,8 @@ def normal_user_room_write(request):
             return status.HTTP_403_FORBIDDEN
 
 
+def introduction(request):
+    return render(request, 'introduction.html')
 
 
 # 회원 탈퇴

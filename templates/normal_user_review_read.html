@@ -72,7 +72,7 @@
                     marker.setMap(map);
 
                     var room_info = ''
-                    if ("{{ review.roomName }}" !== 'None')
+                    if ("{{ review.roomName }}" !== 'None' && "{{ review.roomName }}" !== '')
                         room_info = "{{ review.roomName }}"
                     else
                         room_info = "{{ review.address }}"
