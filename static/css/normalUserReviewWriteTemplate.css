@@ -32,11 +32,13 @@ img {
 #image-preview {
   position: relative;
   display: inline-block;
-  width: 49%;
-  height: 100%;
+  width: 80%;
+  height: 90%;
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
+  border: 2px solid #B3B3B3;
+  margin-bottom: 1%;
 }
 
 #image-preview::-webkit-scrollbar {

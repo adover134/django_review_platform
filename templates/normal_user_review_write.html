@@ -74,7 +74,6 @@
                 </div>
                 <div style="padding-top: 3.038%; height:20%; width:100%;">
                     <div id="image-preview"></div> {# 업로드한 이미지 띄우는 부분 #}
-                    <div id="current-image-preview"></div> {# 기존 이미지 띄우는 부분 #}
                     <div style="display:flex; justify-content: right; width:100%;">
                         <input style="display:none;" type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
                         <div style="display:inline-block; width:50%;" onclick="document.getElementById('images').click()"><span style="border:1px solid black; padding:1%;">사진 추가</span><span id="image_count" style="width:30%; float:right;">사진 0개</span></div>
@@ -147,7 +146,7 @@
           const divs = document.createElement('div');
           const img = document.createElement('img');
           divs.style.display='inline-block';
-          divs.style.width='30%';
+          divs.style.width='15%';
           divs.style.height='100%';
           divs.setAttribute('onClick', 'removeImage(this)');
           img.setAttribute('src', e.target.result);
@@ -203,7 +202,7 @@
                     divs2 = document.createElement('div');
                     img2 = document.createElement('img');
                     divs2.style.display='inline-block';
-                    divs2.style.width='30%';
+                    divs2.style.width='15%';
                     divs2.style.height='100%';
                     divs2.setAttribute('onClick', 'removeImage(this)');
                     img2.setAttribute('src', '{% static "images/reviewImage/" %}{{image}}');
