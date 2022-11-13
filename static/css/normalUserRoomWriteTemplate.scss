@@ -1,3 +1,4 @@
+@import "color.scss";
 #tr1 {
   outline: solid 2px #B3B3B3;
   height: 10%;
@@ -8,14 +9,18 @@
 #tr2{
     display:inline-block;
     float:left;
-    height: 100%;
-    width: 60%;
+    height: 79%;
+    width: 58%;
+    border: 2px solid $gray-600;
+    border-collapse:collapse;
+    margin:1%;
 }
 #tr3{
     display:inline-block;
     float:left;
-    height: 89.39%;
+    height: 100%;
     width: 40%;
+    padding-right:1%;
 }
 img{
     width:100%;
@@ -27,10 +32,12 @@ img{
 #image-preview{
     position:relative;
     display:inline-block;
-    width: 49%;
-    height: 100%;
-    overflow-x:scroll;
-    overflow-y:hidden;
+    width: 100%;
+    height: 80%;
+    padding: 2%;
+    border: 2px solid $gray-600;
+    overflow-x:hidden;
+    overflow-y:scroll;
     white-space:nowrap;
 }
 #image-preview::-webkit-scrollbar{
