@@ -43,5 +43,6 @@ urlpatterns = [
     path('normal_user_review_change/', views.normal_user_review_change, name='normalUserReviewChange'),
     path('normal_user_review_update/', views.normal_user_review_update, name='normalUserReviewUpdate'),
     path('normal_user_review_delete/', views.normal_user_review_delete, name='normalUserReviewDelete'),
+    path('introduction/', views.introduction, name='introduction'),
     path('user_inactivated/', views.user_inactivated),
 ]
