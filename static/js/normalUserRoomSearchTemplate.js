@@ -3,12 +3,25 @@ current_URL.delete('page');
 
 var c = document.createElement("option");
 var d = document.createElement("option");
-c.innerText='최소 연도';
-d.innerText='최대 연도';
+
+var bf = new URLSearchParams(window.location.search).get('builtFrom');
+var bt = new URLSearchParams(window.location.search).get('builtTo');
+if (bf){
+    c.innerText=bf;
+    c.value=bf;
+}
+else{
+    c.innerText='최소 연도';
+}
+if (bt){
+    d.innerText=bt;
+    d.value=bt;
+}
+else{
+    d.innerText='최대 연도';
+}
 c.selected=true;
 d.selected=true;
-c.disabled=true;
-d.disabled=true;
 c.style.display='none';
 d.style.display='none';
 document.getElementById('builtFrom').appendChild(c);

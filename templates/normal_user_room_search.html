@@ -9,6 +9,7 @@
                 <span style="display:block; line-height:1; height:100%; font-weight:bolder;">원룸 검색 필터 </span>
             </div>
             <script>
+                var page_num=window.location.href.indexOf('page');
             </script>
             <div id="common_info_form">
                 <div id="common_info_filter" style="width:100%; height:21.429%;">
@@ -125,7 +126,7 @@
                 </div>
             </div>
             <div id="submit-div">
-                <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">적용</a>
+                <a href="javascript:(0)" onclick="document.getElementById('search_filter').submit();" id="submit">검색</a>
             </div><br><br>
         </form>
     </div>
@@ -138,7 +139,7 @@
     <div id="rooms_div">
         <div id="rooms">
             {% for room in rooms %}
-                <div class="room" onclick="window.location.replace('{{roomRead}}?roomId={{room.id}}')"
+                <div class="room" onclick="window.location.assign('{{roomRead}}?roomId={{room.id}}')"
                      style="cursor: pointer">
                     <div class="image">
                         {% if room.roomImage|length > 0 %}
@@ -157,6 +158,50 @@
                     </div>
                 </div>
             {% endfor %}
+            {% if rooms.has_previous %}
+                <div style="display:inline-block; width:15%; height:6%;">
+                    <div style="display:flex; text-align: center; width:100%; height:100%;">
+                        <a id="prev_page">이전으로</a>
+                        <script>
+                            if(page_num === -1) {
+                                if (window.location.pathname === '/normal_user_room_search/')
+                                    document.getElementById('prev_page').href = window.location.href + "?page={{rooms.previous_page_number}}";
+                                else
+                                    document.getElementById('prev_page').href = window.location.href + "&page={{paged_review.previous_page_number}}";
+                            }
+                            else
+                                document.getElementById('prev_page').href=window.location.href.slice(0, page_num)+"page={{rooms.previous_page_number}}";
+                        </script>
+                    </div>
+                </div>
+            {% endif %}
+            {% if rooms.has_next %}
+            <div style="display:inline-block; width:15%; height:6%;">
+                <div style="display:flex; text-align: center; width:100%; height:100%;">
+                    <a id="next_page">다음으로</a>
+                    <script>
+                        if(page_num === -1) {
+                            if (window.location.pathname === '/normal_user_room_search/')
+                            {
+                                if (location.search === '')
+                                    document.getElementById('next_page').href = window.location.href + "?page={{rooms.next_page_number}}";
+                                else if (window.location.href[-1] === '?')
+                                    document.getElementById('next_page').href = window.location.href + "page={{rooms.next_page_number}}";
+                                else
+                                    document.getElementById('next_page').href = window.location.href + "?page={{rooms.next_page_number}}";
+                            }
+                            else if (window.location.href.indexOf('sorted') === -1)
+                                document.getElementById('next_page').href = window.location.href + "?page={{rooms.next_page_number}}";
+                            else
+                                document.getElementById('next_page').href = window.location.href + "&page={{rooms.next_page_number}}";
+                        }
+                        else
+                            document.getElementById('next_page').href=window.location.href.slice(0, page_num)+"page={{rooms.next_page_number}}";
+                    </script>
+                </div>
+            </div>
+            {% endif %}
+            <br><br>
         </div>
     </div>
     <script src="{% static 'js/normalUserRoomSearchTemplate.js' %}"></script>

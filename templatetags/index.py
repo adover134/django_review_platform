@@ -4,7 +4,7 @@ import os
 import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from webPages.config import KAKAO_JAVA_KEY
+from webPages.config import SOCIAL_AUTH_KAKAO_KEY, KAKAO_JAVA_KEY
 
 
 register = template.Library()
@@ -36,6 +36,11 @@ def java_key(value):
 
 
 @register.filter
+def loginkey(value):
+    return SOCIAL_AUTH_KAKAO_KEY
+
+
+@register.filter
 def page(paginator, value):
     return paginator.get_page(value)
 
@@ -47,7 +52,7 @@ def check_active(user):
     elif user.uActive == 2:
         state = str(user.penaltyDate+relativedelta(days=30))+'까지 신고 불가'
     if user.uActive == 3:
-        state = str(user.penaltyDate+relativedelta(days=30))+'까지 리뷰 작성/수정/삭제 및 신고 불가'
+        state = str(user.penaltyDate+relativedelta(days=30))+'까지 리뷰 수정/삭제 및 신고 불가'
     else:
         state = '모든 기능 사용 가능'
     return state
@@ -60,10 +65,21 @@ def sets(lists):
 
 @register.filter
 def defaultImage(image, s):
-    print('hwelirhwelkfjsdklfsjdlkfse\n\n\nweklrjlkdsf', image)
     img = json.loads(requests.get(image).text)
-    print('waiterjweklrjselkfsdnlkrnwe', os.path.join('static/images/'+s+'Image/', img.get('image')))
     if image is not None and os.path.isfile(os.path.join('static/images/'+s+'Image/', img.get('image'))):
         return img.get('image')
     else:
         return 'no-photo.png'
+
+
+@register.filter
+def check_url(url):
+    if url.find('change') > -1 or url.find('write') > -1:
+        return None
+    else:
+        return url
+
+
+@register.filter
+def ranges(integer):
+    return range(integer)

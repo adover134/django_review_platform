@@ -19,8 +19,8 @@ from webPages import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('social_django.urls', namespace='social')),
     re_path(r'^$', views.main, name='main'),
+    path('', include('social_django.urls', namespace='social')),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('loginPage/', views.loginPage, name='loginPage'),

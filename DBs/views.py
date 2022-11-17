@@ -35,7 +35,8 @@ class ReviewViewSets(ModelViewSet):
         data1['uId'] = int(data.get('uId'))
         data1['rent'] = int(data.get('rent'))
         data1['deposit'] = int(data.get('deposit'))
-        data1['monthlyRent'] = int(data.get('monthlyRent'))
+        if data1['rent'] == 1:
+            data1['monthlyRent'] = int(data.get('monthlyRent'))
         data1['roomSize'] = float(data.get('roomSize'))
         data1['soundproof'] = int(data.get('proof'))
         data1['lighting'] = int(data.get('sunshine'))
@@ -206,6 +207,7 @@ class ReviewViewSets(ModelViewSet):
                         searched = searched.annotate(recommend_count=Count('recommendedOn')).order_by('-recommend_count')
                     case '3': # 정확도순(아이콘 많은 순)
                         searched = searched.annotate(includedIcon_count=Count('includedIcon')).order_by('-includedIcon_count')
+        print(searched)
         # 검색된 값을 반환한다.
         return Response(ReviewSerializer(searched, many=True, context={'request': request}).data)
 
@@ -220,9 +222,10 @@ class ReviewViewSets(ModelViewSet):
         # 리뷰 번호와 일치하는 리뷰 데이터를 가져온다.
         instance = self.get_object()
         # 기존 데이터를 직렬화한다.
-        data = self.get_serializer(instance).data
+        data = ReviewSerializerLink(instance, context={'request': request}).data
+        print(data.get('includedIcon'))
         for i in data.get('includedIcon'):
-            requests.delete('http://127.0.0.1:8000/db/icon/'+str(i)+'/')
+            requests.delete(i)
         # 수정할 리뷰의 PK 를 획득한다.
         review_id = data['id']
         update_data = copy.deepcopy(request.data)
@@ -270,16 +273,16 @@ class RoomViewSets(ModelViewSet):
         data = dict(copy.deepcopy(request.data))
         data1 = {}
         if data.get('address'):
-            if str(type(data.get('address'))) == "<class 'list'>":
+            if isinstance(data.get('address'), list):
                 data1['address'] = data.get('address')[0]
             else:
                 data1['address'] = data.get('address')
         elif data.get('room_address'):
-            if str(type(data.get('room_address'))) == "<class 'list'>":
+            if isinstance(data.get('room_address'), list):
                 data1['address'] = data.get('room_address')[0]
             else:
                 data1['address'] = data.get('address')
-        if str(type(data.get('postcode'))) == "<class 'list'>" and data.get('postcode') != ['']:
+        if isinstance(data.get('postcode'), list) and data.get('postcode') != ['']:
             data1['postcode'] = int(data.get('postcode')[0])
         else:
             data1['postcode'] = int(data.get('postcode'))
@@ -289,32 +292,32 @@ class RoomViewSets(ModelViewSet):
                 if data.get('commonInfo')[index] == 'true':
                     data1['commonInfo'].append(index - 1)
         if data.get('name'):
-            if str(type(data.get('name'))) == "<class 'list'>":
+            if isinstance(data.get('name'), list):
                 data1['name'] = data.get('name')[0]
             else:
                 data1['name'] = data.get('name')
         if data.get('builtYear'):
-            if str(type(data.get('builtYear'))) == "<class 'list'>":
+            if isinstance(data.get('builtYear'), list):
                 data1['builtYear'] = data.get('builtYear')[0]
             else:
                 data1['builtYear'] = data.get('builtYear')
         if data.get('distance'):
-            if str(type(data.get('distance'))) == "<class 'list'>" and data.get('distance') != ['']:
+            if isinstance(data.get('distance'), list) and data.get('distance') != ['']:
                 data1['distance'] = int(data.get('distance')[0])
             else:
                 data1['distance'] = int(data.get('distance'))
         if data.get('convNum'):
-            if str(type(data.get('convNum'))) == "<class 'list'>" and data.get('convNum') != ['']:
+            if isinstance(data.get('convNum'), list) and data.get('convNum') != ['']:
                 data1['convNum'] = int(data.get('convNum')[0])
             else:
                 data1['convNum'] = int(data.get('convNum'))
         if data.get('ownerPhone'):
-            if str(type(data.get('ownerPhone'))) == "<class 'list'>":
+            if isinstance(data.get('ownerPhone'), list):
                 data1['ownerPhone'] = data.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data.get('ownerPhone')
         if data.get('buildingFloorNum') and data.get('buildingFloorNum') != ['']:
-            if str(type(data.get('buildingFloorNum'))) == "<class 'list'>":
+            if isinstance(data.get('buildingFloorNum'), list):
                 data1['buildingFloorNum'] = data.get('buildingFloorNum')[0]
             else:
                 data1['buildingFloorNum'] = data.get('buildingFloorNum')
@@ -333,6 +336,13 @@ class RoomViewSets(ModelViewSet):
             return super().list(self, request, args, kwargs)
         # 검색 조건으로 기본 쿼리를 만든다.
         query = Q()  # 메인 쿼리로, 최종 결과를 낼 때 사용한다.
+        if data1.get('full_address'):
+            query_full_address = Q()  # 주소에 대한 쿼리이다.
+            if isinstance(data1.get('full_address'), list):
+                query_full_address.add(Q(address=data1.get('full_address')[0]), Q.OR)
+            else:
+                query_full_address.add(Q(address=data1.get('full_address')), Q.OR)
+            query.add(query_full_address, Q.AND)
         # 주소에 대한 검색을 수행하는 쿼리를 만든다.
         if data1.get('address'):
             query_address = Q()  # 주소에 대한 쿼리이다.
@@ -399,16 +409,16 @@ class RoomViewSets(ModelViewSet):
         # data1에서 입력받은 값들만 변환한다.
 
         if data2.get('address'):
-            if str(type(data2.get('address'))) == "<class 'list'>":
+            if isinstance(data2.get('address'), list):
                 data1['address'] = data2.get('address')[0]
             else:
                 data1['address'] = data2.get('address')
         elif data2.get('room_address'):
-            if str(type(data2.get('room_address'))) == "<class 'list'>":
+            if isinstance(data2.get('room_address'), list):
                 data1['address'] = data2.get('room_address')[0]
             else:
                 data1['address'] = data2.get('address')
-        if str(type(data2.get('postcode'))) == "<class 'list'>":
+        if isinstance(data2.get('postcode'), list):
             data1['postcode'] = int(data2.get('postcode')[0])
         else:
             data1['postcode'] = int(data2.get('postcode'))
@@ -418,26 +428,26 @@ class RoomViewSets(ModelViewSet):
                 if data2.get('commonInfo')[index] == 'true':
                     data1['commonInfo'].append(index - 1)
         if data2.get('name'):
-            if str(type(data2.get('name'))) == "<class 'list'>":
+            if isinstance(data2.get('name'), list):
                 data1['name'] = data2.get('name')[0]
             else:
                 data1['name'] = data2.get('name')
         if data2.get('builtYear' and data2.get('builtYear') != ['']):
-            if str(type(data2.get('builtYear'))) == "<class 'list'>":
+            if isinstance(data2.get('builtYear'), list):
                 data1['builtYear'] = data2.get('builtYear')[0]
             else:
                 data1['builtYear'] = data2.get('builtYear')
         if data2.get('ownerPhone'):
-            if str(type(data2.get('ownerPhone'))) == "<class 'list'>":
+            if isinstance(data2.get('ownerPhone'), list):
                 data1['ownerPhone'] = data2.get('ownerPhone')[0]
             else:
                 data1['ownerPhone'] = data2.get('ownerPhone')
-        if str(type(data2.get('distance'))) == "<class 'list'>" and data2.get('distance') != ['']:
+        if isinstance(data2.get('distance'), list) and data2.get('distance') != ['']:
             data1['distance'] = int(data2.get('distance')[0])
         else:
             data1['distance'] = int(data2.get('distance'))
         if data2.get('buildingFloorNum') and data2.get('buildingFloorNum') != ['']:
-            if str(type(data2.get('buildingFloorNum'))) == "<class 'list'>":
+            if isinstance(data2.get('buildingFloorNum'), list):
                 data1['buildingFloorNum'] = data2.get('buildingFloorNum')[0]
             else:
                 data1['buildingFloorNum'] = data2.get('buildingFloorNum')
@@ -461,7 +471,7 @@ class IconViewSets(ModelViewSet):
         # 입력값을 data로 저장한다.
         data = copy.deepcopy(request.data)
         data1 = {}
-        if str(type(data.get('reviewId'))) == "<class 'str'>":
+        if isinstance(data.get('reviewId'), str):
             data1['reviewId'] = data.get('reviewId')
         else:
             data1['reviewId'] = data.get('reviewId')[0]
