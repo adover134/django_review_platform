@@ -9,19 +9,19 @@
 <div class="col-1"></div>
 <div class="col-1">
     <div id="introduce" class="drpd">
-        <div onclick="window.location.replace('{{introduction}}')">
+        <div onclick="window.location.assign('{{introduction}}')">
             소개
         </div>
     </div>
 </div>
 <div class="col-1" style="position:relative;">
     <div id="room_main" class="drpd">
-        <div onclick="window.location.replace('{{normalUserRoomSearch}}')">
+        <div onclick="window.location.assign('{{normalUserRoomSearch}}')">
             원룸
         </div>
         <div id="room_sub" class="drpd-content">
-            <div id="room_search" class="drpd-sub" onclick="window.location.replace('{{normalUserRoomSearch}}')">원룸 검색</div>
-            <div id="room_add" class="drpd-sub" onclick="window.location.replace('{{ normalUserRoomWritePage }}')">원룸 등록</div>
+            <div id="room_search" class="drpd-sub" onclick="window.location.assign('{{normalUserRoomSearch}}')">원룸 검색</div>
+            <div id="room_add" class="drpd-sub" onclick="window.location.assign('{{ normalUserRoomWritePage }}')">원룸 등록</div>
         </div>
     </div>
 </div>
@@ -35,12 +35,12 @@
 </script>
 <div class="col-1" style="position:relative;">
     <div id="review_main" class="drpd">
-        <div onclick="window.location.replace('{{normalUserReviewSearch}}')">
+        <div onclick="window.location.assign('{{normalUserReviewSearch}}')">
             리뷰
         </div>
         <div id="review_sub" class="drpd-content">
-            <div id="review_search" class="drpd-sub" onclick="window.location.replace('{{normalUserReviewSearch}}')"><span>리뷰 검색</span></div>
-            <div id="review_write" class="drpd-sub" onclick="window.location.replace('{{normalUserReviewWrite}}')"><span>리뷰 작성</span></div>
+            <div id="review_search" class="drpd-sub" onclick="window.location.assign('{{normalUserReviewSearch}}')"><span>리뷰 검색</span></div>
+            <div id="review_write" class="drpd-sub" onclick="window.location.assign('{{normalUserReviewWrite}}')"><span>리뷰 작성</span></div>
         </div>
     </div>
 </div>
@@ -78,7 +78,7 @@
 {% else %}
     <div class="col-1" style="position:relative;">
         <div id="login" class="drpd">
-            <div onclick="window.location.replace('{{ loginPage }}')">
+            <div onclick="window.location.assign('{{ loginPage }}')">
                 login
             </div>
         </div>

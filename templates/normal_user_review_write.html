@@ -87,6 +87,7 @@
     <script>
         var new_images = new DataTransfer();
         var image_names = [];
+        var have_address = false;
 
         // 이미지 업로드
         function removeImage(t){
@@ -160,7 +161,7 @@
         realUpload.addEventListener('change', getImageFiles);
         {#  리뷰 작성/수정 구분  #}
         function reviewChangePage(){
-            if(window.location.pathname==='/normal_user_review_change/'){
+            {% if request.path == '/normal_user_review_change/' %}
                 document.getElementById('id_address').value= "{{ room.address }}"
                 document.getElementById('id_postcode').value= "{{ room.postcode }}"
                 document.getElementById('id_title').value= "{{ review.reviewTitle }}"
@@ -168,7 +169,7 @@
                 {% for img in review.additionalImage %}
                     images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
                 {% endfor %}
-                {% if review.rent %}
+                {% if review.rent is 0 or review.rent is 1 %}
                     document.getElementsByName('checking')[{{review.rent}}].checked = true;
                 {% endif %}
                 {% if review.deposit %}
@@ -183,14 +184,14 @@
                 {% if review.humidity %}
                     document.getElementById('humidity').value= {{ review.humidity }}
                 {% endif %}
-                {% if review.proof %}
-                    document.getElementById('proof').value= {{ review.proof }}
+                {% if review.soundproof %}
+                    document.getElementById('proof').value= {{ review.soundproof }}
                 {% endif %}
-                {% if review.sunshine %}
-                    document.getElementById('sunshine').value= {{ review.sunshine }}
+                {% if review.lighting %}
+                    document.getElementById('sunshine').value= {{ review.lighting }}
                 {% endif %}
-                {% if review.clean %}
-                    document.getElementById('clean').value= {{ review.clean }}
+                {% if review.cleanliness %}
+                    document.getElementById('clean').value= {{ review.cleanliness }}
                 {% endif %}
 
                 {% for sentence in review.reviewSentence %}
@@ -210,9 +211,15 @@
                     document.querySelector('#image-preview').appendChild(divs2);
                 {% endfor %}
                 document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
-                document.getElementById('review_sentence').innerText = text
-                document.getElementById('review_submit').value = '리뷰 수정'
-            }
+                document.getElementById('review_sentence').innerText = text;
+                document.getElementById('review_submit').value = '리뷰 수정';
+            {% else %}
+                {% if address %}
+                    document.getElementById('id_address').value= "{{ address }}";
+                    document.getElementById('id_postcode').value= "{{ postcode }}";
+                    have_address = true;
+                {% endif %}
+            {% endif %}
         }
     </script>
     <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">

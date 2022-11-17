@@ -1,5 +1,14 @@
 {% extends 'normal_user_review_list.html' %}
 {% load index static %}
+{% block left_side_bar %}
+    <div id="backward">
+        {% if request.META.HTTP_REFERER|escape|check_url %}
+            <a href="{{request.META.HTTP_REFERER|escape}}">이전 페이지로</a>
+        {% else %}
+            <a href="javascript:history.go(-2)">이전 페이지로</a>
+        {% endif %}
+    </div>
+{% endblock %}
 {% block info %}
 {% url 'normalUserReviewDelete' as normalUserReviewDelete %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
@@ -144,12 +153,13 @@
         </div>
         <div style="height:100%; width:4.15%; border-right:1px solid #B3B3B3;">
             <div id="review_update" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
-                <a href="/normal_user_review_change/?id={{review.id}}">수정</a>
+                <a href={% if modifiable %}"/normal_user_review_change/?id={{review.id}}"{% else %}"#"{% endif %}>수정</a>
             </div>
         </div>
         <script>
             const csrftoken = Cookies.get('csrftoken');
             function review_delete_func(){
+                {% if modifiable %}
                 $.ajax({
                     type: 'POST',
                     url: "/normal_user_review_delete/",
@@ -161,13 +171,14 @@
                     },
                     success: function (response) {
                         // on successful creating object
-                        window.location.replace('/normal_user_review_search/');
+                        window.location.assign('/normal_user_review_search/');
                     },
                     error: function (response) {
                         // alert the error if any error occured
                         alert('error');
                     }
                 })
+                {% endif %}
             }
         </script>
         <div style="height:100%; width:4.15%;">
@@ -241,7 +252,11 @@
                 </div>
             </div>
             <div id="rep_icon">
-                <a onclick="toggleReport()" href="javascript:void(0);">
+                {% if reportable %}
+                    <a onclick="toggleReport()" href="javascript:void(0);">
+                {% else %}
+                    <a href="#">
+                {% endif %}
                     {% if reported %}
                         <img id="rep" src="{% static 'images/iconImage/' %}reported.png">
                     {% else %}

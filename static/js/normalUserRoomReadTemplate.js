@@ -19,6 +19,8 @@ window.onresize = function(){
     });
 }
 window.onload = function(){
+    var referrer = document.referrer;
+    console.log(referrer);
     let k = document.getElementsByClassName('review_preview');
     for (let i=0;i<k.length;i++){
         let o = k[i];
