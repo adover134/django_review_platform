@@ -1,34 +1,220 @@
 {% extends 'normal_user_base.html' %}
-{% load static %}
-{% url 'user-detail' pk=u_id as singleUser %}
+{% load index static %}
 
-{%block main_contents %}
-<link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
-<div id="icons" style="position:relative; display:none; float:left; height:500px; width:200px; border:1px solid green;">
+{% block main_contents %}
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <div style="width: 100%; height: 100%;">
+        <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div id="tr1">
+                <div style="background-color: #A23355 ; color: white; height:100%; width: 10.61% ;
+                        text-align: center; margin: 0 auto" id="review_address">주소</div>
+                <input id="id_address" style="float: right; border-color: #A23355; height:100%;
+                        flex:1" name="address" required>
+                <div style="background-color: #A23355 ; color: white; height:100%; width: 10.61% ;
+                        text-align: center; margin: 0 auto" id="review_postcode">우편번호</div>
+                <input id="id_postcode" style="float: right; border-color: #A23355; width:20%; height:100%;" name="postcode" required>
+            </div>
+            <div id="tr2">
+                <div style="height: 9.09%; width: 100%; margin-bottom: 1.302%;">
+                    <input id="id_title" style="height:100%;width: 100%; text-align: left; border-color: #B3B3B3;" name="title"
+                           placeholder="제목을 입력하세요">
+                </div>
+                <div style="height:22%; width:100%;margin-bottom: 1%;">
+                    <div style = "height:100%; width:30%;display:inline-block; border-right:2px solid #B3B3B3; float:left;">
+                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value="0" oninput="toggleChk()">전세</label>
+                        <label style ="margin-left: 2.5%;"><input type="radio" name = "checking" class="chk_info" value="1" checked oninput="toggleChk()">월세</label>
+                        <br><label style="float:left;width:100%;;">보증금 <input id="id_deposit" style = "margin-left: 1.7%;"class ="deposit" type="number" name="deposit" value="" required> 만원</label>
+                        <label style="display:block;" class="o">월세 <input id="monthly" style ="margin-left:5%;"class ="deposit" type="number" name="monthly" value="" required> 만원</label>
+                        <br><label class="o">넓이 <input id="id_roomSize" style ="margin-left:5%; width:40%; height:20px;" type="number" step="any" name="area" value="" required>
+                                <select style ="height:24px;" name = "room_area" required>
+                                    <option value="meter">㎡</option>
+                                    <option value="room_area"> 평 </option>
+                                </select>
+                            </label>
+                    </div>
+                    <div style="height:100%;width:70%; display: inline-block;">
+                        <label class = "label">방음 <input style ="margin-left:5%;" type="range" id="proof" name="proof" list="tickmarks1" class="range" min="1" max="5" step="1"></label>
+                        <label class = "label" >일조량 <input style ="margin-left:5%;" type="range" id="sunshine" name="sunshine" list="tickmarks2" class="range" min="1" max="5" step="1"></label>
+                        <datalist id="tickmarks1">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                        <datalist style ="margin-left:19%;"id="tickmarks2">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                        <br><label class="label" >청결 <input style ="margin-top: 5%;margin-left:5%;" type="range" id="clean" name="clean" list="tickmarks3" class="range" min="1" max="5" step="1"></label>
+                        <label class = "label">습도 <input style ="margin-top: 5%;margin-left:12%;" type="range" id="humidity" name="humidity" list="tickmarks4" class="range" min="1" max="5" step="1"></label>
+                        <datalist id="tickmarks3">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                        <datalist style ="margin-left:19%;" id="tickmarks4">
+                            <option value="1" label = "1"></option>
+                            <option value="2" label = "2"></option>
+                            <option value="3" label = "3"></option>
+                            <option value="4" label = "4"></option>
+                            <option value="5" label = "5"></option>
+                        </datalist>
+                    </div>
+                </div>
+                <div style="height: 42%; border:2px solid #B3B3B3;">
+                    <div contenteditable class="fake_textarea" id="review_sentence"></div>
+                    <input style="display:none;" name="review_sentence" id="review_sentence1">
+                </div>
+                <div style="padding-top: 3.038%; height:20%; width:100%;">
+                    <div id="image-preview"></div> {# 업로드한 이미지 띄우는 부분 #}
+                    <div style="display:flex; justify-content: right; width:100%;">
+                        <input style="display:none;" type="file" class="real-upload" accept="image/*" multiple id="images" name="images">
+                        <div style="display:inline-block; width:50%;" onclick="document.getElementById('images').click()"><span style="border:1px solid black; padding:1%;">사진 추가</span><span id="image_count" style="width:30%; float:right;">사진 0개</span></div>
+                        <input id="review_submit" value="리뷰 등록" type="submit" style="background-color: #A4A1A1; border-color:#888888;
+                        color: white">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        var new_images = new DataTransfer();
+        var image_names = [];
 
-</div>
-<div onload="unloadevent()" style="position:relative; display:inline-block; height:500px; width:500px; float:left;">
-    <form id="text_review" action="#" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <button type="button" onclick="">텍스트</button>
-        <button type="button" onclick="to_image()">이미지</button>
-        <table class="form-contents">
-            {{TextForm.as_table}}
-        </table>
-        <br>
-        <input type="submit" value="submit">
-    </form>
-    <form id="image_review" action="#" method="POST" enctype="multipart/form-data" style="display:none;">
-        {% csrf_token %}
-        <button type="button" onclick="to_text()">텍스트</button>
-        <button type="button" onclick="">이미지</button>
-        <table class="form-contents">
-            {{ImageForm.as_table}}
-        </table>
-        <br>
-        <input type="submit" value="submit">
-    </form>
+        // 이미지 업로드
+        function removeImage(t){
+            current_image_name = null;
+            if (t.childNodes[0].getAttribute('data-file') === null)
+                current_image_name = t.childNodes[0].getAttribute('src').slice(29)
+            else
+                current_image_name = t.childNodes[0].getAttribute('data-file')
+            console.log(current_image_name)
+            image_names = image_names.filter((element) => element !== current_image_name);
+            for (i=0;i<new_images.files.length;i++){
+                if (new_images.files[i].name.indexOf(current_image_name) !== -1)
+                {
+                    let dataTransfer = new DataTransfer();
+                    let files = new_images.files;
+                    let fileArray = Array.from(files);
+                    fileArray.splice(i, 1);
+                    fileArray.forEach(file => { dataTransfer.items.add(file); });
+                    new_images.value='';
+                    new_images = dataTransfer;
+                    break;
+                }
+            }
+            t.parentNode.removeChild(t);
+            document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
+        }
+        function getImageFiles(e){
+            const files = e.currentTarget.files;
+            const imagePreview = document.querySelector('#image-preview');
 
-</div>
-<script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
+            [...files].forEach(file => {
+                let check=false;
+                for (i=0;i<image_names.length;i=i+1)
+                {
+                    if (image_names[i].indexOf(file.name) !== -1)
+                    {
+                        check=true;
+                        break;
+                    }
+                }
+                if (check===false)
+                {
+                    new_images.items.add(file);
+                    image_names.push(file.name);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const preview = createElement(e, file);
+                        imagePreview.appendChild(preview);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
+        }
+
+        function createElement(e, file) {
+          const divs = document.createElement('div');
+          const img = document.createElement('img');
+          divs.style.display='inline-block';
+          divs.style.width='15%';
+          divs.style.height='100%';
+          divs.setAttribute('onClick', 'removeImage(this)');
+          img.setAttribute('src', e.target.result);
+          img.setAttribute('data-file', file.name);
+          divs.appendChild(img);
+
+          return divs;
+        }
+        var text = '';
+        const realUpload = document.querySelector('.real-upload');
+        realUpload.addEventListener('change', getImageFiles);
+        {#  리뷰 작성/수정 구분  #}
+        function reviewChangePage(){
+            if(window.location.pathname==='/normal_user_review_change/'){
+                document.getElementById('id_address').value= "{{ room.address }}"
+                document.getElementById('id_postcode').value= "{{ room.postcode }}"
+                document.getElementById('id_title').value= "{{ review.reviewTitle }}"
+                let images = ''
+                {% for img in review.additionalImage %}
+                    images += "{{ img }}" // 이미지에 대한 소스코드는 이후 수정 예정
+                {% endfor %}
+                {% if review.rent %}
+                    document.getElementsByName('checking')[{{review.rent}}].checked = true;
+                {% endif %}
+                {% if review.deposit %}
+                    document.getElementById('id_deposit').value= {{ review.deposit }};
+                {% endif %}
+                {% if review.monthlyRent %}
+                    document.getElementById('monthly').value= {{ review.monthlyRent }}
+                {% endif %}
+                {% if review.roomSize %}
+                    document.getElementById('id_roomSize').value= {{ review.roomSize }}
+                {% endif %}
+                {% if review.humidity %}
+                    document.getElementById('humidity').value= {{ review.humidity }}
+                {% endif %}
+                {% if review.proof %}
+                    document.getElementById('proof').value= {{ review.proof }}
+                {% endif %}
+                {% if review.sunshine %}
+                    document.getElementById('sunshine').value= {{ review.sunshine }}
+                {% endif %}
+                {% if review.clean %}
+                    document.getElementById('clean').value= {{ review.clean }}
+                {% endif %}
+
+                {% for sentence in review.reviewSentence %}
+                    text += "{{ sentence }}\n"
+                {% endfor %}
+
+                {% for image in images %}
+                    image_names.push('{{image}}'.slice(2));
+                    divs2 = document.createElement('div');
+                    img2 = document.createElement('img');
+                    divs2.style.display='inline-block';
+                    divs2.style.width='15%';
+                    divs2.style.height='100%';
+                    divs2.setAttribute('onClick', 'removeImage(this)');
+                    img2.setAttribute('src', '{% static "images/reviewImage/" %}{{image}}');
+                    divs2.appendChild(img2);
+                    document.querySelector('#image-preview').appendChild(divs2);
+                {% endfor %}
+                document.getElementById('image_count').innerText='사진 '+image_names.length+'개';
+                document.getElementById('review_sentence').innerText = text
+                document.getElementById('review_submit').value = '리뷰 수정'
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewWriteTemplate.css' %}">
+    <script type="text/javascript" src="{% static 'js/normalUserReviewWriteTemplate.js' %}"></script>
 {% endblock %}

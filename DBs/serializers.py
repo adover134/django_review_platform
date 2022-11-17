@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from DBs.models import User, Manager, Review, Room, Icon, Recommend, Report, CommonInfo, Image
+from DBs.models import User, Review, Room, Icon, Recommend, Report, ReviewImage, RoomImage
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,22 +16,71 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ManagerSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
+
+    reviewWriter = serializers.SerializerMethodField()
+    representiveImage = serializers.SerializerMethodField()
+    totalReview = serializers.SerializerMethodField()
+    uEmail = serializers.EmailField(source='uId.email', read_only=True)
+    rAddress = serializers.CharField(source='rId.address', read_only=True)
+
+    additionalImage = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='reviewimage-detail'
+    )
+    includedIcon = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+    )
+    recommendedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='recommend-detail'
+    )
+    reportedOn = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='report-detail'
+    )
+
+
+    # 리뷰 작성자의 이름을 합쳐서 출력
+    def get_reviewWriter(self, obj):
+        return f'{obj.uId.last_name} {obj.uId.first_name}'
+
+
+    def get_representiveImage(self, obj):
+        a = [image.image for image in obj.additionalImage.all()]
+        if len(a) > 0:
+            return a[0]
+        else:
+            return None
+
+
+    def get_totalReview(self, obj):
+        sentence = ''
+        for s in obj.reviewSentence:
+            sentence = sentence+s
+        return sentence
 
     class Meta:
-        model = Manager
+        model = Review
         fields = '__all__'
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ReviewSerializerLink(serializers.ModelSerializer):
 
-    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
-    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
+    reviewWriter = serializers.SerializerMethodField()
+    representiveImage = serializers.SerializerMethodField()
+    totalReview = serializers.SerializerMethodField()
+    uEmail = serializers.EmailField(source='uId.email', read_only=True)
     rAddress = serializers.CharField(source='rId.address', read_only=True)
 
-    additionalImage = serializers.StringRelatedField(
+    additionalImage = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
+        view_name='reviewimage-detail'
     )
     includedIcon = serializers.HyperlinkedRelatedField(
         many=True,
@@ -49,20 +98,25 @@ class ReviewSerializer(serializers.ModelSerializer):
         view_name='report-detail'
     )
 
-    class Meta:
-        model = Review
-        fields = '__all__'
+
+    # 리뷰 작성자의 이름을 합쳐서 출력
+    def get_reviewWriter(self, obj):
+        return f'{obj.uId.last_name} {obj.uId.first_name}'
 
 
-class ReviewSerializer2(serializers.ModelSerializer):
+    def get_representiveImage(self, obj):
+        a = [image.image for image in obj.additionalImage.all()]
+        if len(a) > 0:
+            return a[0]
+        else:
+            return None
 
-    uNickname = serializers.CharField(source='uId.uNickname', read_only=True)
-    uEmail = serializers.EmailField(source='uId.uEmail', read_only=True)
-    rAddress = serializers.CharField(source='rId.address', read_only=True)
-    includedIcon = serializers.StringRelatedField(
-        many=True,
-        read_only=True,
-    )
+
+    def get_totalReview(self, obj):
+        sentence = ''
+        for s in obj.reviewSentence:
+            sentence = sentence+s
+        return sentence
 
     class Meta:
         model = Review
@@ -73,6 +127,11 @@ class RoomSerializer(serializers.ModelSerializer):
 
     commonInfo = serializers.ListField(
         child=serializers.IntegerField()
+    )
+    roomImage = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='roomimage-detail'
     )
 
     class Meta:
@@ -101,15 +160,15 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CommonInfoSerializer(serializers.ModelSerializer):
+class ReviewImageSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = CommonInfo
+        model = ReviewImage
         fields = '__all__'
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class RoomImageSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Image
+        model = RoomImage
         fields = '__all__'

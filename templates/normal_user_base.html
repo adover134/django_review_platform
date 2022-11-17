@@ -6,48 +6,82 @@
 <!-템플릿 태그 중 url은 url.py에서 path마다 지정한 이름, 혹은 경로 규칙에 따라 url 값을 반환합니다.-->
 <!-전체 url 값을 페이지에 직접 노출시키지 않는다는 장점이 있습니다.-->
 <link rel="stylesheet" href="{% static 'css/normalUserBaseTemplate.css' %}">
-<div id="mainMenu" class="col-10">
-    <div class="button text-center nav-item col-1">
-        <div style="height:1vh;"></div>
-        <a href = '#'>
+<div class="col-1"></div>
+<div class="col-1">
+    <div id="introduce" class="drpd">
+        <div onclick="window.location.replace('{{introduction}}')">
             소개
-        </a>
-    </div>
-    <div class="button text-center nav-item col-1">
-        <div style="height:1vh;"></div>
-        <a href = '#'>
-            원룸
-        </a>
-    </div>
-    <div class="button text-center nav-item col-1">
-        <div style="height:1vh;"></div>
-        <a href = '{{normalUserReviewSearch}}'>
-            리뷰
-        </a>
-    </div>
-    <div class="nav-item col-3" style="display:inline-block; float:left; height:50px;"></div>
-    <form CLASS="nav-item col-3" action="{{normalUserReviewSearch}}" id="search-form" style="top:10px;">
-            <div class="nav-item col-9">
-            <input class="form-control" type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
         </div>
-    </form>
-    <div class="col-3" id="userInfo">
-        {% if user and not user.is_anonymous %}
-            <div class="nav-item dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                  {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href = '{{logout}}'>logout</a></li>
-                <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>내 정보</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </div>
-        {% else %}
-            <div style="height:1vh;"></div>
-            <a class="nav-item col-6" type="button" id="login" href="{{ loginPage }}">login</a>
-            <div class="nav-item col-6" style="display:inline-block; float:left; height:50px;"></div>
-        {% endif %}
     </div>
 </div>
+<div class="col-1" style="position:relative;">
+    <div id="room_main" class="drpd">
+        <div onclick="window.location.replace('{{normalUserRoomSearch}}')">
+            원룸
+        </div>
+        <div id="room_sub" class="drpd-content">
+            <div id="room_search" class="drpd-sub" onclick="window.location.replace('{{normalUserRoomSearch}}')">원룸 검색</div>
+            <div id="room_add" class="drpd-sub" onclick="window.location.replace('{{ normalUserRoomWritePage }}')">원룸 등록</div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('room_main').addEventListener('mouseenter', (event) => {
+        document.getElementById('room_sub').style.display='block';
+    });
+    document.getElementById('room_main').addEventListener('mouseleave', (event) => {
+        document.getElementById('room_sub').style.display='none';
+    });
+</script>
+<div class="col-1" style="position:relative;">
+    <div id="review_main" class="drpd">
+        <div onclick="window.location.replace('{{normalUserReviewSearch}}')">
+            리뷰
+        </div>
+        <div id="review_sub" class="drpd-content">
+            <div id="review_search" class="drpd-sub" onclick="window.location.replace('{{normalUserReviewSearch}}')"><span>리뷰 검색</span></div>
+            <div id="review_write" class="drpd-sub" onclick="window.location.replace('{{normalUserReviewWrite}}')"><span>리뷰 작성</span></div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('review_main').addEventListener('mouseenter', (event) => {
+        document.getElementById('review_sub').style.display='block';
+    });
+    document.getElementById('review_main').addEventListener('mouseleave', (event) => {
+        document.getElementById('review_sub').style.display='none';
+    });
+</script>
+<div class="nav-item col-2" style="display:inline-block; float:left; height:100%;"></div>
+<div id="search-form-div" class="nav-item col-2">
+    <form action="{{normalUserReviewSearch}}" id="search-form">
+        <div class="nav-item" id="search-addr">
+            <input type="search" placeholder="주소로 리뷰 검색" aria-label="Search" id="address" name="address">
+        </div>
+    </form>
+</div>
+
+{% if user and not user.is_anonymous %}
+    <div class="col-2" style="display:flex; align-items:center; justify-content:center;">
+        <div id="userInfo">
+            <div class="nav-item dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{ user.last_name }}{{ user.first_name }} 님, 환영합니다.
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" id="myInfo" href = '{{infoCheck}}'>마이페이지</a></li>
+                <li><a class="dropdown-item" href = '{{logout}}'>log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="col-1" style="position:relative;">
+        <div id="login" class="drpd">
+            <div onclick="window.location.replace('{{ loginPage }}')">
+                login
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

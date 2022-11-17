@@ -1,36 +1,138 @@
 {% extends 'normal_user_base.html' %}
 {% load index static %}
 
+{% if request.path != main %}
+<meta http-equiv="refresh" content="0; url='{{main}}'">
+{% else %}
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            document.location.reload();
+        }
+    };
+</script>
+{% endif %}
+
 {% block left_side_bar %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-<link rel="stylesheet" href="{% static 'css/normalUserMainTemplate.css' %}">
-<script type="text/javascript" src="{% static 'js/normalUserMainTemplate.js' %}"></script>
 <script>
 $(document).ready(function(){
-    $('.slider').bxSlider({
+    var a = $('.slider').bxSlider({
+        maxSlides:4,
+        infiniteLoop:false,
+        touchEnabled:false,
     });
 });
 </script>
-<div class="slider" id="famous">
-    <div><a href="#">werwerwe</a></div>
-    <div>2</div>
-    <div>3</div>
-    <div>
-        작성자
-        추천 수
-        제목
-        대표 사진
+<div class="slider" id="famous" onclick="" style="height:100%;">
+    {% if popular_reviews %}
+        {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
+            <div>
+                <div class="review_kind" style="display:flex; align-items: center; justify-content: center; height:15%; width:100%; font-weight:bolder; background-color:#E8BECA;">
+                    <span>인기 리뷰</span>
+                </div>
+                <div style="height:10%;">
+                    <div class="pop_writer" style="float:left; height:100%; width:55%;">
+                        <span>작성자 : {{ popular_review.reviewWriter }}</span>
+                    </div>
+                    <div style = "float:right; height:100%;">추천 수 : {{ popular_review.recommendedOn|length }}</div>
+                </div>
+                <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
+                    {% if popular_review.additionalImage|length > 0 %}
+                        <img src="{% static 'images/reviewImage/' %}{{popular_review.additionalImage|first|defaultImage:'review'}}" class="left-side-room-img" style="height:100%;">
+                    {% else %}
+                        <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%;">
+                    {% endif %}
+                </div>
+                {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <div style="text-align:center; color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')">{{ popular_review.reviewTitle }}</div>
 
-    </div>
+                <div style = "display:flex; justify-content:center; height:30%;width:100%;">
+                    <div style="width:70%;">
+                        <span>
+                            {{popular_review.totalReview|slice:"0:40"}}
+                            {% if popular_review.totalReview|length > 40 %}
+                                ...
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div style = "display:flex; justify-content:center; height:10%;">
+                    <div style="width:70%; height:100%; display:flex; align-items:center;">
+                        {% for popular_icon in popular_review.includedIcon %}
+                            <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}{{ popular_icon }}.png">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div>등록된 리뷰가 없습니다.</div>
+    {% endif %}
 </div>
 <div class="slider" id="recent">
-    <div>1</div>
-    <div>2</div>
-    <div>3</div>
-    <div>4</div>
+    {% if latest_reviews %}
+        {% for latest_review in latest_reviews %} {# 최신순 데이터 최대 4개 출력 #}
+            <div>
+                <div class="review_kind" style="display:flex; align-items: center; justify-content: center; height:15%; width:100%; font-weight:bolder; background-color:#E8BECA;">
+                    <span>최신 리뷰</span>
+                </div>
+                <div style="height:10%;">
+                    <div style="float:left; height:100%;">
+                        <span>작성자 : {{ latest_review.reviewWriter }}</span>
+                    </div>
+                    <div style = "float:right; height:100%;">추천 수 : {{ latest_review.recommendedOn|length }}</div>
+                </div>
+                <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
+                    {% if latest_review.additionalImage|length > 0 %}
+                        <img src="{% static 'images/reviewImage/' %}{{latest_review.additionalImage|first|defaultImage:'review'}}" class="left-side-room-img" style="height:100%;">
+                    {% else %}
+                        <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%;">
+                    {% endif %}
+                </div>
+                {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                <div style="text-align:center; color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{latest_review.id}}')">{{ latest_review.reviewTitle }}</div>
+
+                <div style = "display:flex; justify-content:center; height:45%;width:100%;">
+                    <div style="width:70%;">
+                        <span>
+                            {{ latest_review.totalReview|slice:"0:40" }}
+                            {% if latest_review.totalReview|length > 40 %}
+                                ...
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div style = "display:flex; justify-content:center; height:10%;">
+                    <div style="width:70%; height:100%; display:flex; align-items:center;">
+                        {% for latest_icon in latest_review.includedIcon %}
+                            <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ latest_icon }}{{ latest_icon }}.png">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div>등록된 리뷰가 없습니다.</div>
+    {% endif %}
 </div>
+<script>
+    let k = document.getElementsByClassName('review_kind');
+    for (let i=0;i<k.length;i++){
+        let o = k[i];
+        a=o.offsetHeight/16;
+        let l=o.offsetWidth-o.offsetHeight;
+        let m = o.innerText;
+        let n = (l / m.length)/16;
+        if (a > n) {
+            o.style.fontSize = (Math.ceil(n*100)/100).toString() + 'rem';
+        }
+        else
+            o.style.fontSize=(a-0.3).toString()+'rem';
+    }
+</script>
 {% endblock %}
 
 {% block main_contents %}
@@ -70,5 +172,50 @@ $(document).ready(function(){
         mapContainer.style.width = document.getElementById('mainDiv').style.width;
     }
     var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    {# 지도에 원룸 위치 표시 #}
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    $.ajax({
+        url: 'http://127.0.0.1:8000/db/room/',
+        method: "GET",
+        dataType: "json"
+    })
+        .done(function (json){
+            $.each(json, function (key, value){
+                // 주소로 좌표를 검색합니다
+                geocoder.addressSearch(value.address, function(result, status) {
+
+                // 정상적으로 검색이 완료됐으면
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords
+                    });
+
+                    var room_info = ''
+                    if(value.name !== null && value.name !== '')
+                        room_info = value.name
+                    else
+                        room_info = value.address
+
+                    // 인포윈도우로 장소에 대한 설명을 표시합니다
+                    var infowindow = new kakao.maps.InfoWindow({
+                        content: `<div style="width:150px; text-align:center; padding:6px 0; cursor: pointer" ` +
+                            `onclick="window.location.replace(`+
+                            `'{{ roomRead }}?roomId=` +
+                            value.id +
+                            `')" >`+ room_info + `</div>`
+                    });
+
+                    infowindow.open(map, marker);
+                }})
+            })
+        });
 </script>
+<link rel="stylesheet" href="{% static 'css/normalUserMainTemplate.css' %}">
+<script type="text/javascript" src="{% static 'js/normalUserMainTemplate.js' %}"></script>
 {% endblock %}

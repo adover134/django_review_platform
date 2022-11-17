@@ -2,14 +2,31 @@ div#rightSideMenu {
   display: none;
 }
 
+.left-side-room-img {
+  width: 30%;
+  height: 100px;
+}
+
+.bx-wrapper {
+  height: 36vh;
+}
+
 .slider > div {
-  height: 34vh;
+  height: 35vh;
   min-height: 204px;
   margin-bottom: 35px;
 }
 
 .bx-wrapper {
   margin-bottom: 35px;
+}
+
+.img {
+  float: left;
+}
+
+.icon {
+  height: 100%;
 }
 
 /*# sourceMappingURL=normalUserMainTemplate.css.map */

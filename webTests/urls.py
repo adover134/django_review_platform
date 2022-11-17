@@ -16,13 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from webTests import views
+from DBs import urls
 
 urlpatterns = [
     path('base/', views.base),
     path('normal_user_base/', views.normal_user_base),
     path('normal_user_review_search/', views.normal_user_review_search),
     path('normal_user_review_write/', views.normal_user_review_write),
-    path('normal_user_review_read/', views.normal_user_review_read),
     path('image_test/', views.image),
     path('normal_user_review_search_test/', views.review_search_page),
     path('normal_user_review_search_testing/', views.review_search_test, name='searchTest'),

@@ -1,0 +1,89 @@
+#tr1 {
+  outline: solid 2px #B3B3B3;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  padding: 1.5% 6.25% 1.5% 6.25%;
+}
+
+#tr2 {
+  display: inline-block;
+  float: left;
+  height: 79%;
+  width: 58%;
+  border: 2px solid #6c757d;
+  border-collapse: collapse;
+  margin: 1%;
+}
+
+#tr3 {
+  display: inline-block;
+  float: left;
+  height: 100%;
+  width: 40%;
+  padding-right: 1%;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  list-style: none;
+  float: left;
+  padding-right: 20%;
+}
+
+#image-preview {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 80%;
+  padding: 2%;
+  border: 2px solid #6c757d;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  white-space: nowrap;
+}
+
+#image-preview::-webkit-scrollbar {
+  width: 9px;
+}
+
+#image-preview::-webkit-scrollbar-thumb {
+  width: 3px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 12px;
+}
+
+#image-preview::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+#current-image-preview {
+  position: relative;
+  display: inline-block;
+  width: 49%;
+  height: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+#current-image-preview::-webkit-scrollbar {
+  width: 9px;
+}
+
+#current-image-preview::-webkit-scrollbar-thumb {
+  width: 3px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 12px;
+}
+
+#current-image-preview::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+/*# sourceMappingURL=normalUserRoomWriteTemplate.css.map */

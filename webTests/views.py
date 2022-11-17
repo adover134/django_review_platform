@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from webPages import views
 import requests
 import json
-from customForms import reviewWriteForms
+from customForms import customForms
 
 
 def is_ajax(request):
@@ -56,13 +56,8 @@ def normal_user_review_write(request):
     if request.method == 'POST':
         data = dict(request.POST)
         data1 = {}
-        if data.get('review_type')[0] == 'text':
-            form = reviewWriteForms.TextReviewWriteForm(request.POST, request.FILES)
-            data1['reviewKind'] = 0
-            data1['reviewSentence'] = data['review_sentence']
-        else:
-            form = reviewWriteForms.ImageReviewWriteForm(request.POST, request.FILES)
-            data1['reviewKind'] = 1
+        form = customForms.TextReviewWriteForm(request.POST, request.FILES)
+        data1['reviewSentence'] = data['review_sentence']
         images = request.FILES.getlist('images')
         print(form)
         if form.is_valid():
@@ -76,15 +71,15 @@ def normal_user_review_write(request):
             
             '''
             # 원룸 번호를 구한다.
+            print(room)
             data1['roomId'] = room[0].get('id')
             data1['uId'] = user.id
-            print(data1['uId'])
             review = requests.post('http://127.0.0.1:8000/db/review/', data=data1)
             review_id = json.loads(review.text).get('id')
             for image in images:
-                img = json.loads(requests.post('http://127.0.0.1:8000/db/image/', data={'reviewId': review_id}).text)
+                img = json.loads(requests.post('http://127.0.0.1:8000/db/reviewImage/', data={'reviewId': review_id}).text)
                 img_name = handle_uploaded_file(image, str(img.get('id')))
-                requests.put('http://127.0.0.1:8000/db/image/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
+                requests.put('http://127.0.0.1:8000/db/reviewImage/'+str(img.get('id'))+'/', data={'reviewId': review_id, 'image': img_name})
         return Response(str(review_id))
 
 
@@ -95,32 +90,7 @@ def handle_uploaded_file(f, name):
     return name+'.png'
 
 
-def normal_user_review_read(request):
-    token = request.COOKIES.get('token')
-    user = request.user
-    review = None
-    review_num = request.GET.get('id')
-    print(review_num)
-    review = json.loads(requests.get('http://127.0.0.1:8000/db/review/'+review_num+'/').text)
-    address = json.loads(requests.get('http://127.0.0.1:8000/db/room/'+str(review.get('roomId'))+'/').text).get('address')
-    review['address'] = address
-    icon_urls = review.get('includedIcon')
-    icons = []
-    if icon_urls:
-        print(icon_urls)
-        for icon in icon_urls:
-            icon_info = json.loads(requests.get(icon).text)
-            icon_info['iconKind'] = 'images/iconImage/'+icon_info.get('iconKind')+'.png'
-            icon_info['changedIconKind'] = 'images/iconImage/' + icon_info.get('changedIconKind') + '.png'
-            icons.append(icon_info)
-    if user:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons})
-    else:
-        return render(request, 'normal_user_review_read.html', {'review': review, 'icons': icons})
-
-
 def image(request):
-    print(request.GET)
     return render(request, 'normal_user_review_search.html')
 
 
@@ -129,4 +99,4 @@ def review_search_page(request):
 
 
 def review_search_test(request):
-    return render(request, 'tt.html')
+    return render(request, 'index.html', {})

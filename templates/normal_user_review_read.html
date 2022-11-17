@@ -1,89 +1,270 @@
-{% extends 'normal_user_base.html' %}
-{% load static %}
+{% extends 'normal_user_review_list.html' %}
+{% load index static %}
+{% block info %}
+{% url 'normalUserReviewDelete' as normalUserReviewDelete %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+    <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
+<div id="reviewHead" style = "height:32.8%; ">
+    <div style ="margin:15px; height:100%">
+        <div id="review_image" style="width:24.7%; height:90.7%; margin-right:20px; display: inline-block;float:left;">
+            {% if review.additionalImage|length > 0 %}
+                <img src="{% static 'images/reviewImage/' %}{{review.additionalImage|first|defaultImage:'review'}}" style="width:100%; height:100%;">
+            {% else %}
+                <img src="{% static 'images/reviewImage/no-photo.png' %}" style="width:100%; height:100%;">
+            {% endif %}
+        </div>
+        <div id="mapDiv" style = "display:inline-block;"></div>
+        <script>
+            $(document).ready(function () {
+                var a = $('.slider').bxSlider({
+                    {#maxSlides:4,#}
+                    infiniteLoop: false,
+                    touchEnabled: false,
+                });
+            });
+        </script>
+        <script type="text/javascript">
 
-{% block main_contents %}
-{% if request.path == normalUserReviewRead %}
-<script>
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            document.location.reload();
-        }
-    };
-    var recommended='{{recommended}}';
-    if(recommended==='None' || recommended ==='')
-        recommended=false;
-    var reported='{{reported}}';
-    if(reported==='None' || recommended ==='')
-        reported=false;
-    var reviewNum='{{review.id}}';
-    var recommendImg="{% static 'images/iconImage/recommend.png' %}";
-    var recommendedImg="{% static 'images/iconImage/recommended.png' %}";
-    var reportImg="{% static 'images/iconImage/report.png' %}";
-    var reportedImg="{% static 'images/iconImage/reported.png' %}";
-</script>
-{% endif %}
-{% if user.is_anonymous %}
-<script>
-    let userloggedin=false;
-</script>
-{% else %}
-<script>
-    let userloggedin=true;
-</script>
-{% endif %}
-<link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-<div id="reviewInfo">
-    <div id="room_images" class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
-        원룸 사진들을 슬라이드로 넣을 곳입니다.
-    </div>
-    <div class="content col-5" style="display:inline-block; float:left; height:200px; border:1px solid black;">
-        <h1>{{review.reviewTitle}}</h1>
-        <p>작성자 : {{review.uNickname}}</p>
-        <p>작성자 email : {{review.uEmail}}</p>
-        <p>작성일 : {{review.reviewDate}}</p>
-        <p>원룸 주소 : {{review.address}}</p>
-    </div>
-    <div class="content col-2" style="display:inline-block; float:left; height:200px; border:1px solid black;">
-        <p>수정/삭제 버튼 놓을 곳</p>
-        <p style="font-size:25px;">
+            // icon 이미지 <-> selected icon 이미지 변환 함수
+            // 만들 예정
+            function selectIcon2(e){
+                alert("아이콘 클릭 이벤트 발생")
+            }
+
+            document.getElementById('mapDiv').style.width = '71%';
+            document.getElementById('mapDiv').style.height = '90.7%';
+            document.getElementById('mapDiv').style.minWidth = '71%';
+            var mapContainer = document.getElementById('mapDiv') // 지도를 표시할 div
+            var mapOption = {
+                center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
+                level: 5 // 지도의 확대 레벨
+            };
+
+                // 지도 생성
+            function resizeMap() {
+                var mapContainer = document.getElementById('map');
+                mapContainer.style.width = document.getElementById('mainDiv').style.width;
+            }
+
+            var map = new kakao.maps.Map(mapContainer, mapOption);
+
+            {# 지도에 원룸 위치 표시 #}
+            var geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.addressSearch("{{ review.address }}", function (result, status) {
+
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords,
+                        clickable: true
+                    });
+
+                    map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
+                    marker.setMap(map);
+
+                    var room_info = ''
+                    if ("{{ review.roomName }}" !== 'None' && "{{ review.roomName }}" !== '')
+                        room_info = "{{ review.roomName }}"
+                    else
+                        room_info = "{{ review.address }}"
+
+                    var infowindow = new kakao.maps.InfoWindow({
+                        content: `<div style="width:150px; text-align:center; padding:6px 0; cursor: pointer" ` +
+                            `onclick="window.location.href=`+
+                            `'{{ roomRead }}?roomId=` +
+                            {{ review.roomId }} +
+                            `'" >`+ room_info + `</div>`
+                    });
+
+                    infowindow.open(map, marker)
+
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        // 마커 위에 인포윈도우를 표시합니다
+                        window.location.href="{{ roomRead }}?roomId={{ review.roomId }}"
+                    });
+                }
+            });
+
+            {% if icons == None %}
+                var icons = null;
+            {% else %}
+                var icons = {{icons}};
+            {% endif %}
             {% if recommended %}
-                <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec" src="{% static 'images/iconImage/recommended.png' %}"></a>
+                var recommended = true;
             {% else %}
-                <a onclick="toggleRecommend()" href="javascript:void(0);"><img id="rec" src="{% static 'images/iconImage/recommend.png' %}"></a>
+                var recommended = false;
             {% endif %}
-            : <span id="recommend_num">{{review.recommendedOn|length}}</span>
-        </p>
-        <p style="font-size:25px;">
             {% if reported %}
-                <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep" src="{% static 'images/iconImage/reported.png' %}"></a>
+                var reported = true;
             {% else %}
-                <a onclick="toggleReport()" href="javascript:void(0);"><img id="rep" src="{% static 'images/iconImage/report.png' %}"></a>
+                var reported = false;
             {% endif %}
-            : <span id="report_num">{{review.reportedOn|length}}</span>
-        </p>
+            {% if reported %}
+                var reported = true;
+            {% else %}
+                var reported = false;
+            {% endif %}
+            {% if user.is_anonymous %}
+                let userloggedin=false;
+            {% else %}
+                let userloggedin=true;
+            {% endif %}
+
+            var reviewNum = {{review.id}};
+            var recommendedImg = "{% static 'images/iconImage/recommended.png' %}";
+            var recommendImg = "{% static 'images/iconImage/recommend.png' %}";
+            var reportedImg = "{% static 'images/iconImage/reported.png' %}";
+            var reportImg = "{% static 'images/iconImage/report.png' %}";
+            var recommendNum = '{{review.recommendedOn|length}}';
+        </script>
     </div>
 </div>
-<div id="reviewContent" class="content col">
-    {% for s in review.reviewSentence %}
-        <span>{{s}}</span>
-        <br>
-    {% endfor %}
+<div id="review_table">
+
+    <div id="row1">
+        <div id="writer">
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                &nbsp작성자 : {{review.reviewWriter}}
+            </div>
+        </div>
+        <div id="review_address">
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                <span>{{review.address}}&nbsp&nbsp</span>
+            </div>
+        </div>
+        <div style="height:100%; width:4.15%; border-right:1px solid #B3B3B3;">
+            <div id="review_update" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                <a href="/normal_user_review_change/?id={{review.id}}">수정</a>
+            </div>
+        </div>
+        <script>
+            const csrftoken = Cookies.get('csrftoken');
+            function review_delete_func(){
+                $.ajax({
+                    type: 'POST',
+                    url: "/normal_user_review_delete/",
+                    async: false,
+                    headers: {'X-CSRFToken': csrftoken},
+                    dataType: 'json',
+                    data: {
+                        'review': {{review.id}},
+                    },
+                    success: function (response) {
+                        // on successful creating object
+                        window.location.replace('/normal_user_review_search/');
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert('error');
+                    }
+                })
+            }
+        </script>
+        <div style="height:100%; width:4.15%;">
+            <div id="review_delete" style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                <a href="javascript:(0)" onclick="review_delete_func();">삭제</a>
+            </div>
+        </div>
+        <div id="room_read">
+            <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                <a>이동</a>
+            </div>
+        </div>
+    </div>
+    <div id="row2">
+        <div id="title">
+            <div style="display:flex; align-items:center; height:100%; width:100%;">
+                <span>&nbsp{{review.reviewTitle}}</span>
+            </div>
+        </div>
+    </div>
+    <div id="row3">
+        {% if review.rent == 1 %}
+            <div style="width:14.82%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">월세 {{review.monthlyRent}}만원</div></div>
+        {% endif %}
+        <div style="width:14.82%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">보증금 {{review.deposit}}만원</div></div>
+        <div style="width:13.834%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">크기 {{review.roomSize}}㎡</div></div>
+        <div style="width:12.846%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">채광 ☆{{review.lighting}}</div></div>
+        <div style="width:12.846%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">청결 ☆{{review.cleanliness}}</div></div>
+        <div style="width:12.846%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">방음 ☆{{review.soundproof}}</div></div>
+        <div style="width:12.846%; border-right:2px solid #B3B3B3;"><div style="display: flex;width: 100%;height: 100%;align-items: center;">습도 ☆{{review.humidity}}</div></div>
+        {% if review.rent == 0 %}
+            <div style="width:19.962%; height:100%;"></div>
+        {% endif %}
+    </div>
+    <div id="row4">
+        {% for sentence in review.reviewSentence %}
+            <span>{{sentence}}</span><br>
+        {% endfor %}
+    </div>
+    <div id="row5">
+        <div id="icons" style="display:flex; align-items:center;">
+            {% if icons %}
+                {% for i in icon %}
+                    <a onclick="selectIcon(this)">
+                        <img src="{% static 'images/iconImage/' %}{{i}}.png">
+                        <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}.png">
+                        <input type="text" hidden value="{% static 'images/iconImage/' %}{{i}}{{i}}.png">
+                        <input type="text" hidden value="{{i}}">
+                    </a>
+                {% endfor %}
+            {% else %}
+                <span>아이콘이 없습니다.</span>
+                <script>
+                    document.getElementById('icons').style.textAlign='center';
+                </script>
+            {% endif %}
+        </div>
+        <div id="rec_rep">
+            <div id="rec_icon">
+                <a onclick="toggleRecommend()" href="javascript:void(0);">
+                    {% if recommended %}
+                        <img id="rec" src="{% static 'images/iconImage/' %}recommended.png">
+                    {% else %}
+                        <img id="rec" src="{% static 'images/iconImage/' %}recommend.png">
+                    {% endif %}
+                </a>
+            </div>
+            <div id="rec_button">
+                <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                    추천 <span id="recommend_num">{{review.recommendedOn|length}}</span>
+                </div>
+            </div>
+            <div id="rep_icon">
+                <a onclick="toggleReport()" href="javascript:void(0);">
+                    {% if reported %}
+                        <img id="rep" src="{% static 'images/iconImage/' %}reported.png">
+                    {% else %}
+                        <img id="rep" src="{% static 'images/iconImage/' %}report.png">
+                    {% endif %}
+                </a>
+            </div>
+            <div id="rep_button">
+                <div style="display:flex; align-items:center; justify-content:center; height:100%; width:100%;">
+                    신고 <span id="report_num">{{review.reportedOn|length}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div id="icon">
-    <h1>아이콘</h1>
-    {% for i in icons %}
-        <a onclick="selectIcon(this)">
-            <img src="{% static i.iconKind %}">
-            <input type="text" hidden value="{{i.iconInformation}}">
-            <input type="text" hidden value="{% static i.iconKind %}">
-            <input type="text" hidden value="{% static i.changedIconKind %}">
-        </a>
-    {% endfor %}
+<br>
+<div style="border-top:2px solid #B3B3B3;">
+    <div id="other_reviews_title" style="display:flex; margin-left:17.5%; margin-top:4%; align-content: center; justify-content: center; font-weight:bolder; width:65%; height:8%;">
+        해당 리뷰와 같은 주소의 다른 리뷰
+    </div>
 </div>
-<div id="same_room_reviews">
-    <!-같은 원룸의 리뷰들 목록-->
-    <!-추천 순으로 약 5개만 출력-->
-</div>
+<br>
+<script>var is_writer = {{is_writer}};</script>
+<link rel="stylesheet" href="{% static 'css/normalUserReviewReadTemplate.css' %}">
 <script type="text/javascript" src="{% static 'js/normalUserReviewReadTemplate.js' %}"></script>
 {% endblock %}

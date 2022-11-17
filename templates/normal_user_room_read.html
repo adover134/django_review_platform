@@ -1,0 +1,197 @@
+{% extends 'normal_user_review_list.html' %}
+{% load index static %}
+{% block info %}
+    <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ javakey|java_key }}&libraries=services&autoload=true"></script>
+<div id="reviewinfo" >
+    <div style ="margin:20px;">
+        <div style="width:24.7%; height:245px; margin-right:20px; display: inline-block;float:left;">
+            {% if room.roomImage|length > 0 %}
+                <img src="{% static 'images/roomImage/' %}{{room.roomImage|first|defaultImage:'room'}}" style="height:100%; width:100%;">
+            {% else %}
+                <img src="{% static 'images/roomImage/no-photo.png' %}" style="height:100%; width:100%;">
+            {% endif %}
+        </div>
+        <div id="mapDiv" style = "display:inline-block;"></div>
+        <script type="text/javascript">
+
+        // icon 이미지 <-> selected icon 이미지 변환 함수
+        // 만들 예정
+        function selectIcon2(e){
+            alert("아이콘 클릭 이벤트 발생")
+        }
+
+            document.getElementById('mapDiv').style.width = '71%';
+            document.getElementById('mapDiv').style.height = '245px';
+            document.getElementById('mapDiv').style.minWidth = '71%';
+            var mapContainer = document.getElementById('mapDiv'), // 지도를 표시할 div
+                mapOption = {
+                    center: new kakao.maps.LatLng(36.628064331494166, 127.45600280223212), // 지도의 중심좌표
+                    level: 5 // 지도의 확대 레벨
+                };
+
+            // 지도 생성
+            function resizeMap() {
+                var mapContainer = document.getElementById('map');
+                mapContainer.style.width = document.getElementById('mainDiv').style.width;
+            }
+
+            var map = new kakao.maps.Map(mapContainer, mapOption);
+
+            {# 지도에 원룸 위치 표시 #}
+            var geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.addressSearch("{{ room.address }}", function (result, status) {
+
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                    // 결과값으로 받은 위치를 마커로 표시합니다
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords
+                    });
+
+                    map.panTo(coords) // 중심좌표에서 원룸 위치로 부드럽게 이동시키기
+                    marker.setMap(map);
+                    // 마커 클릭시 위도,경도를 검색으로 한 카카오맵 페이지 이동
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        window.open(
+                            'https://map.kakao.com/link/map/'+ result[0].y+','+result[0].x
+                        )
+                    });
+                }
+            });
+        </script>
+    </div>
+    <div id ="mid"style = "text-align:center; height:11.1%;">
+        <div style="display:inline-block;text-align:center;">
+            {% if room.name  %}
+                <span>원룸 이름 : {{ room.name }}</span>
+            {% else %}
+                <span style="color:gray;">원룸 이름 : 입력 필요</span>
+            {% endif %}
+            <br><strong><span>주소 : </span><span>{{ room.address }}</span></strong>
+            <span> / </span>
+            <strong><span>우편 번호 : </span><span>{{ room.postcode }}</span></strong>
+            {% if room.buildingFloorNum %}
+                <br><span>층수 : {{ room.buildingFloorNum }}</span>
+            {% else %}
+                <br><span style="color:gray;">층수 : 입력 필요</span>
+            {% endif %}
+            <span> / </span>
+            {% if room.builtYear  %}
+                <span>건축 연도 : {{ room.builtYear }}</span>
+            {% else %}
+                <span style="color:gray;">건축 연도 : 입력 필요</span>
+            {% endif %}
+            <br>
+            {% if room.commonInfo %}
+                <span>공통 시설 : </span>
+                <span  id="common_info"></span>
+                <script>
+                    var commmonInfoList = ['주차장', '엘리베이터']
+                    var commonInfo = {{ room.commonInfo }};
+                    var text = "";
+                    for (i = 0;i<commonInfo.length;i++)
+                    {
+                        if (text.length > 0)
+                            text = text + ', '+commmonInfoList[commonInfo[i]-1];
+                        else
+                            text = text + commmonInfoList[commonInfo[i]-1];
+                    }
+                    document.getElementById('common_info').innerText = text;
+                </script>
+            {% else %}
+                <span style="color:gray;">공통 시설 :</span>
+                <span id="common_info" style="color:gray;"> 입력 필요</span>
+            {% endif %}
+            {% if room.ownerPhone  %}
+                <br><span>방주인 연락처 : {{ room.ownerPhone }}</span>
+            {% else %}
+                <br><span style="color:gray;">방주인 연락처 : 입력 필요</span>
+            {% endif %}
+            <br><span>학교까지 거리 : {{ room.distance }} / 반경 100미터 이내 편의점 수 : {{ room.convNum }}</span>
+        </div>
+        <div style="position:sticky; display:inline-block; z-index: 1; left:95%; top:50%; width:4%; height:10%;">
+            <a href="/normal_user_room_change/?roomId={{room.id}}">수정</a>
+        </div>
+    </div>
+</div><br>
+<div style="width:100%;">
+    <div style="width:100%;">
+        <div id="reviews_div1">
+            <div id="util" style="display:block;">
+                <div id="other_reviews_title" style="display:inline-block; text-align:right; font-weight:bolder; width:65%; height:8%;">
+                    해당 원룸에 대한 리뷰들
+                </div>
+                <script>
+                    a=(document.getElementById('other_reviews_title').offsetHeight/16).toString()+'rem';
+                        document.getElementById('other_reviews_title').style.fontSize=a;
+                </script>
+                <div style="display:inline-block; width:30%; float:right;">
+                    <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
+                    <div style="display: inline-block;padding-right: 2%;">
+                        <select id="sort_select_box" name="sort_select_box" onchange="sort()">
+                            <option value=''>정렬 순</option>
+                            <option value="1" {% if sorted == '1' %}selected{% endif %}>최신 순</option>
+                            <option value="2" {% if sorted == '2' %}selected{% endif %}>추천 순</option>
+                            <option value="3" {% if sorted == '3' %}selected{% endif %}>정확도 순</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="location.href='/normal_user_review_write_page'"
+                                style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
+                    </div>
+                </div>
+                </div>
+                <div id="reviews" style="display:block;">
+                    {% for review in reviews %}
+                        <div style="border: 3px; margin: 1.86% 6.25% 1.86% 6.25%; line-height: 2.8vh;height: 20vh;" >
+                            <div style= "background-color:#0dcaf0;height: 68.4%; width :15.2%; display:inline-block; float:left;">
+                                {% if review.additionalImage %}
+                                    <img style= "height:100%; width :100%;" class="left-side-room-img" src="{% static 'images/' %}{{review.additionalImage|first}}">
+                                {% endif %}
+                            </div>
+                            <span style="font-weight:600;font-size: 23px; line-height: 5vh;">&ensp;
+                    {#                리뷰 제목 #}
+                                    {{ review.reviewTitle }}</span>
+                            <span style = "float : right; padding-top: 1%;">
+                    {#            추천 수 데이터 #}
+                                추천 수 {{ review.recommendedOn|length }}</span>
+                            <div style = "color: #ECECEC; padding-left: 16%;">&ensp;
+                    {#            리뷰 내용 데이터 #}
+                                  {{ review.reviewSentence }}</div>
+                            <span style = " letter-spacing : 1vw; position: relative; right:2.5%;">&ensp;
+                    {#            리뷰별 아이콘 데이터 목록 #}
+                                {% if review.includedIcon %}
+                                    {% for icon in review.includedIcon %}
+                                        <img src="{% static 'images/iconImage/' %}{{ icon }}">
+                                    {% endfor %}
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        $("select[name=sort_select_box]").change(function(){
+            var currentUrl = location.pathname
+
+            console.log(currentUrl)
+            console.log($(this).val()); //value값 가져오기 => (1,2,3)
+            console.log($("select[name=sort_select_box] option:selected").text()); //text값 가져오기 => (최신순, 추천순, )
+
+            var sorted_value = $(this).val()
+            const urlSearch = new URLSearchParams(location.search);
+            urlSearch.set('sorted', sorted_value)
+            window.open(location.pathname + '?' + urlSearch, '_self');
+        });
+    </script>
+<link rel="stylesheet" href="{% static 'css/normalUserRoomReadTemplate.css' %}">
+<script type="text/javascript" src="{% static 'js/normalUserRoomReadTemplate.js' %}"></script>
+{% endblock %}

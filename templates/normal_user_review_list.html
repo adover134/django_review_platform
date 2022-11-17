@@ -1,0 +1,82 @@
+{% extends 'normal_user_base.html' %}
+{% load index static %}
+{% block main_contents %}
+    <link rel="stylesheet" href="{% static 'css/normalUserReviewListTemplate.css' %}">
+    {% block info %}
+    {% endblock %}
+    <script>
+        let current_URL = new URLSearchParams(window.location.search);
+        var page_num=window.location.href.indexOf('page');
+    </script>
+    <div id="reviews_div">
+        <div id="reviews">
+        {% if paged_review %}
+            {% for review in paged_review %}
+                <div class="review" style="cursor: default;">
+                    <div class="review_image">
+                        {% if review.additionalImage|length > 0 %}
+                            <img src="{% static 'images/reviewImage/' %}{{review.additionalImage|first|defaultImage:'review'}}" style="height:100%; width:100%;">
+                        {% else %}
+                            <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%; width:100%;">
+                        {% endif %}
+                    </div>
+                    <div class="review_info">
+                        <div class="review_title" style="color:black; cursor: pointer;">
+                            제목 : <a style="text-decoration:none; color:black;" href="{{normalUserReviewRead}}?id={{review.id}}">
+                                    {{review.reviewTitle|slice:":15"}}
+                                    {% if review.reviewTitle|length > 15 %}
+                                        ...
+                                    {% endif %}
+                                </a>
+                        </div>
+                        <div class="review_preview">
+                            {{review.reviewSentence|first|slice:":25"}}
+                            {% if review.reviewSentence|first|length > 25 %}
+                                ...
+                            {% endif %}
+                        </div>
+                        <div class="review_icons">
+                            {% with icons=review.includedIcon %}
+                                {{icons|sets}}
+                                {% for icon in icons|sets %}
+                                    <img class="icon" src="{% static 'images/iconImage/' %}{{icon}}.png">
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if paged_review.has_previous %}
+                <a id="prev_page">이전으로</a>
+                <script>
+                    if(page_num === -1) {
+                        if (window.location.pathname === '/normal_user_review_search/')
+                            document.getElementById('prev_page').href = window.location.href + "?page={{paged_review.previous_page_number}}";
+                        else
+                            document.getElementById('prev_page').href = window.location.href + "&page={{paged_review.previous_page_number}}";
+                    }
+                    else
+                        document.getElementById('prev_page').href=window.location.href.slice(0, page_num)+"page={{paged_review.previous_page_number}}";
+                </script>
+            {% endif %}
+            {% if paged_review.has_next %}
+                <a id="next_page">다음으로</a>
+                <script>
+                    if(page_num === -1) {
+                        if (window.location.pathname === '/normal_user_review_search/')
+                            document.getElementById('next_page').href = window.location.href + "?page={{paged_review.next_page_number}}";
+                        else if (window.location.href.indexOf('sorted') === -1)
+                            document.getElementById('next_page').href = window.location.href + "?page={{paged_review.next_page_number}}";
+                        else
+                            document.getElementById('next_page').href = window.location.href + "&page={{paged_review.next_page_number}}";
+                    }
+                    else
+                        document.getElementById('next_page').href=window.location.href.slice(0, page_num)+"page={{paged_review.next_page_number}}";
+                </script>
+            {% endif %}
+        {% else %}
+                <div style="text-align: center">검색 결과가 없습니다.</div>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,20 +1,103 @@
-{% extends 'normal_user_base.html' %}
-{% load static %}
+{% extends 'normal_user_review_list.html' %}
+{% load index static %}
 
-{% block main_contents %}
-<link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
+{% block info %}
+{% if request.path != infoCheck %}
+<meta http-equiv="refresh" content="0; url='{{infoCheck}}'">
+{% else %}
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            document.location.reload();
+        }
+    };
+</script>
+{% endif %}
 <div id="infoCheckAndUpdate">
     <!-정보 확인 및 수정을 위한 공간 / 폼을 통해 정보 확인 및 갱신-->
-    <form method="POST" enctype="multipart/form-data">
+    <form id="infoData" method="POST" enctype="multipart/form-data" action="/logout/" onsubmit="get_layout()">
         {% csrf_token %}
-        <table>
-            {{userForm.as_table}}
-        </table>
-        <input type="submit" value="변경하기">
-        <button type="button">탈퇴하기</button>
+        <div style ="overflow:hidden; font-weight:600;font-size:50px;width:80%; display: inline-block;">{# 닉네임은 성,이름으로 대체 #}
+            <div type="text" style="display:inline; border:none;font-weight:600;font-size:50px;width:10%;">{{ user.last_name }}</div>
+            <div type="text" style="display:inline; font-weight:1000;font-size:50px;width:20%;">{{ user.first_name }}   님</div>
+        </div>
+        <div style="position:relative;display:inline-block; top:2vh; right:3.7%;float:right;">
+            <button id="withdrawal" value="{{ user.id }}">회원 탈퇴</button>
+        </div>
+        <div id ="info">
+            <div style = "display: inline-block;">
+                {{ user.email }}
+            </div>
+            <div>
+                마지막 로그인 일시 {{ user.last_login }}
+            </div>
+            <div>
+                가입일 {{ user.date_joined }}
+            </div>
+            <div>
+                활동 상태 {{ user|check_active }}
+            </div>
+            <div>
+                경고 횟수 {{ user.uWarnCount }}회
+            </div>
+        </div>
     </form>
 </div>
-<div id="others">
-    <!-작성한 리뷰 목록 공간-->
+
+<div id="reviews_div1">
+    <div id="util" style="display:block;">
+        <div style="display:flex; justify-content: right; margin: 1.7% 6.25% auto auto;">
+            <div style="display: inline-block;padding-right: 2%;">
+                <select id="sort_select_box" name="sort_select_box" onchange="sort()">
+                    <option value="1">최신 순</option>
+                    <option value="2">추천 순</option>
+                    <option value="3">정확도 순</option>
+                </select>
+            </div>
+            <div>
+                <button onclick="location.href='/normal_user_review_write_page'"
+                        style=" cursor: pointer;  background-color: white;">리뷰 작성</button>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+    function sort(data) {
+        console.log(data)
+        // 현재 url 가져오기
+        var link = window.location.href
+        var search = window.location.search
+        const URLSearch = new URLSearchParams(location.search);
+        if (URLSearch.has('sorted')) {
+            URLSearch.set('sorted', data.value)
+        }
+    }
+</script>
+<script>
+    document.getElementById("withdrawal")
+        .addEventListener("click", () => {
+            if (!confirm("회원 탈퇴시, 모든 데이터가 삭제됩니다.\n탈퇴하시겠습니까?")) {
+                alert("취소되었습니다.");
+            } else {
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": '{{csrf_token}}' }
+                });
+                $.ajax({
+                    url: '/user_inactivated/',
+                    method: "PUT",
+                    dataType: "json",
+                    data: document.getElementById("withdrawal").value,
+                    success: function (response) {
+                        alert("탈퇴되었습니다.");
+                        // 로그아웃 후 메인 페이지로 이동하기
+                    },
+                    error: function (e) {
+                        alert("회원 탈퇴에 실패하였습니다.")
+                    }
+                })
+            }
+        })
+</script>
+<link rel="stylesheet" href="{% static 'css/normalUserInfoCheckTemplate.css' %}">
+<script  src="{% static 'js/normalUserInfoCheckTemplate.js' %}"></script>
 {% endblock %}

@@ -1,19 +1,201 @@
-div#reviewInfo {
-  height: 200px;
+#reviewHead {
+  height: 220px;
+  border-bottom: 2px solid #B3B3B3;
+  margin-bottom: 2%;
 }
 
-div#reviewContent {
+#reviewContent {
   height: 300px;
-  border: 1px solid grey;
+  border: 2px solid #B3B3B3;
 }
 
-div#mainDiv {
+#mainDiv {
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-div#icon {
+#mainDiv::-webkit-scrollbar {
+  width: 16px;
+}
+
+#mainDiv::-webkit-scrollbar-thumb {
+  width: 8px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 4px solid transparent;
+  border-radius: 8px;
+}
+
+#mainDiv::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+#reviews_div {
+  height: 100%;
+}
+
+#icon {
   height: 228px;
+}
+
+#review_table {
+  width: 87.847%;
+  height: 50%;
+  border: 1px solid #B3B3B3;
+  margin-left: 6.076%;
+}
+
+#review_table * {
+  border-collapse: collapse;
+}
+
+#row1 {
+  border-bottom: 1px solid #B3B3B3;
+  height: 6.11%;
+  width: 100%;
+  margin-bottom: 0.494%;
+}
+
+#row1 div {
+  display: inline-block;
+  float: left;
+  height: 100%;
+}
+
+#writer {
+  border-right: 1px solid #B3B3B3;
+  width: 47.43%;
+  text-align: left;
+}
+
+#review_address {
+  border-right: 1px solid #B3B3B3;
+  width: 40.12%;
+  text-align: right;
+}
+
+#room_read {
+  border-left: 1px solid #B3B3B3;
+  width: 4.15%;
+}
+
+#row2 {
+  border-top: 1px solid #B3B3B3;
+  border-bottom: 1px solid #B3B3B3;
+  height: 10.48%;
+  margin-bottom: 0.988%;
+}
+
+#title {
+  width: 100%;
+  height: 100%;
+  font-weight: bolder;
+  text-align: left;
+}
+
+#row3 {
+  border-top: 1px solid #B3B3B3;
+  border-bottom: 1px solid #B3B3B3;
+  height: 6.11%;
+  margin-bottom: 0.494%;
+}
+
+#row3 > div {
+  height: 100%;
+  text-align: left;
+  display: inline-block;
+  float: left;
+}
+
+#row4 {
+  border-top: 1px solid #B3B3B3;
+  border-bottom: 1px solid #B3B3B3;
+  height: 61.135%;
+  margin-bottom: 0.89%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#row4::-webkit-scrollbar {
+  width: 20px;
+}
+
+#row4::-webkit-scrollbar-thumb {
+  background-color: #C6C6C6;
+  width: 10px;
+}
+
+#row4::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+#row5 {
+  border-top: 1px solid #B3B3B3;
+  height: 9.825%;
+}
+
+#icons {
+  display: inline-block;
+  float: left;
+  height: 100%;
+  width: 75.6%;
+  border-right: 1px solid #B3B3B3;
+}
+
+#rec_rep {
+  border-top: 1px solid #B3B3B3;
+  display: inline-block;
+  float: left;
+  height: 90%;
+  width: 24.4%;
+  margin-top: 0.44%;
+}
+
+#rec_icon {
+  border-right: 1px solid #B3B3B3;
+  display: inline-block;
+  float: left;
+  height: 100%;
+  width: 19.1%;
+}
+
+#rec_button {
+  border-right: 1px solid #B3B3B3;
+  display: inline-block;
+  float: left;
+  height: 100%;
+  width: 30.9%;
+  text-align: center;
+}
+
+#rec {
+  display: flex;
+  align-content: center;
+  justify-items: center;
+  height: 100%;
+}
+
+#rep_icon {
+  border-right: 1px solid #B3B3B3;
+  display: inline-block;
+  float: left;
+  height: 100%;
+  width: 19.1%;
+}
+
+#rep_button {
+  display: inline-block;
+  float: left;
+  height: 100%;
+  width: 30.9%;
+  text-align: center;
+}
+
+#rep {
+  display: flex;
+  align-content: center;
+  justify-items: center;
+  height: 100%;
 }
 
 /*# sourceMappingURL=normalUserReviewReadTemplate.css.map */

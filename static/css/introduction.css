@@ -1,0 +1,31 @@
+#leftSideMenu {
+  display: none;
+}
+
+#rightSideMenu {
+  display: none;
+}
+
+#mainDiv {
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#mainDiv::-webkit-scrollbar {
+  width: 16px;
+}
+
+#mainDiv::-webkit-scrollbar-thumb {
+  width: 8px;
+  background-color: #C6C6C6;
+  background-clip: padding-box;
+  border: 4px solid transparent;
+  border-radius: 8px;
+}
+
+#mainDiv::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+/*# sourceMappingURL=introduction.css.map */
