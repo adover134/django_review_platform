@@ -75,7 +75,7 @@ window.onload = function(){
     }
     document.getElementById("id_address").addEventListener("click", map);
     reviewChangePage();
-    if(window.location.pathname==='/normal_user_review_change/'){
+    if(window.location.pathname==='/normal_user_review_change/' || have_address){
         document.getElementById('id_address').readOnly=true;
         document.getElementById('id_postcode').readOnly=true;
         document.getElementById('id_address').removeEventListener("click", map);

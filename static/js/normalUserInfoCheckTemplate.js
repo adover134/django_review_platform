@@ -2,7 +2,9 @@ function sort(){
     let selected = document.getElementById('sort_select_box');
     let a = window.location.href;
     let b = a.indexOf('sorted');
-    window.location.href = a.slice(0, b)+'sorted='+document.getElementById('sort_select_box').value;
+    if (a.slice(0, b)[b-1] === '/')
+        window.location.assign(a.slice(0, b)+'?sorted='+document.getElementById('sort_select_box').value);
+    window.location.assign(a.slice(0, b)+'sorted='+document.getElementById('sort_select_box').value);
 }
 window.onload=function() {
     let a = new URLSearchParams(window.location.search).get('sorted');

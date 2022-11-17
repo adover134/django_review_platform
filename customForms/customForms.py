@@ -10,7 +10,7 @@ class ReviewWriteForm(forms.Form):
     postcode = forms.CharField(widget=customFields.NonStickyTextInputField())
     checking = forms.IntegerField()
     deposit = forms.IntegerField()
-    monthly = forms.IntegerField()
+    monthly = forms.IntegerField(required=False)
     area = forms.FloatField()
     room_area = forms.CharField(widget=customFields.NonStickyTextInputField())
     proof = forms.IntegerField()
@@ -18,6 +18,21 @@ class ReviewWriteForm(forms.Form):
     clean = forms.IntegerField()
     humidity = forms.IntegerField()
     images = forms.ImageField(label='room_images', widget=customFields.NonStickyImageField(attrs={'multiple': True, 'autocomplete': 'off'}), required=False)
+    def clean(self):
+
+        # data from the form is fetched using super function
+        super(ReviewWriteForm, self).clean()
+
+        # extract the username and text field from the data
+        rent = self.cleaned_data.get('rent')
+        monthlyRent = self.cleaned_data.get('monthlyRent')
+
+        if rent == 1 and monthlyRent is None:
+            self._errors['monthlyRent'] = self.error_class(['월세일 시 월세 금액을 반드시 입력하셔야 합니다.'])
+
+
+        # return any errors if found
+        return self.cleaned_data
 
 
 class TextReviewWriteForm(ReviewWriteForm):
@@ -41,26 +56,3 @@ class UserInfoForm(forms.Form):
     last_name = forms.CharField()
     first_name = forms.CharField()
     email = forms.EmailField()
-
-
-class ReviewWriteForm2(forms.ModelForm):
-
-    class Meta:
-        model = Review
-        fields = ["reviewTitle", "reviewSentence", "rent", "monthlyRent", "deposit", "roomSize"]
-
-    def clean(self):
-
-        # data from the form is fetched using super function
-        super(ReviewWriteForm2, self).clean()
-
-        # extract the username and text field from the data
-        rent = self.cleaned_data.get('rent')
-        monthlyRent = self.cleaned_data.get('monthlyRent')
-
-        if rent == 1 and monthlyRent is None:
-            self._errors['monthlyRent'] = self.error_class(['월세일 시 월세 금액을 반드시 입력하셔야 합니다.'])
-
-
-        # return any errors if found
-        return self.cleaned_data

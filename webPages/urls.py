@@ -19,8 +19,8 @@ from webPages import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('social_django.urls', namespace='social')),
     re_path(r'^$', views.main, name='main'),
+    path('', include('social_django.urls', namespace='social')),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('loginPage/', views.loginPage, name='loginPage'),
@@ -43,5 +43,6 @@ urlpatterns = [
     path('normal_user_review_change/', views.normal_user_review_change, name='normalUserReviewChange'),
     path('normal_user_review_update/', views.normal_user_review_update, name='normalUserReviewUpdate'),
     path('normal_user_review_delete/', views.normal_user_review_delete, name='normalUserReviewDelete'),
+    path('introduction/', views.introduction, name='introduction'),
     path('user_inactivated/', views.user_inactivated),
 ]

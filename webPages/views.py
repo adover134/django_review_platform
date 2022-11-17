@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
 import requests
 import json
 import math
@@ -18,11 +19,20 @@ from webPages.GeoUtil import GeoUtil
 def main(request):
     review_data = json.loads(requests.get('http://127.0.0.1:8000/db/mainPageReviews' + '/').text)
     latest_reviews = review_data.get('latest_reviews')
+    latest_icons = []
+    for review in latest_reviews:
+        latest_icons.append(list(set(list(review.get('includedIcon')))))
+    print('werwer', latest_icons)
     popular_reviews = review_data.get('popular_reviews')
+    popular_icons = []
+    for review in popular_reviews:
+        popular_icons.append(list(set(list(review.get('includedIcon')))))
     data = {
         'javakey': KAKAO_JAVA_KEY,
         'latest_reviews': latest_reviews,
+        'latest_icons': latest_icons,
         'popular_reviews': popular_reviews,
+        'popular_icons': popular_icons,
     }
     return render(request, 'normal_user_main.html', data)
 
@@ -128,11 +138,14 @@ def normal_user_review_search(request):
         context['cleanliness_to'] = data.get('cleanliness_to')[0]
     review_list = json.loads(requests.get(review_search_url).text)
     paginator = Paginator(review_list, 5)
-    paged_review = None
     if data.get('page'):
-        paged_review = paginator.get_page(data.get('page'))
+        if isinstance(data.get('page'), list):
+            paged_review = paginator.get_page(data.get('page')[0])
+        else:
+            paged_review = paginator.get_page(data.get('page'))
     else:
-        paged_review =paginator.get_page(1)
+        paged_review = paginator.get_page(1)
+
     context['paged_review'] = paged_review
 
     return render(request, 'normal_user_review_search.html', context)
@@ -140,9 +153,12 @@ def normal_user_review_search(request):
 
 @login_required(login_url='/loginPage/')
 def normal_user_review_write_page(request):
-    form = {'TextForm': customForms.TextReviewWriteForm}
-
-    return render(request, 'normal_user_review_write.html', form)
+    context = {'TextForm': customForms.TextReviewWriteForm}
+    if request.GET.get('roomId'):
+        room = json.loads(requests.get('http://127.0.0.1:8000/db/room/' + str(request.GET.get('roomId')) + '/').text)
+        context['address'] = room.get('address')
+        context['postcode'] = room.get('postcode')
+    return render(request, 'normal_user_review_write.html', context)
 
 
 def normal_user_review_read(request):
@@ -158,8 +174,6 @@ def normal_user_review_read(request):
     review['roomName'] = room.get('name')
     review['address'] = room.get('address')
     icon_urls = review.get('includedIcon')
-
-    print('wekrlwsd\nwrw\n\nesrwe\n\n;lsssd', icon_urls)
 
     sorted = ''
     if 'sorted' in request.GET:
@@ -211,6 +225,22 @@ def normal_user_review_read(request):
             if json.loads(requests.get(report).text).get('uId') == user.id:
                 reported = True
                 break
+
+    if user.is_anonymous:
+        reportable = False
+    elif user.uActive == 1 or user.uActive == 2 or user.uActive == 3:
+        reportable = False
+    else:
+        reportable = True
+
+    if user.is_anonymous:
+        modifiable = False
+    elif user.uActive == 3:
+        modifiable = False
+    else:
+        modifiable = True
+
+
     review_writer = json.loads(requests.get('http://127.0.0.1:8000/db/user/'+str(review.get('uId'))+'/').text)
     if user.username == review_writer.get('username'):
         is_writer = 'true'
@@ -219,15 +249,16 @@ def normal_user_review_read(request):
 
     reviews = get_reviews_by_roomId(str(review.get('roomId')), sorted)
 
-    # paginator
     paginator = Paginator(reviews, 5)
-    page = request.GET.get('page')
-    if page:
-        paged_review = paginator.get_page(page)
+    if request.GET.get('page'):
+        if isinstance(request.GET.get('page'), list):
+            paged_review = paginator.get_page(request.GET.get('page')[0])
+        else:
+            paged_review = paginator.get_page(request.GET.get('page'))
     else:
-        paged_review = paginator.get_page(1)
+        paged_review =paginator.get_page(1)
 
-    return render(request, 'normal_user_review_read.html', {'review': review, 'paged_review': paged_review, 'icons': icons, 'is_writer': is_writer, 'icon': icon, 'recommended': recommended, 'reported': reported})
+    return render(request, 'normal_user_review_read.html', {'review': review, 'paged_review': paged_review, 'icons': icons, 'is_writer': is_writer, 'reportable': reportable, 'modifiable': modifiable, 'icon': icon, 'recommended': recommended, 'reported': reported})
 
 
 # 리뷰 수정 페이지 GET
@@ -273,7 +304,7 @@ def normal_user_review_update(request):
             data1['uId'] = user.id
             data1['rent'] = int(data['checking'][0])
             data1['deposit'] = int(data['deposit'][0])
-            if data.get('monthly'):
+            if data1['rent'] == 1:
                 data1['monthlyRent'] = int(data['monthly'][0])
             area_kind = data['room_area'][0]
             if area_kind == 'room_area':
@@ -519,7 +550,6 @@ def room_search(request):
     page = request.GET.get('page')
     paged_room = paginator.get_page(page)
     context['rooms'] = paged_room
-    print('context : ', context)
 
     return render(request, 'normal_user_room_search.html', context)
 
@@ -538,15 +568,15 @@ def review_write(request):
         if form.is_valid():
             data1['reviewTitle'] = data['title']
             # 주소로 원룸을 검색한다.
-            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?full_address=' + data.get('address')[0]).text)
             # 원룸 번호를 구한다.
             if len(room) > 0:
                 data1['roomId'] = room[0].get('id')
             # 해당 원룸이 없다면 만든다.
             else:
                 room_data = {}
-                room_data['address'] = str(data['address'][0])
-                room_data['postcode'] = int(data['postcode'][0])
+                room_data['address'] = str(data.get('address')[0])
+                room_data['postcode'] = int(data.get('postcode')[0])
 
                 url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + str(data['address'][0])
                 headers = {'Authorization': 'KakaoAK ' + SOCIAL_AUTH_KAKAO_KEY}
@@ -575,7 +605,7 @@ def review_write(request):
             data1['uId'] = str(user.id)
             data1['rent'] = int(data['checking'][0])
             data1['deposit'] = int(data['deposit'][0])
-            if data.get('monthly'):
+            if data1['rent'] == 1:
                 data1['monthlyRent'] = int(data['monthly'][0])
             area_kind = data['room_area'][0]
             if area_kind == 'room_area':
@@ -599,7 +629,6 @@ def review_write(request):
 
 
 def handle_uploaded_file(f, rId,  kind, name):
-    print(rId)
     with open('static/images/'+kind+'/' + rId + '-' + name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
@@ -649,7 +678,7 @@ def normal_user_room_write(request):
                 data1['distance'] = data.get('distance')[0]
             data1['convNum'] = conv
 
-            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?postcode=' + data.get('postcode')[0]).text)
+            room = json.loads(requests.get('http://127.0.0.1:8000/db/room/?full_address=' + data.get('room_address')[0]).text)
             if room:
                 return Response(room[0].get('id')) # 해당 원룸번호 리턴
             else: #등록되지 않은 원룸의 경우 생성
@@ -666,6 +695,8 @@ def normal_user_room_write(request):
             return status.HTTP_403_FORBIDDEN
 
 
+def introduction(request):
+    return render(request, 'introduction.html')
 
 
 # 회원 탈퇴

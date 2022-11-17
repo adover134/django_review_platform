@@ -65,9 +65,8 @@
     function sort(data) {
         console.log(data)
         // 현재 url 가져오기
-        var link = window.location.href
         var search = window.location.search
-        const URLSearch = new URLSearchParams(location.search);
+        const URLSearch = new URLSearchParams(search);
         if (URLSearch.has('sorted')) {
             URLSearch.set('sorted', data.value)
         }

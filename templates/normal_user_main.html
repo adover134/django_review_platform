@@ -28,45 +28,51 @@ $(document).ready(function(){
 </script>
 <div class="slider" id="famous" onclick="" style="height:100%;">
     {% if popular_reviews %}
-        {% for popular_review in popular_reviews %} {# 추천순 데이터 최대 4개 출력 #}
-            <div>
-                <div class="review_kind" style="display:flex; align-items: center; justify-content: center; height:15%; width:100%; font-weight:bolder; background-color:#E8BECA;">
-                    <span>인기 리뷰</span>
-                </div>
-                <div style="height:10%;">
-                    <div class="pop_writer" style="float:left; height:100%; width:55%;">
-                        <span>작성자 : {{ popular_review.reviewWriter }}</span>
+        {% for i in popular_reviews|length|ranges %} {# 추천순 데이터 최대 4개 출력 #}
+            {% with review=popular_reviews|index:i %}
+                <div>
+                    <div class="review_kind" style="display:flex; align-items: center; justify-content: center; height:15%; width:100%; font-weight:bolder; background-color:#E8BECA;">
+                        <span>인기 리뷰</span>
                     </div>
-                    <div style = "float:right; height:100%;">추천 수 : {{ popular_review.recommendedOn|length }}</div>
-                </div>
-                <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
-                    {% if popular_review.additionalImage|length > 0 %}
-                        <img src="{% static 'images/reviewImage/' %}{{popular_review.additionalImage|first|defaultImage:'review'}}" class="left-side-room-img" style="height:100%;">
-                    {% else %}
-                        <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%;">
-                    {% endif %}
-                </div>
-                {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <div style="text-align:center; color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{popular_review.id}}')">{{ popular_review.reviewTitle }}</div>
+                    <div style="height:10%;">
+                        <div class="pop_writer" style="float:left; height:100%; width:55%;">
+                            <span>작성자 : {{ review.reviewWriter }}</span>
+                        </div>
+                        <div style = "float:right; height:100%;">추천 수 : {{ review.recommendedOn|length }}</div>
+                    </div>
+                    <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
+                        {% if review.additionalImage|length > 0 %}
+                            <img src="{% static 'images/reviewImage/' %}{{popular_review.additionalImage|first|defaultImage:'review'}}" class="left-side-room-img" style="height:100%;">
+                        {% else %}
+                            <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%;">
+                        {% endif %}
+                    </div>
+                    {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                    <div style="display:flex; height:10%; align-items:center; justify-content: center;">
+                        <MARQUEE scrolldelay="40" style="color:black; width:50%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.assign('{{normalUserReviewRead}}?id={{review.id}}')">{{ review.reviewTitle }}</MARQUEE>
+                    </div>
 
-                <div style = "display:flex; justify-content:center; height:30%;width:100%;">
-                    <div style="width:70%;">
-                        <span>
-                            {{popular_review.totalReview|slice:"0:40"}}
-                            {% if popular_review.totalReview|length > 40 %}
-                                ...
-                            {% endif %}
-                        </span>
+                    <div style = "display:flex; justify-content:center; height:30%;width:100%;">
+                        <div style="width:70%;">
+                            <span>
+                                {{review.totalReview|slice:"0:35"}}
+                                {% if review.totalReview|length > 35 %}
+                                    ...
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div style = "display:flex; justify-content:center; height:10%;">
+                        <div style="width:70%; height:100%; display:flex; align-items:center;">
+                            {% with iconset=popular_icons|index:i %}
+                                {% for popular_icon in iconset %}
+                                    <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}{{ popular_icon }}.png">
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
                     </div>
                 </div>
-                <div style = "display:flex; justify-content:center; height:10%;">
-                    <div style="width:70%; height:100%; display:flex; align-items:center;">
-                        {% for popular_icon in popular_review.includedIcon %}
-                            <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ popular_icon }}{{ popular_icon }}.png">
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+            {% endwith %}
         {% endfor %}
     {% else %}
         <div>등록된 리뷰가 없습니다.</div>
@@ -74,45 +80,50 @@ $(document).ready(function(){
 </div>
 <div class="slider" id="recent">
     {% if latest_reviews %}
-        {% for latest_review in latest_reviews %} {# 최신순 데이터 최대 4개 출력 #}
-            <div>
-                <div class="review_kind" style="display:flex; align-items: center; justify-content: center; height:15%; width:100%; font-weight:bolder; background-color:#E8BECA;">
-                    <span>최신 리뷰</span>
-                </div>
-                <div style="height:10%;">
-                    <div style="float:left; height:100%;">
-                        <span>작성자 : {{ latest_review.reviewWriter }}</span>
+        {% for i in latest_reviews|length|ranges %} {# 최신순 데이터 최대 4개 출력 #}
+            {% with review=latest_reviews|index:i %}
+                <div>
+                    <div class="review_kind" style="display:flex; align-items: center; justify-content: center; height:15%; width:100%; font-weight:bolder; background-color:#E8BECA;">
+                        <span>최신 리뷰</span>
                     </div>
-                    <div style = "float:right; height:100%;">추천 수 : {{ latest_review.recommendedOn|length }}</div>
-                </div>
-                <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
-                    {% if latest_review.additionalImage|length > 0 %}
-                        <img src="{% static 'images/reviewImage/' %}{{latest_review.additionalImage|first|defaultImage:'review'}}" class="left-side-room-img" style="height:100%;">
-                    {% else %}
-                        <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%;">
-                    {% endif %}
-                </div>
-                {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
-                <div style="text-align:center; color:black; height:10%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.replace('{{normalUserReviewRead}}?id={{latest_review.id}}')">{{ latest_review.reviewTitle }}</div>
-
-                <div style = "display:flex; justify-content:center; height:45%;width:100%;">
-                    <div style="width:70%;">
-                        <span>
-                            {{ latest_review.totalReview|slice:"0:40" }}
-                            {% if latest_review.totalReview|length > 40 %}
-                                ...
-                            {% endif %}
-                        </span>
+                    <div style="height:10%;">
+                        <div style="float:left; height:100%;">
+                            <span>작성자 : {{ review.reviewWriter }}</span>
+                        </div>
+                        <div style = "float:right; height:100%;">추천 수 : {{ review.recommendedOn|length }}</div>
+                    </div>
+                    <div class="pop-img" style="display:flex; justify-content: center; height:25%;">
+                        {% if review.additionalImage|length > 0 %}
+                            <img src="{% static 'images/reviewImage/' %}{{latest_review.additionalImage|first|defaultImage:'review'}}" class="left-side-room-img" style="height:100%;">
+                        {% else %}
+                            <img src="{% static 'images/reviewImage/no-photo.png' %}" style="height:100%;">
+                        {% endif %}
+                    </div>
+                    {# 클릭시 해당 리뷰로 이동하는 링크 필요 #}
+                    <div style="display:flex; height:10%; align-items:center; justify-content: center;">
+                        <MARQUEE scrolldelay="40" style="color:black; width:50%; font-weight: 600; font-size:20px; cursor:pointer;" onclick="window.location.assign('{{normalUserReviewRead}}?id={{review.id}}')">{{ review.reviewTitle }}</MARQUEE>
+                    </div>
+                    <div style = "display:flex; justify-content:center; height:30%;width:100%;">
+                        <div style="width:70%;">
+                            <span>
+                                {{ review.totalReview|slice:"0:35" }}
+                                {% if review.totalReview|length > 35 %}
+                                    ...
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div style = "display:flex; justify-content:center; height:10%;">
+                        <div style="width:70%; height:100%; display:flex; align-items:center;">
+                            {% with iconset=latest_icons|index:i %}
+                                {% for latest_icon in iconset %}
+                                    <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ latest_icon }}{{ latest_icon }}.png">
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
                     </div>
                 </div>
-                <div style = "display:flex; justify-content:center; height:10%;">
-                    <div style="width:70%; height:100%; display:flex; align-items:center;">
-                        {% for latest_icon in latest_review.includedIcon %}
-                            <img class="icon" style ="margin:5px;float:left;" src="{% static 'images/iconImage/' %}{{ latest_icon }}{{ latest_icon }}.png">
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+            {% endwith %}
         {% endfor %}
     {% else %}
         <div>등록된 리뷰가 없습니다.</div>
@@ -140,7 +151,7 @@ $(document).ready(function(){
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) {
-            window.location.replace('{{main}}');
+            window.location.assign('{{main}}');
         }
     };
 </script>
@@ -148,7 +159,7 @@ $(document).ready(function(){
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) {
-            window.location.replace('{{main}}');
+            window.location.assign('{{main}}');
         }
     };
 </script>
@@ -197,7 +208,7 @@ $(document).ready(function(){
                     });
 
                     var room_info = ''
-                    if(value.name !== null)
+                    if(value.name !== null && value.name !== '')
                         room_info = value.name
                     else
                         room_info = value.address
@@ -205,7 +216,7 @@ $(document).ready(function(){
                     // 인포윈도우로 장소에 대한 설명을 표시합니다
                     var infowindow = new kakao.maps.InfoWindow({
                         content: `<div style="width:150px; text-align:center; padding:6px 0; cursor: pointer" ` +
-                            `onclick="window.location.replace(`+
+                            `onclick="window.location.assign(`+
                             `'{{ roomRead }}?roomId=` +
                             value.id +
                             `')" >`+ room_info + `</div>`

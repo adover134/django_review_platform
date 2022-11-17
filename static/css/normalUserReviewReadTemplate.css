@@ -198,4 +198,25 @@
   height: 100%;
 }
 
+#backward {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 5%;
+  background-color: #6c757d;
+  border-radius: 6px;
+  margin-top: 5%;
+}
+
+#leftSideMenu {
+  display: flex;
+  justify-content: center;
+}
+
+#backward > a {
+  text-decoration: none;
+  color: white;
+}
+
 /*# sourceMappingURL=normalUserReviewReadTemplate.css.map */

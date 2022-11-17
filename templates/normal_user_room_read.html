@@ -1,5 +1,14 @@
 {% extends 'normal_user_review_list.html' %}
 {% load index static %}
+{% block left_side_bar %}
+    <div id="backward">
+        {% if request.META.HTTP_REFERER|escape|check_url %}
+            <a href="{{request.META.HTTP_REFERER|escape}}">이전 페이지로</a>
+        {% else %}
+            <a href="javascript:history.go(-2)">이전 페이지로</a>
+        {% endif %}
+    </div>
+{% endblock %}
 {% block info %}
     <script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script type="text/javascript"
@@ -116,6 +125,10 @@
         </div>
         <div style="position:sticky; display:inline-block; z-index: 1; left:95%; top:50%; width:4%; height:10%;">
             <a href="/normal_user_room_change/?roomId={{room.id}}">수정</a>
+        </div>
+        <br>
+        <div style="position:sticky; z-index: 1; left:95%; width:20%; height:20%;">
+            <a href="/normal_user_review_write_page/?roomId={{room.id}}">이 원룸에 대한 리뷰 작성</a>
         </div>
     </div>
 </div><br>
